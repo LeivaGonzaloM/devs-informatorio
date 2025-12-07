@@ -59,8 +59,7 @@
         </div>
         {% else %}
         <p class="text-center"><i>Este post no tiene imagen.</i></p>
-
-
+        {% endif %}
         {% if user.is_superuser or user == post.user %}
         <br />
         <div class="crud-buttons">
@@ -79,6 +78,9 @@
         <div class="contact-form">
           <form method="POST" class="comment-form">
             {% csrf_token %}
+
+            <input type="hidden" name="gif_url" id="gifUrlInput">
+
             <div class="form-group">
               <label for="content">Escribe tu comentario</label>
               <textarea
@@ -89,6 +91,18 @@
                 required
               ></textarea>
             </div>
+
+            <div class="form-group gif-search-container">
+              <label for="gifSearchInput">Añadir GIF (Giphy)</label>
+              <div style="display: flex; gap: 10px;">
+                  <input type="text" id="gifSearchInput" placeholder="Buscar GIF (ej: 'coding fail')">
+                  <button type="button" id="searchGifBtn" class="btn-secondary">Buscar</button>
+              </div>
+              <div id="gifResults" style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; max-height: 200px; overflow-y: scroll; border: 1px solid var(--border-color); padding: 10px;">
+                  </div>
+              <p id="selectedGifIndicator" style="color: var(--primary-cyan); margin-top: 10px; display: none;">GIF seleccionado: <img id="selectedGifPreview" style="max-height: 50px; vertical-align: middle; border: 1px solid var(--primary-cyan);"></p>
+          </div>
+
             <button type="submit" class="btn-send-comment">Comentar</button>
           </form>
         </div>
@@ -107,7 +121,7 @@
         </div>
       </div>
       {% endif %}
-      {% endif %}
+
       <div class="section-header">
         <h2 class="section-title">Comentarios</h2>
         <!-- <p style="color: red;">{{error}}</p> -->
@@ -118,9 +132,7 @@
     <!-- </section>  -->
     <!-- Seccion Comentar END -->
     <div class="features-grid" style="grid-template-columns: 1fr !important">
-      <!-- Lista de Comentarios -->
-
-      {% for comment in comments %}
+            {% for comment in comments %}
       <div class="feature-card comment-card" id="comment-{{ comment.id }}">
         <div class="comment-header">
           <span class="comment-date"
@@ -130,16 +142,21 @@
           <span class="comment-user footer-credit">
             <a href="{% url 'profile-username' comment.user.username %}">
                 {% if comment.user.is_superuser %}
-                    <span href="{% url 'profile-username' comment.user.username %}" class="admin-text">{{ comment.user.username }}</span>
+                    <a href="{% url 'profile-username' comment.user.username %}" class="admin-text">{{ comment.user.username }}</a>
                 {% else %}
-                    <span href="{% url 'profile-username' comment.user.username %}" class="user-text">{{ comment.user.username }}</span>
+                    <a href="{% url 'profile-username' comment.user.username %}" class="user-text">{{ comment.user.username }}</a>
                 {% endif %}
             </a>
           </span>
         </div>
         <p class="comment-content">{{ comment.content }}</p>
 
-        {% if user.is_superuser or user == comment.user %}
+                {% if comment.gif_url %} 
+          <img src="{{ comment.gif_url }}" 
+          alt="GIF del usuario" 
+          style="max-width: 100%; margin-top: 10px; border: 1px solid var(--border-color);"/> 
+        {% endif %}
+                {% if user.is_superuser or user == comment.user %}
         <div class="crud-buttons">
           <button class="btn-editar" data-id="{{ comment.id }}">Editar</button>
           <button class="btn-eliminar-comment" data-id="{{ comment.id }}">
@@ -149,6 +166,7 @@
         {% endif %}
       </div>
       {% endfor %}
+
 
       <!-- Modal eliminar comentario -->
       <div id="deleteModal" class="modal" style="display: none">
@@ -186,7 +204,100 @@
             return cookieValue;
           }
           const csrftoken = getCookie("csrftoken");
-// ... dentro de document.addEventListener("DOMContentLoaded", ...
+
+/* --- Lógica de Integración con Giphy --- */
+
+// ⚠️ REEMPLAZA ESTO con tu clave real de Giphy
+const GIPHY_API_KEY = 'b0Fcc4YkI53LHIDdarqgbFxCGUEo1zfF'; 
+
+const searchInput = document.getElementById('gifSearchInput');
+const searchBtn = document.getElementById('searchGifBtn');
+const gifResults = document.getElementById('gifResults');
+const gifUrlInput = document.getElementById('gifUrlInput');
+const selectedGifIndicator = document.getElementById('selectedGifIndicator');
+const selectedGifPreview = document.getElementById('selectedGifPreview');
+
+// Función para buscar GIFs en Giphy
+const searchGifs = async () => {
+    const query = searchInput.value.trim();
+    if (!query) return;
+
+    gifResults.innerHTML = 'Cargando GIFs...';
+    
+    try {
+        const url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${query}&limit=12&lang=es`;
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            // Manejar errores HTTP (e.g., 401 Unauthorized si la clave es mala)
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+        
+        const data = await response.json();
+
+        gifResults.innerHTML = ''; // Limpiar mensajes de carga
+        
+        if (data.data.length === 0) {
+            gifResults.innerHTML = 'No se encontraron GIFs.';
+            return;
+        }
+
+        data.data.forEach(gif => {
+            const img = document.createElement('img');
+            // Usar 'fixed_height_small' para previsualizaciones
+            img.src = gif.images.fixed_height_small.url; 
+            img.alt = gif.title;
+            img.style.cursor = 'pointer';
+            img.style.maxHeight = '100px'; 
+            img.style.width = 'auto';
+            img.style.border = '2px solid transparent';
+            
+            // Atributo para obtener la URL final de alta calidad al seleccionar
+            img.dataset.fullUrl = gif.images.original.url; 
+
+            // Evento de Selección de GIF
+            img.addEventListener('click', () => {
+                // Deseleccionar cualquier otro GIF
+                document.querySelectorAll('#gifResults img').forEach(i => i.style.border = '2px solid transparent');
+                
+                // Seleccionar el actual
+                img.style.border = '2px solid var(--primary-cyan)';
+                
+                // Guardar la URL final en el campo oculto
+                gifUrlInput.value = img.dataset.fullUrl; 
+                
+                // Mostrar indicador de selección
+                selectedGifPreview.src = img.src;
+                selectedGifIndicator.style.display = 'block';
+            });
+
+            gifResults.appendChild(img);
+        });
+
+    } catch (error) {
+        console.error('Error al buscar GIFs:', error);
+        gifResults.innerHTML = `Error al conectar con Giphy. Detalles: ${error.message}`;
+    }
+};
+
+// Asignar el evento al botón de búsqueda
+searchBtn.addEventListener('click', searchGifs);
+
+// Opcional: Permitir búsqueda al presionar Enter en el campo
+searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        searchGifs();
+    }
+});
+
+/* --- Fin Lógica Giphy --- */
+
+// =========================
+// 1️⃣ Edición inline de comentarios (AQUÍ CONTINÚA TU CÓDIGO EXISTENTE)
+// ...
+
+          // ... dentro de document.addEventListener("DOMContentLoaded", ...
 // ... después de obtener csrftoken ...
 
 /* --- Lógica Lightbox de Imagen (Añadir este bloque) --- */
