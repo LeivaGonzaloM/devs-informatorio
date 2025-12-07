@@ -25,9 +25,9 @@
                  </span>
               {% else %}
                  {% if post.user.is_superuser %}
-                     <span href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">{{ post.user.username }}</span>
+                     <a href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">{{ post.user.username }}</a>
                  {% else %}
-                     <span href="{% url 'profile-username' post.user.username %}" class="usernameFact user-text">{{ post.user.username }}</span>
+                     <a href="{% url 'profile-username' post.user.username %}" class="usernameFact user-text">{{ post.user.username }}</a>
                  {% endif %}
               {% endif %} 
 
@@ -46,14 +46,21 @@
         <p class="card-text">{{ post.description }}</p>
 
         {% if post.image %}
-        <img
-          src="{{ post.image.url }}"
-          alt="imagen"
-          style="width: 100%; margin-top: 10px"
-        />
+        <div class="post-image-wrapper">
+            <a href="{{ post.image.url }}" 
+              data-featherlight="image"  
+              title="{{ post.title }}">
+                <img
+                    src="{{ post.image.url }}"
+                    alt="Imagen del Post"
+                    style="width: 100%; margin-top: 10px; cursor: pointer;"
+                />
+            </a>
+        </div>
         {% else %}
         <p class="text-center"><i>Este post no tiene imagen.</i></p>
-        {% endif %} 
+
+
         {% if user.is_superuser or user == post.user %}
         <br />
         <div class="crud-buttons">
@@ -99,6 +106,7 @@
           </div>
         </div>
       </div>
+      {% endif %}
       {% endif %}
       <div class="section-header">
         <h2 class="section-title">Comentarios</h2>
@@ -152,6 +160,11 @@
           </div>
         </div>
       </div>
+<div id="imageModal" class="modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.9); align-items: center; justify-content: center;">
+    <span class="modal-close-btn" style="color: #fff; font-size: 30px; font-weight: bold; position: absolute; top: 10px; right: 25px; cursor: pointer;">&times;</span>
+    <img id="modalImage" src="" alt="Imagen Ampliada" style="max-width: 90%; max-height: 90%; margin: auto; display: block;">
+</div>
+    
 
       <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -173,6 +186,49 @@
             return cookieValue;
           }
           const csrftoken = getCookie("csrftoken");
+// ... dentro de document.addEventListener("DOMContentLoaded", ...
+// ... después de obtener csrftoken ...
+
+/* --- Lógica Lightbox de Imagen (Añadir este bloque) --- */
+const imageModal = document.getElementById("imageModal");
+const modalImage = document.getElementById("modalImage");
+const closeBtn = imageModal.querySelector(".modal-close-btn");
+
+// 1. Abrir Modal al hacer clic en la imagen
+document.querySelectorAll(".lightbox-trigger").forEach((link) => {
+    link.addEventListener("click", (e) => {
+        e.preventDefault(); 
+        
+        const imageUrl = link.dataset.imgUrl; 
+        
+        modalImage.src = imageUrl;
+        imageModal.style.display = "flex";
+        
+        document.body.style.overflow = "hidden";
+    });
+});
+
+// 2. Cerrar Modal al hacer clic en el botón 'x'
+closeBtn.addEventListener("click", () => {
+    imageModal.style.display = "none";
+    document.body.style.overflow = "auto";
+});
+
+// 3. Cerrar Modal al hacer clic fuera de la imagen (en el fondo oscuro)
+imageModal.addEventListener("click", (e) => {
+    if (e.target === imageModal) {
+        imageModal.style.display = "none";
+        document.body.style.overflow = "auto";
+    }
+});
+/* --- Fin Lógica Lightbox --- */
+
+// =========================
+// 1️⃣ Edición inline de comentarios (AQUÍ CONTINÚA TU CÓDIGO EXISTENTE)
+// =========================
+// ... el resto de tu JavaScript ...
+
+
 
           // =========================
           // 1️⃣ Edición inline de comentarios
