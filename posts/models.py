@@ -11,6 +11,16 @@ class Post(models.Model):
     image = models.ImageField(upload_to='posts/' , verbose_name="Imagen: " ,null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    # Campos para el Update de los posts:
+    last_edited = models.DateTimeField(null=True, blank=True)
+    edited_by = models.ForeignKey(
+        User, 
+        null=True, 
+        blank=True, 
+        related_name='edited_posts',
+        on_delete=models.SET_NULL
+    )
+
     def __str__(self):
         return self.title + ' - Creado por:' + self.user.username
 

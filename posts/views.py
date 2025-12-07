@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm, CommentForm
 from .models import Post, Comment
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import JsonResponse
@@ -108,28 +109,36 @@ def createPost(request):
 
 @login_required
 def editPost(request, post_id):
-    post = Post.objects.get(pk=post_id)
+    post = get_object_or_404(Post, pk=post_id)
 
     if request.method == 'POST':
-        # Formulario con el instance para editar
         form = PostForm(request.POST, request.FILES, instance=post)
+
         if form.is_valid():
             edited_post = form.save(commit=False)
-            edited_post.user = request.user  # opcional si querés mantener el usuario
+
+            # ❗ Mantener el usuario ORIGINAL del post
+            # edited_post.user = request.user   ❌ NO HACER ESTO
+
+            # 🔥 Registrar edición:
+            edited_post.edited_by = request.user
+            edited_post.last_edited = timezone.now()
+
             edited_post.save()
-            return redirect('detallePost', post.id)  # Redirige al detalle del post  # redirigir a donde quieras
-        else:
-            # Si el formulario no es válido, mostrar errores
-            return render(request, 'crud/editPost.html', {
-                'formulario': form,
-                'error': 'Por favor verifica los datos.'
-            })
+
+            return redirect('detallePost', post.id)
+
+        return render(request, 'crud/editPost.html', {
+            'formulario': form,
+            'error': 'Por favor verifica los datos.'
+        })
+
     else:
-        # GET: mostrar formulario prellenado
         formulario = PostForm(instance=post)
         return render(request, 'crud/editPost.html', {
             'formulario': formulario
         })
+
 
 
 @login_required

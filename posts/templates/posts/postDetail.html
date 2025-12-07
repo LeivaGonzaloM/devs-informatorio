@@ -33,7 +33,18 @@
 
             </a>
         </span>
-        <small class="text-body-secondary">{{ post.created }}</small>
+        {% if post.last_edited %}
+        <p class="text-secondary" style="font-size: 0.9rem;">
+        Editado el {{ post.last_edited|date:"d/m/Y H:i" }}
+        por 
+        {% if post.edited_by == post.user %}
+            el autor
+        {% else %}
+            {{ post.edited_by.username }} (admin)
+        {% endif %}
+        </p>
+        {% endif %}
+        <!-- <small class="text-body-secondary">{{ post.created }}</small> -->
 
         <!-- <div class="feature-icon">⚡</div> -->
 
@@ -67,6 +78,9 @@
           <a href="{% url 'eliminarPost' post.id %}" class="btn-eliminar">Eliminar</a>
         </div>
         {% endif %}
+
+        
+
       </div>
     </div>
 
@@ -151,21 +165,23 @@
         </div>
         <p class="comment-content">{{ comment.content }}</p>
 
-                {% if comment.gif_url %} 
+{% if comment.gif_url %} 
           <img src="{{ comment.gif_url }}" 
           alt="GIF del usuario" 
           style="max-width: 100%; margin-top: 10px; border: 1px solid var(--border-color);"/> 
         {% endif %}
-                {% if user.is_superuser or user == comment.user %}
+        
+        {% if user.is_superuser or user == comment.user %}
         <div class="crud-buttons">
-          <button class="btn-editar" data-id="{{ comment.id }}">Editar</button>
+          <button class="btn-edit-comment" data-id="{{ comment.id }}">Editar</button>
           <button class="btn-eliminar-comment" data-id="{{ comment.id }}">
             Eliminar
           </button>
         </div>
         {% endif %}
       </div>
-      {% endfor %}
+      {% endfor %} 
+
 
 
       <!-- Modal eliminar comentario -->
@@ -344,7 +360,7 @@ imageModal.addEventListener("click", (e) => {
           // =========================
           // 1️⃣ Edición inline de comentarios
           // =========================
-          document.querySelectorAll(".btn-editar").forEach((btn) => {
+          document.querySelectorAll(".btn-edit-comment").forEach((btn) => {
             btn.addEventListener("click", () => {
               const commentId = btn.dataset.id;
               const card = document.getElementById(`comment-${commentId}`);
