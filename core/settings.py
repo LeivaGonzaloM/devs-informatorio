@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'posts',
     'users.apps.UsersConfig',
     'dashboard',
-    'channels',
 ]
 
 ASGI_APPLICATION = "core.asgi.application"
