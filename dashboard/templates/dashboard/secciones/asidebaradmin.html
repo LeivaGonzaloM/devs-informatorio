@@ -1,0 +1,406 @@
+<aside class="left-sidebar">
+      <!-- Sidebar scroll-->
+      <div>
+        <div class="brand-logo d-flex align-items-center justify-content-between">
+          <a href="./index.html" class="text-nowrap logo-img">
+            <span style="color: red; font-weight: bold;">AdminPanel</span>
+            
+          </a>
+          <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+            <i class="ti ti-x fs-8"></i>
+          </div>
+        </div>
+        <!-- Sidebar navigation-->
+        <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+          <ul id="sidebarnav">
+            <li class="nav-small-cap">
+              <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-4"></iconify-icon>
+              <span class="hide-menu">Atajos</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="#" aria-expanded="false">
+                <iconify-icon icon="solar:atom-line-duotone"></iconify-icon>
+                <span class="hide-menu">Bloquear Usuario</span>
+              </a>
+            </li>
+            <!-- ---------------------------------- -->
+            <!-- Dashboard -->
+            <!-- ---------------------------------- -->
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between" 
+                href="#" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <iconify-icon icon="solar:atom-line-duotone"></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Eliminar Usuario</span>
+                </div>
+                
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between"
+                href="#" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <iconify-icon icon="solar:atom-line-duotone"></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Eliminar Informes</span>
+                </div>
+                
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between"
+                href="{% url 'adminReports' %}" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <iconify-icon icon="solar:atom-line-duotone"></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Usuarios Reportados</span>
+                </div>
+                 
+              </a>
+            </li>
+            
+            <!-- <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between has-arrow" href="javascript:void(0)" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <iconify-icon icon="solar:home-angle-line-duotone"></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Usuarios</span>
+                </div>
+              </a>
+              <ul aria-expanded="false" class="collapse first-level">
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" target="_blank"
+                    href="https://bootstrapdemos.adminmart.com/matdash/dist/main/frontend-landingpage.html">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Usuarios reportados</span>
+                    </div>
+                
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" target="_blank"
+                    href="https://bootstrapdemos.adminmart.com/matdash/dist/main/frontend-aboutpage.html">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu"></span>
+                    </div>
+                  
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" target="_blank"
+                    href="https://bootstrapdemos.adminmart.com/matdash/dist/main/frontend-blogpage.html">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Blog</span>
+                    </div>
+                   
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" target="_blank"
+                    href="https://bootstrapdemos.adminmart.com/matdash/dist/main/frontend-blogdetailpage.html">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Blog Details</span>
+                    </div>
+                    
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" target="_blank"
+                    href="https://bootstrapdemos.adminmart.com/matdash/dist/main/frontend-contactpage.html">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Contact Us</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" target="_blank"
+                    href="https://bootstrapdemos.adminmart.com/matdash/dist/main/frontend-portfoliopage.html">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Portfolio</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" target="_blank"
+                    href="https://bootstrapdemos.adminmart.com/matdash/dist/main/frontend-pricingpage.html">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Pricing</span>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </li> -->
+
+            <li>
+              <span class="sidebar-divider lg"></span>
+            </li>
+
+            <li class="nav-small-cap">
+              <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-4"></iconify-icon>
+              <span class="hide-menu">Usuarios</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./ui-buttons.html" aria-expanded="false">
+                <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
+                <span class="hide-menu">Crear usuario</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./ui-alerts.html" aria-expanded="false">
+                <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
+                <span class="hide-menu">Editar usuario</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./ui-card.html" aria-expanded="false">
+                <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
+                <span class="hide-menu">Eliminar usuario</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./ui-forms.html" aria-expanded="false">
+                <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
+                <span class="hide-menu">Bloquear usuario</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./ui-typography.html" aria-expanded="false">
+                <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
+                <span class="hide-menu">Reportar usuario</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between has-arrow" href="javascript:void(0)" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Tablas de Usuarios</span>
+                </div>
+              </a>
+              <ul aria-expanded="false" class="collapse first-level">
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" 
+                    href="{% url 'listaUsuarios' %}">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Usuarios registrados</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" 
+                    href="#">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Usuarios reportados</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" 
+                    href="#">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Usuarios bloqueados</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between"
+                    href="#">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Usuarios eliminados</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between"
+                    href="#">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Usuarios STAFF</span>
+                    </div>
+                  </a>
+                </li>
+                
+                
+
+              </ul>
+            </li>
+
+            
+            <li>
+              <span class="sidebar-divider lg"></span>
+            </li>
+            
+            <li class="nav-small-cap">
+              <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-4"></iconify-icon>
+              <span class="hide-menu">Públicaciones</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between has-arrow" href="javascript:void(0)" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <iconify-icon icon="solar:document-text-line-duotone" class=""></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Informes</span>
+                </div>
+              </a>
+              <ul aria-expanded="false" class="collapse first-level">
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between"
+                    href="#">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Crear informe</span>
+                    </div>
+ 
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" target="_blank"
+                    href="https://bootstrapdemos.adminmart.com/matdash/dist/main/eco-shop-detail.html">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Editar informe</span>
+                    </div>
+ 
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" target="_blank"
+                    href="https://bootstrapdemos.adminmart.com/matdash/dist/main/eco-product-list.html">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Eliminar informe</span>
+                    </div>
+ 
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between has-arrow" href="javascript:void(0)" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <iconify-icon icon="solar:document-text-line-duotone" class=""></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Artículos</span>
+                </div>
+              </a>
+              <ul aria-expanded="false" class="collapse first-level">
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" target="_blank"
+                    href="https://bootstrapdemos.adminmart.com/matdash/dist/main/blog-posts.html">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Crear artículo</span>
+                    </div>
+ 
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between"
+                    href="#">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Editar artículo</span>
+                    </div>
+ 
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between"
+                    href="#">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Eliminar artículo</span>
+                    </div>
+ 
+                  </a>
+                </li>
+
+              </ul>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between"
+                href="#"
+                aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <iconify-icon icon="solar:document-text-line-duotone" class=""></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Lista de Informes</span>
+                </div>
+                 
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link justify-content-between" target="_blank"
+                href="https://bootstrapdemos.adminmart.com/matdash/dist/main/app-email.html" aria-expanded="false">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="d-flex">
+                    <iconify-icon icon="solar:document-text-line-duotone" class=""></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Lista de Artículos</span>
+                </div>
+                 
+              </a>
+            </li>
+          </ul>
+         
+        </nav>
+        <!-- End Sidebar navigation -->
+      </div>
+      <!-- End Sidebar scroll-->
+    </aside>

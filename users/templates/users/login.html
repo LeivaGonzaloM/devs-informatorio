@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+
+<main class="container">
+    
+        
+        <section class="contact fade-up" id="contact">
+            <div class="contact-container">
+                <div class="section-header">
+                    <h2 class="section-title">Iniciar Sesión</h2>
+                    <p style="color: red;">{{error}}</p>
+                    <p class="section-subtitle">Devs</p>
+                </div>
+
+                <div class="contact-form-wrapper">
+                    <div class="contact-form">
+                        <form id="loginForm" action="" method="POST">
+                        {% csrf_token %}
+                            <div class="form-group">
+                                <label for="username">Usuario</label>
+                                <input class="form-control" type="text" id="username" name="username" placeholder="Ingresar usuario" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password">Contraseña</label>
+                                <input class="form-control" type="password" id="password" name="password" placeholder="Ingresar contraseña" required>
+                            </div>
+                            <button type="submit" class="btn-primary btn-submit">Iniciar Sesión</button>
+                            <p class="footer-credit">¿No tienes una cuenta? <a href="{% url 'register' %}" rel="noopener nofollow">Registrarme</a></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <script src="{% static 'js/login.js' %}"></script>
+
+</main>
+{% endblock %}

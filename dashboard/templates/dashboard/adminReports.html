@@ -1,0 +1,34 @@
+{% extends 'dashboard/baseAdmin.html' %}
+{% load static %}
+
+
+{% block content %}
+<h2>Reportes de Usuarios</h2>
+
+<table class="table">
+   
+    <br><br><br><br>
+    <br><br><br><br>
+    <thead>
+        <tr>
+            <th>Reportado</th>
+            <th>Reportante</th>
+            <th>Motivo</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for rep in reports %}
+        <tr>
+            <td>{{ rep.reported_user.username }}</td>
+            <td>{{ rep.reporter.username }}</td>
+            <td>{{ rep.reason }}</td>
+            <td>{{ rep.created }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No hay reportes</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

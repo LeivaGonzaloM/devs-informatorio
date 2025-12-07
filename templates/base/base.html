@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}{% endblock %}</title>
+    
+    <!-- links CSS START-->
+
+    <link rel="stylesheet" href="{% static 'css/templatemo-nexus-style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <link rel="stylesheet" href="{% static 'posts/css/editPost.css' %}">
+    <link rel="stylesheet" href="{% static 'css/post.css' %}">
+    <link rel="stylesheet" href="{% static 'posts/css/postDetail.css' %}" />
+    
+<!--
+
+
+Index Base del Template
+
+-->
+</head>
+<body id="top">
+    <!-- Enhanced Background Elements -->
+    <div class="cyber-bg">
+        <div class="cyber-gradient"></div>
+        <div class="matrix-rain" id="matrixRain"></div>
+    </div>
+    
+    <div class="particles" id="particlesContainer"></div>
+    
+    <div class="data-streams" id="dataStreams"></div>
+    
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+    
+    <div class="grid-overlay">
+        <div class="grid-lines"></div>
+        <div class="grid-glow"></div>
+    </div>
+    
+    <div class="scanlines"></div>
+    <div class="noise-overlay"></div>
+    
+    <!-- Navigation -->
+    {% if not hide_nav_footer %}
+    <!-- NAVBAR -->
+    {% include 'base/secciones/header.html' %}
+    {% endif %}
+
+    {% block content%}
+    {% endblock %}
+
+    {% if not hide_nav_footer %}
+    <!-- FOOTER -->
+    {% include 'base/secciones/footer.html' %}
+    {% endif %}
+    <!-- <script src="templatemo-nexus-scripts.js"></script> -->
+    <script src="{% static 'js/templatemo-nexus-scripts.js' %}"></script>
+    <!-- Mis SCRIPTS -->
+    <script src="{% static 'js/createPost.js' %}"></script>
+    <script src="{% static 'js/editPost.js' %}"></script>
+    <script src="{% static 'js/post.js' %}"></script>
+    <script src="{% static 'js/renderCardMobile.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    
+</body>
+</html>
+

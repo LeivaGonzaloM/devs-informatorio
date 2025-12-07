@@ -1,0 +1,44 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Reportar Usuario{% endblock %}
+
+{% block content %}
+<div class="container">
+  <section class="contact fade-up" id="contact">
+    <div class="contact-container">
+
+        <div class="section-header">
+            <h2 class="section-title">Reportar Usuario</h2>
+
+            <p class="section-subtitle">
+                Estás reportando a: <strong>{{ reported_user.username }}</strong>
+            </p>
+
+            {% if error %}
+            <p style="color: red;">{{ error }}</p>
+            {% endif %}
+        </div>
+
+        <div class="contact-form-wrapper">
+            <div class="contact-form">
+
+                <form id="reportForm" action="{% url 'reportUser' reported_user.id %}" method="POST">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="id_reason">Motivo del reporte</label>
+                        {{ form.reason }}
+                    </div>
+
+                    <button type="submit" class="btn-primary">Enviar reporte</button>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+  </section>
+</div>
+{% endblock %}
+

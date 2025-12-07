@@ -1,0 +1,90 @@
+/* GRID responsive */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr;  /* siempre una sola columna */
+    gap: 2rem;
+}
+
+/* Mobile: 1 SOLA COLUMNA */
+@media (max-width: 768px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Avatar */
+.avatar-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.avatar-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+}
+
+/* Textos */
+.username {
+    margin-top: 1rem;
+}
+
+.subname {
+    font-size: 14px;
+    opacity: .8;
+}
+
+.status {
+    opacity: .7;
+    margin-top: .5rem;
+}
+
+/* Botón */
+.btn-wrapper {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+/* Blocks */
+.info-block {
+    margin-bottom: 1.2rem;
+}
+
+.info-block label {
+    opacity: .7;
+    font-size: 14px;
+}
+
+.posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.empty-msg {
+    opacity: .6;
+    text-align: center;
+}
+
+.post-card {
+    padding: 1rem;
+}
+
+
+/* Forzar que todo el profile esté en una sola columna */
+.features-grid {
+    grid-template-columns: 1fr !important;
+}
+
+/* Opcional: centrar y limitar ancho en desktop */
+.features-grid {
+    max-width: 900px;
+    margin: auto;
+}
+/* FORZAR que el profile tenga UNA SOLA COLUMNA SIEMPRE */
+.features-grid.profile-grid {
+    grid-template-columns: 1fr !important;
+}

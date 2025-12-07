@@ -1,0 +1,134 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="features-section" style="padding-top: 2rem;">
+
+    <div class="section-title" style="text-align: center;">
+        <br>
+        <h2>
+            {% if user_profile.is_superuser %}
+                <span class="admin-text">{{ user_profile.username }}</span>
+            {% else %}
+                <span class="user-text">{{ user_profile.username }}</span>
+            {% endif %}
+        </h2>
+        <p class="section-subtitle">Información de la cuenta</p>
+    </div>
+
+    <!-- 🔥 UNA SOLA COLUMNA SIEMPRE -->
+    <div class="features-grid" style="grid-template-columns: 1fr !important; gap: 2rem;">
+
+        <!-- 🟣 CARD DEL AVATAR -->
+        <div class="feature-card glass-card" style="text-align: center; padding: 2rem;">
+
+            <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
+                <img src="{{ user_profile.profile.avatar.url }}"
+                     alt="avatar"
+                     style="width: 130px; height: 130px; border-radius: 50%;
+                            object-fit: cover; border: 2px solid var(--border-color);">
+            </div>
+
+            <h3 style="margin-bottom: .3rem;">
+
+                {% if profile.is_currently_blocked %}
+                    <span class="blocked-text" style="text-decoration: line-through; color: red;">
+                        {{ user_profile.username }}
+                    </span>
+                    <span style="color: orange;">
+                    (Bloqueado hasta: {{ profile.blocked_until|date:"d/m/Y H:i" }})
+                    </span>
+                {% else %}
+                    {% if user_profile.is_superuser %}
+                        <span class="admin-text">{{ user_profile.username }}</span>
+                    {% else %}
+                        <span class="user-text">{{ user_profile.username }}</span>
+                    {% endif %}
+                {% endif %}
+
+                    
+                    
+                </span>
+                            
+            </h3>
+
+
+
+            <h3 style="color: white; opacity: .8; font-size: 15px;">
+                {{ user_profile.profile.full_name|default:"—" }}
+            </h3>
+
+            <p style="opacity: 0.7; margin-bottom: 1.5rem;">
+                {% if user_profile.is_superuser %}
+                    <span class="admin-text">Administrador</span>
+                {% else %}
+                    Usuario
+                {% endif %}
+            </p>
+            <!-- Mensajes aun en DESARROLLO, no funciona! -->
+            <!-- {% if user.is_authenticated and user != user_profile and user_profile.username %}
+                <a href="{% url 'chat' user_profile.username %}"
+                   class="btn-primary"
+                   style="margin-top: 15px; display: inline-block;">
+                   Enviar mensaje
+                </a>
+            {% endif %}
+            <br> -->
+
+            {% if is_own_profile %}
+            <a href="{% url 'editProfile' %}" class="btn-primary">Editar perfil</a>
+            {% else %}
+            <a href="{% url 'reportUser' user_profile.id %}" class="btn-primary">Reportar</a>
+            {% endif %}
+            <br>
+            
+        </div>
+
+        <!-- 🟡 CARD DE INFORMACIÓN PERSONAL -->
+        <div class="feature-card glass-card" style="padding: 2rem;">
+
+            <h3 class="section-title" style="text-align: center;">Información personal</h3>
+
+            <div class="info-block">
+                <label>Nombre completo</label>
+                <p>{{ user_profile.profile.full_name|default:"—" }}</p>
+            </div>
+
+            <div class="info-block">
+                <label>Email</label>
+                <p>{{ user_profile.email }}</p>
+            </div>
+
+            <div class="info-block">
+                <label>Teléfono</label>
+                <p>{{ user_profile.profile.phone|default:"—" }}</p>
+            </div>
+
+            <div class="info-block">
+                <label>Biografía</label>
+                <p>{{ user_profile.profile.bio|default:"Sin biografía" }}</p>
+            </div>
+
+            <hr style="border-color: var(--border-color); opacity: .4; margin: 1.5rem 0;">
+
+            <h3 class="section-title" style="text-align: center;">Facts</h3>
+
+            <div class="posts-list">
+                {% for post in posts %}
+                    <div class="glass-card post-card">
+                        <h4>{{ post.title }}</h4>
+                        <p>{{ post.description|truncatewords:20 }}</p>
+                    </div>
+                {% empty %}
+                    <p class="empty-msg" style="text-align: center;">Este usuario aún no ha publicado nada.</p>
+                {% endfor %}
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

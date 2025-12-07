@@ -1,0 +1,286 @@
+{% extends 'base/base.html' %} 
+{% load static %} 
+{% block titulo %}Fact | {{post.title }}{% endblock %} 
+{% block content %}
+
+<section class="features fade-up" id="features">
+  <div class="features-container">
+    <!-- Encabezado -->
+    <div class="section-header">
+      <h2 class="section-title">{{ post.title }}</h2>
+      <p class="section-subtitle">thread fact</p>
+    </div>
+
+    <div class="features-grid">
+      <!-- Tarjeta del Post -->
+      <div class="feature-card">
+        <span class="footer-credit">
+         <a href="{% url 'profile-username' post.user.username %}">
+
+              {% if post.user.profile.is_currently_blocked %}
+                 <span class="blocked-text" style="text-decoration: line-through; color: red;">
+                 {{ post.user.username }}</span>
+                 <span class="blocked-text" style="color: red;">
+                 (Bloqueado hasta: {{ post.user.profile.blocked_until|date:"d/m/Y H:i" }})
+                 </span>
+              {% else %}
+                 {% if post.user.is_superuser %}
+                     <span href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">{{ post.user.username }}</span>
+                 {% else %}
+                     <span href="{% url 'profile-username' post.user.username %}" class="usernameFact user-text">{{ post.user.username }}</span>
+                 {% endif %}
+              {% endif %} 
+
+            </a>
+        </span>
+        <small class="text-body-secondary">{{ post.created }}</small>
+
+        <!-- <div class="feature-icon">⚡</div> -->
+
+        <h3>{{ post.title }}</h3>
+
+        
+
+
+
+        <p class="card-text">{{ post.description }}</p>
+
+        {% if post.image %}
+        <img
+          src="{{ post.image.url }}"
+          alt="imagen"
+          style="width: 100%; margin-top: 10px"
+        />
+        {% else %}
+        <p class="text-center"><i>Este post no tiene imagen.</i></p>
+        {% endif %} 
+        {% if user.is_superuser or user == post.user %}
+        <br />
+        <div class="crud-buttons">
+          <a href="{% url 'editarPost' post.id %}" class="btn-editar">Editar</a>
+          <a href="{% url 'eliminarPost' post.id %}" class="btn-eliminar">Eliminar</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Seccion Comentar START -->
+    <!-- <section class="contact fade-up" id="contact"> -->
+    <div class="contact-container">
+      {% if user.is_authenticated %}
+      <div class="contact-form-wrapper">
+        <div class="contact-form">
+          <form method="POST" class="comment-form">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="content">Escribe tu comentario</label>
+              <textarea
+                id="content"
+                name="content"
+                rows="5"
+                placeholder="Ingresar comentario"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="btn-send-comment">Comentar</button>
+          </form>
+        </div>
+      </div>
+      {% else %}
+      <div class="feature-card">
+        <div class="comments-list">
+          <div class="comment-card" style="text-align: center">
+            <div class="footer-credit">
+              <p class="no-login-msg">
+                Debes <a href="{% url 'login' %}">Iniciar Sesión</a> para
+                comentar.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      <div class="section-header">
+        <h2 class="section-title">Comentarios</h2>
+        <!-- <p style="color: red;">{{error}}</p> -->
+        <!-- <p id="registerError" style="color:red;"></p> -->
+        <!-- <p class="section-subtitle">Devs</p> -->
+      </div>
+    </div>
+    <!-- </section>  -->
+    <!-- Seccion Comentar END -->
+    <div class="features-grid" style="grid-template-columns: 1fr !important">
+      <!-- Lista de Comentarios -->
+
+      {% for comment in comments %}
+      <div class="feature-card comment-card" id="comment-{{ comment.id }}">
+        <div class="comment-header">
+          <span class="comment-date"
+            >{{ comment.dateCreated|date:"d/m/Y H:i" }}</span
+          >
+          <br />
+          <span class="comment-user footer-credit">
+            <a href="{% url 'profile-username' comment.user.username %}">
+                {% if comment.user.is_superuser %}
+                    <span href="{% url 'profile-username' comment.user.username %}" class="admin-text">{{ comment.user.username }}</span>
+                {% else %}
+                    <span href="{% url 'profile-username' comment.user.username %}" class="user-text">{{ comment.user.username }}</span>
+                {% endif %}
+            </a>
+          </span>
+        </div>
+        <p class="comment-content">{{ comment.content }}</p>
+
+        {% if user.is_superuser or user == comment.user %}
+        <div class="crud-buttons">
+          <button class="btn-editar" data-id="{{ comment.id }}">Editar</button>
+          <button class="btn-eliminar-comment" data-id="{{ comment.id }}">
+            Eliminar
+          </button>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <!-- Modal eliminar comentario -->
+      <div id="deleteModal" class="modal" style="display: none">
+        <div class="modal-content">
+          <p>¿Estás seguro que deseas eliminar este comentario?</p>
+          <div class="modal-buttons">
+            <button id="confirmDeleteBtn" class="confirmDeleteBtn">Eliminar</button>
+            <button id="cancelDelete" class="btn-editar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          // ===== Función para obtener CSRF desde cookie =====
+          function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+              const cookies = document.cookie.split(";");
+              for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + "=")) {
+                  cookieValue = decodeURIComponent(
+                    cookie.substring(name.length + 1)
+                  );
+                  break;
+                }
+              }
+            }
+            return cookieValue;
+          }
+          const csrftoken = getCookie("csrftoken");
+
+          // =========================
+          // 1️⃣ Edición inline de comentarios
+          // =========================
+          document.querySelectorAll(".btn-editar").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const commentId = btn.dataset.id;
+              const card = document.getElementById(`comment-${commentId}`);
+              const contentP = card.querySelector(".comment-content");
+              card.classList.add("form-group");
+
+              // Crear textarea para editar
+              const textarea = document.createElement("textarea");
+              textarea.value = contentP.textContent;
+              textarea.rows = 3;
+              textarea.style.width = "100%";
+
+              // Botón Guardar con estilo
+              const saveBtn = document.createElement("button");
+              saveBtn.textContent = "Guardar";
+              saveBtn.classList.add("btn-editar");
+              saveBtn.style.marginTop = "5px";
+
+              // Reemplazar contenido y ocultar botones
+              card.replaceChild(textarea, contentP);
+              btn.style.display = "none";
+              card.querySelector(".btn-eliminar-comment").style.display =
+                "none";
+              card.appendChild(saveBtn);
+
+              // Guardar edición
+              saveBtn.addEventListener("click", () => {
+                const formData = new FormData();
+                formData.append("content", textarea.value);
+
+                fetch(`/comentario/editar/${commentId}/`, {
+                  method: "POST",
+                  headers: { "X-CSRFToken": csrftoken },
+                  body: formData,
+                })
+                  .then((res) => res.json())
+                  .then((data) => {
+                    if (data.success) {
+                      contentP.textContent = data.content;
+                      card.replaceChild(contentP, textarea);
+                      saveBtn.remove();
+                      btn.style.display = "inline-block";
+                      card.querySelector(
+                        ".btn-eliminar-comment"
+                      ).style.display = "inline-block";
+                    } else {
+                      alert(data.error);
+                    }
+                  });
+              });
+            });
+          });
+
+          // =========================
+          // 2️⃣ Eliminación con modal
+          // =========================
+          let commentToDelete = null;
+
+          // Abrir modal al click en botón eliminar de comentario
+          document.querySelectorAll(".btn-eliminar-comment").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              commentToDelete = btn.dataset.id;
+              document.getElementById("deleteModal").style.display = "flex";
+            });
+          });
+
+          // Cancelar eliminación
+          document
+            .getElementById("cancelDelete")
+            .addEventListener("click", () => {
+              commentToDelete = null;
+              document.getElementById("deleteModal").style.display = "none";
+            });
+
+          // Confirmar eliminación
+          document
+            .getElementById("confirmDeleteBtn")
+            .addEventListener("click", () => {
+              if (!commentToDelete) return;
+
+              fetch(`/comentario/eliminar/${commentToDelete}/`, {
+                method: "POST",
+                headers: { "X-CSRFToken": csrftoken },
+              })
+                .then((res) => res.json())
+                .then((data) => {
+                  if (data.success) {
+                    const commentCard = document.getElementById(
+                      `comment-${commentToDelete}`
+                    );
+                    if (commentCard) commentCard.remove();
+                  } else {
+                    alert(data.error);
+                  }
+                  // Cerrar modal siempre
+                  document.getElementById("deleteModal").style.display = "none";
+                  commentToDelete = null;
+                });
+            });
+        });
+      </script>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

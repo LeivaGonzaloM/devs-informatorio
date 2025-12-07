@@ -1,0 +1,16 @@
+{% extends 'dashboard/baseAdmin.html' %}
+{% load static %}
+
+
+{% block content %}
+{% for user in users %}
+    {% if user.profile.is_currently_blocked %}
+        <p style="text-decoration: line-through; color:red;">
+            {{ user.username }}
+            (Bloqueado hasta {{ user.profile.blocked_until|date:"d/m H:i" }})
+        </p>
+    {% else %}
+        <p>{{ user.username }}</p>
+    {% endif %}
+{% endfor %}
+{% endblock %}

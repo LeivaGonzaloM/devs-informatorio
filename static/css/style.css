@@ -1,0 +1,171 @@
+/* :root {
+    --primary-grey: #e5e7eb;
+    --primary-orange: #f97316;
+    --primary-purple: #7c3aed;
+    --secondary-amber: #fbbf24;
+    --dark-bg: #1a0b2e;
+    --darker-bg: #0f051a;
+    --card-bg: rgba(229, 231, 235, 0.03);
+    --border-color: rgba(229, 231, 235, 0.2);
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --primary-cyan: #00ffff;
+    --primary-pink: #ff00ff;
+    --neon-purple: #D814F9ff;
+} */
+
+/* Status Color Flow */
+.admin-text {
+    color: red !important;
+    font-weight: bold;
+    
+}
+
+.user-text {
+    color: white !important;
+    font-weight: bold;
+    
+}
+
+/* fecha factos */
+#fechaPost{
+    color: white;
+}
+/* 
+HEADER BUTTONS START*/
+/* Boton de comentar */
+#btn-header{
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+    width: 100px;
+    color: var(--darker-bg);
+    padding: 0.5rem 2rem;
+    border: none;
+    text-decoration: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    clip-path: polygon(20px 0%, 100% 0%, calc(100% - 20px) 100%, 0% 100%);
+}
+
+#btn-header:hover{
+    transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 255, 255, 0.4);
+}
+/* HEADER BUTTONS END*/ 
+
+/* CRUD BUTTONS */
+.crud-buttons { 
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-editar, .btn-eliminar {
+    background: transparent;
+    padding: 1.2rem 3rem;
+    border: 2px solid;
+    text-decoration: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(20px 0%, 100% 0%, calc(100% - 20px) 100%, 0% 100%);
+}
+
+.btn-editar {
+    color: var(--neon-purple);
+    border-color: var(--neon-purple);
+}
+
+.btn-editar:hover {
+    background: var(--neon-purple);
+    color: var(--darker-bg);
+    box-shadow: 0 0 30px var(--neon-purple);
+}
+
+.btn-eliminar {
+    color: var(--primary-cyan);
+    border-color: var(--primary-cyan);
+}
+
+.btn-eliminar:hover {
+    background: var(--primary-cyan);
+    color: var(--darker-bg);
+    box-shadow: 0 0 30px var(--primary-cyan);
+}
+
+/* ==============================
+   FEATURE CARDS RESPONSIVE GRID
+   ============================== */
+
+/* .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 1rem 2rem;
+} */
+
+
+.card-link-wrapper {
+    text-decoration: none;
+    color: inherit;
+    display: block;        /* El secreto para que mantenga tamaño */
+}
+
+.card-link-wrapper .feature-card {
+    height: 100%;          /* Mantiene la altura homogénea dentro del grid */
+}
+
+
+
+
+/* ===============================
+   FIX SCROLL HORIZONTAL (HERO / SECCIONES)
+   =============================== */
+
+/* Evita scroll horizontal en toda la página */
+body, html {
+    overflow-x: hidden;
+}
+
+/* Grid responsivo sin espacios ni huecos */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Card que se ajusta sin crecer de más */
+.feature-card {
+    height: 100%;           /* Todas igualan altura automáticamente */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    box-sizing: border-box;
+    overflow: hidden;       /* Evita que la imagen genere scroll */
+}
+
+/* Las imágenes se adaptan al ancho SIN romper el grid */
+.feature-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+/* Ajustes para mobile */
+@media (max-width: 480px) {
+    .features-grid {
+        grid-template-columns: 1fr;
+        padding: 0 10px;
+    }
+}

@@ -1,0 +1,55 @@
+.modal {
+    position: absolute; /* antes estaba fixed */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    background: rgba(17, 17, 43, 1);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    z-index: 10000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.modal-buttons button {
+    margin: 5px;
+}
+
+
+#cancelDelete, .confirmDeleteBtn {
+    background: transparent;
+    padding: 0.5rem 2.5rem;
+    border: 2px solid;
+    text-decoration: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(20px 0%, 100% 0%, calc(100% - 20px) 100%, 0% 100%);
+}
+
+#cancelDelete {
+    color: var(--neon-purple);
+    border-color: var(--neon-purple);
+}
+
+#cancelDelete:hover {
+    background: var(--neon-purple);
+    color: var(--darker-bg);
+    box-shadow: 0 0 30px var(--neon-purple);
+}
+
+.confirmDeleteBtn{
+    color: var(--primary-cyan);
+    border-color: var(--primary-cyan);
+}
+
+.confirmDeleteBtn:hover {
+    background: var(--primary-cyan);
+    color: var(--darker-bg);
+    box-shadow: 0 0 30px var(--primary-cyan);
+}

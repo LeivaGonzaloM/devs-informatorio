@@ -1,0 +1,125 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="features-section">
+    <div class="section-title" style="text-align: center;">
+        <br>
+        <h2>Editar Perfil</h2>
+        <p>Actualizá tu información personal</p>
+    </div>
+
+    <!-- 🔥 SIEMPRE UNA SOLA COLUMNA: Avatar primero, formulario después -->
+    <div class="features-grid" style="grid-template-columns: 1fr !important;">
+
+        <!-- 🟣 CARD DE AVATAR -->
+        <div class="feature-card glass-card" style="text-align: center; padding: 2rem;">
+
+            <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
+                <img src="{{ user.profile.avatar.url }}" 
+                     alt="avatar"
+                     style="width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color);">
+            </div>
+
+            <h3 style="margin-bottom: .3rem;">
+                {% if user.is_superuser %}
+                    <span class="admin-text">{{ user.username }}</span>
+                {% else %}
+                    <span class="user-text">{{ user.username }}</span>
+                {% endif %}
+                </h3>
+
+            <h3 style="color: white; font-size: 15px;">
+                {{ user.profile.full_name }}
+            </h3>
+
+            <p style="opacity: 0.7; margin-bottom: 1.5rem;">
+                {% if user.is_superuser %}
+                    <span class="admin-text">Administrador</span>
+                {% else %}
+                    Usuario
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- 🟡 CARD DEL FORMULARIO (NO TOCADO) -->
+        <div class="feature-card glass-card" id="formulario" style="padding: 2rem;">
+
+            <h3 style="margin-bottom: 1.5rem;">Información de Usuario</h3>
+
+            <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1rem;">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label>Usuario</label>
+                    {{ u_form.username }}
+                    {% if u_form.username.errors %}
+                        <p style="color:red;">{{ u_form.username.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    {{ u_form.email }}
+                    {% if u_form.email.errors %}
+                        <p style="color:red;">{{ u_form.email.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <hr style="border-color: var(--border-color); opacity: 0.4;">
+
+                <h3 style="margin-top: 1rem;">Datos del Perfil</h3>
+
+                <div class="form-group">
+                    <label>Nombre completo</label>
+                    {{ p_form.full_name }}
+                    {% if p_form.full_name.errors %}
+                        <p style="color:red;">{{ p_form.full_name.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label>Biografía</label>
+                    {{ p_form.bio }}
+                    {% if p_form.bio.errors %}
+                        <p style="color:red;">{{ p_form.bio.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    {{ p_form.phone }}
+                    {% if p_form.phone.errors %}
+                        <p style="color:red;">{{ p_form.phone.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label>Imagen</label>
+                    {{ p_form.avatar }}
+
+                    {% if p_form.instance.avatar %}
+                        <p>Actual:</p>
+                        <img src="{{ p_form.instance.avatar.url }}" 
+                             alt="Imagen actual"
+                             style="max-width:50%; margin-top:0.5rem; border-radius:8px; text-align:center;">
+                    {% endif %}
+
+                    {% if p_form.avatar.errors %}
+                        <p style="color:red;">{{ p_form.avatar.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">
+                    Guardar cambios
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

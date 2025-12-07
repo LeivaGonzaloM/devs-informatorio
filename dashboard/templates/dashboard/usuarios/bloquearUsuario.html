@@ -1,0 +1,23 @@
+{% extends 'dashboard/baseAdmin.html' %}
+{% load static %}
+
+
+{% block content %}
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<h2>Bloquear a {{ user.username }}</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label>Minutos</label>
+    <input type="number" name="minutes" min="0" value="0" class="form-control" />
+
+    <label>Horas</label>
+    <input type="number" name="hours" min="0" value="0" class="form-control" />
+
+    <label>Días</label>
+    <input type="number" name="days" min="0" value="0" class="form-control" />
+
+    <button class="btn btn-danger mt-3">Confirmar bloqueo</button>
+</form>
+{% endblock %}

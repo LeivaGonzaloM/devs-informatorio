@@ -1,0 +1,204 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<!-- <div class="container">
+    <h1>Bienvenido al Proyecto DEVS - COMISION 1- INFORMATORIO 2025</h1>
+</div> -->
+
+
+    <!-- Bienvenida Section -->
+    {% if user.is_authenticated %}
+        <section class="hero">
+            <div class="hero-container">
+                <h1 class="hero-title">
+                    <span class="hero-nexus">DEVS</span><span class="hero-flow">TEAM</span>
+                </h1>
+                <p class="hero-subtitle">El salto cualitativo en la colaboración en equipo. Conecta mentes, sincroniza realidades, logra lo imposible.</p>
+                
+            </div>
+       </section>
+    {% else %}
+        <section class="hero">
+            <div class="hero-container">
+                <h1 class="hero-title">
+                    <span class="hero-nexus">DEVS</span><span class="hero-flow">TEAM</span>
+                </h1>
+                <p class="hero-subtitle">El salto cualitativo en la colaboración en equipo. Conecta mentes, sincroniza realidades, logra lo imposible.</p>
+                <div class="hero-buttons">
+                    <a href="{% url 'login' %}" class="btn-primary">Iniciar Sesión</a>
+                    <a href="{% url 'register' %}" class="btn-secondary">Registrarme</a>
+                </div>
+            </div>
+       </section>
+    {% endif %}
+
+    <!-- Stats Section
+    <section class="stats fade-up" id="stats">
+        <div class="stats-container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">50K+</span>
+                    <span class="stat-label">Active Users</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">99.9%</span>
+                    <span class="stat-label">Uptime</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">500M+</span>
+                    <span class="stat-label">Tasks Processed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">180+</span>
+                    <span class="stat-label">Countries</span>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Features Section -->
+    <section class="features fade-up" id="features">
+        <div class="features-container">
+            <div class="section-header">
+                <h2 class="section-title">Articulos</h2>
+                <p class="section-subtitle">Los articulos más recientes más recientes</p>
+            </div>
+            
+            <div class="features-grid">
+                <!-- Aca se tiene ue Listar los factos o POSTS xddd -->
+                {% for post in posts %}
+                
+                    <div class="feature-card cardPost" data-href="{% url 'detallePost' post.id %}">
+                        {% if post.user.profile.is_currently_blocked %}
+                            <span class="blocked-text" style="text-decoration: line-through; color: red;">
+                            {{ post.user.username }}</span>
+                            <span class="blocked-text" style="color: red;">
+                            (Bloqueado hasta: {{ post.user.profile.blocked_until|date:"d/m/Y H:i" }})
+                            </span>
+                        {% else %}
+                            {% if post.user.is_superuser %}
+                                <span href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">{{ post.user.username }}</span>
+                            {% else %}
+                                <span href="{% url 'profile-username' post.user.username %}" class="usernameFact user-text">{{ post.user.username }}</span>
+                            {% endif %}
+                        {% endif %}  
+                        <small id="fechaPost" class="text-body-secondary">{{post.created}}</small>
+                        <!-- <div class="feature-icon">⚡</div> -->
+                        <h3>{{post.title}}</h3>
+                        <p>{{post.description}}</p>
+                         {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="imagen" style="width: 100%;">
+                        {% endif %}
+                    </div>
+               
+                {% endfor%}
+            </div>
+        </div>
+        <script>   
+        document.addEventListener("DOMContentLoaded", function() {
+            // Seleccionamos todas las tarjetas con la clase específica
+            const cards = document.querySelectorAll('.cardPost');
+        
+            cards.forEach(card => {
+                // Obtenemos la URL desde un atributo data
+                const url = card.dataset.href;
+                if (url) {
+                    card.style.cursor = 'pointer';
+                    card.addEventListener('click', () => {
+                        window.location.href = url;
+                    });
+                }
+            });
+        });
+        </script>
+    </section>
+
+    <!-- Pricing Section (Futuro Market xddd)-->
+    <!-- <section class="pricing fade-up" id="pricing">
+        <div class="pricing-container">
+            <div class="section-header">
+                <h2 class="section-title">Access Levels</h2>
+                <p class="section-subtitle">Choose your gateway to the future of collaboration</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="plan-name">Initiate</div>
+                    <div class="plan-price">$49</div>
+                    <div class="plan-period">per neural link</div>
+                    <ul class="plan-features">
+                        <li>Basic quantum processing</li>
+                        <li>5 holographic workspaces</li>
+                        <li>Standard encryption</li>
+                        <li>Community support matrix</li>
+                        <li>Reality sync enabled</li>
+                    </ul>
+                    <a href="#" class="btn-secondary">Enter System</a>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <div class="plan-name">Nexus</div>
+                    <div class="plan-price">$149</div>
+                    <div class="plan-period">per neural link</div>
+                    <ul class="plan-features">
+                        <li>Advanced quantum algorithms</li>
+                        <li>Unlimited holo-workspaces</li>
+                        <li>Quantum encryption fortress</li>
+                        <li>Priority neural support</li>
+                        <li>Mind-reading analytics</li>
+                        <li>Hyperdrive sync protocol</li>
+                    </ul>
+                    <a href="#" class="btn-primary">Jack In</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <div class="plan-name">Transcend</div>
+                    <div class="plan-price">$399</div>
+                    <div class="plan-period">per neural link</div>
+                    <ul class="plan-features">
+                        <li>Infinite processing power</li>
+                        <li>Custom reality matrices</li>
+                        <li>Temporal encryption layers</li>
+                        <li>Direct neural interface</li>
+                        <li>Predictive consciousness</li>
+                        <li>Quantum entanglement sync</li>
+                    </ul>
+                    <a href="#" class="btn-secondary">Ascend</a>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Contact Section -->
+    <section class="contact fade-up" id="contact">
+        <div class="contact-container">
+            <div class="section-header">
+                <h2 class="section-title">Contactanos</h2>
+                <p class="section-subtitle">Equipo DEVS con atención 24hs</p>
+            </div>
+            
+            <div class="contact-form-wrapper">
+                <div class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Titulo</label>
+                        <input type="text" id="name" name="name" placeholder="Titulo" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Correo electrónico</label>
+                        <input type="email" id="email" name="email" placeholder="Correo electrónico" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Mensaje</label>
+                        <textarea id="message" name="message" rows="5" placeholder="Ingrese su mensaje" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary btn-submit">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

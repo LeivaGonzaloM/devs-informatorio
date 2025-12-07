@@ -1,0 +1,35 @@
+.mainFormCreate{
+    background-color: gray;
+    border: 5px solid black;
+    width: 50vw;
+    margin: 0 auto;
+}
+
+input{
+    margin: 5px;
+}
+
+#fechaPost{
+    color: white;
+}
+
+/* Boton de comentar */
+.btn-send-comment{
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+    color: var(--darker-bg);
+    padding: 1.2rem 3rem;
+    border: none;
+    text-decoration: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    clip-path: polygon(20px 0%, 100% 0%, calc(100% - 20px) 100%, 0% 100%);
+}
+
+.btn-send-comment:hover{
+    transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 255, 255, 0.4);
+}

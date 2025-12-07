@@ -1,0 +1,134 @@
+{% load static %}
+
+<!-- OVERLAY DEL MENÚ -->
+<div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+<!-- MOBILE MENU (el que recibe .active) -->
+<div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+        <a href="{% url 'home' %}" class="mobile-menu-logo">DEVS</a>
+        <button class="mobile-menu-close" id="mobileMenuClose">✕</button>
+    </div>
+
+    <!-- NAV LINKS -->
+    <nav class="mobile-menu-nav">
+        <ul>
+            <li><a href="#">informes</a></li>
+            <li><a href="{% url 'posts' %}">Articulos</a></li>
+            <li><a href="#contact">Contacto</a></li>
+            <li><a href="{% url 'nosotros' %}">Nosotros</a></li>
+        </ul>
+    </nav>
+
+    <br><br><br><br><br><br><br><br>
+
+    <!-- ACCIONES MOBILE -->
+    <div class="mobile-menu-cta">
+        {% if user.is_authenticated %}
+            
+            <!-- BOTÓN MENSAJES CON NUMERITO -->
+             <!-- EN DESARROLLO, todavía no funciona -->
+            <!-- <a href="{% url 'inbox' %}" class="btn-primary avatar-btn-mobile" style="position: relative;">
+                Mensajes
+                {% if unread > 0 %}
+                    <span style="
+                        position: absolute;
+                        top: -5px;
+                        right: -5px;
+                        background-color: #ff0040;
+                        color: white;
+                        font-size: 12px;
+                        font-weight: bold;
+                        border-radius: 50%;
+                        padding: 2px 6px;
+                        box-shadow: 0 0 6px #ff0040;
+                    ">{{ unread }}</span>
+                {% endif %}
+            </a> -->
+            <!-- <br><br><br> -->
+
+            <!-- PERFIL -->
+            <a href="{% url 'profile' %}" class="btn-primary avatar-btn-mobile">
+                Mi Perfil
+            </a>
+            <br><br><br>
+            <!-- PANEL ADMIN -->
+            {% if user.is_superuser %}
+                <a href="{% url 'dashboard' %}" class="btn-primary avatar-btn-mobile" style="color:red;">
+                    AdminPanel
+                </a>
+            {% endif %}
+            <br><br><br>
+            <!-- LOGOUT -->
+            <a href="{% url 'logout' %}" class="btn-primary avatar-btn-mobile">
+                Cerrar Sesión
+            </a>
+
+        {% else %}
+            <a href="{% url 'login' %}" class="cyber-button">Acceso</a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- NAV DESKTOP -->
+<nav>
+    <div class="nav-container">
+        <a href="{% url 'home' %}" class="logo">DEVS</a>
+
+        <!-- LINKS DESKTOP -->
+        <ul class="nav-links">
+            <li><a href="{% url 'posts' %}">informes</a></li>
+            <li><a href="{% url 'posts' %}">Articulos</a></li>
+            <li><a href="{% url 'contacto' %}">Contacto</a></li>
+            <li><a href="{% url 'nosotros' %}">Nosotros</a></li>
+        </ul>
+
+        <!-- ACCIONES DESKTOP -->
+        <div id="navActions" class="nav-actions">
+            {% if user.is_authenticated %}
+                
+                <!-- BOTÓN MENSAJES CON NUMERITO -->
+                <!-- <a href="{% url 'inbox' %}" id="btn-header" class="btn-header" style="position: relative;">
+                    Mensajes
+                    {% if unread > 0 %}
+                        <span style="
+                            position: absolute;
+                            top: -5px;
+                            right: -10px;
+                            background-color: #ff0040;
+                            color: white;
+                            font-size: 12px;
+                            font-weight: bold;
+                            border-radius: 50%;
+                            padding: 2px 6px;
+                            box-shadow: 0 0 6px #ff0040;
+                        ">{{ unread }}</span>
+                    {% endif %}
+                </a> -->
+
+                <!-- PERFIL -->
+                <a href="{% url 'profile' %}" id="btn-header" class="btn-header avatar-btn">
+                    Mi Perfil
+                </a>
+
+                {% if user.is_superuser %}
+                    <a href="{% url 'dashboard' %}" id="btn-header" class="btn-header" style="color: red;">
+                        AdminPanel
+                    </a>
+                {% endif %}
+
+                <a id="btn-header" class="btn-header" href="{% url 'logout' %}">Cerrar Sesión</a>
+
+            {% else %}
+                <a id="btn-header" class="btn-header" href="{% url 'login' %}">Iniciar Sesión</a>
+            {% endif %}
+        </div>
+
+        <!-- BOTÓN MOBILE -->
+        <button class="mobile-menu-button" id="mobileMenuBtn">
+            <div class="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </button>
+    </div>
+</nav>

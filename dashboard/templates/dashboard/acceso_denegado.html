@@ -1,0 +1,14 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+
+{% block titulo %}Nosotros{%endblock %} 
+{% block content %}
+        <section class="hero">
+            <div class="hero-container">
+                <h2 class="section-title">Acceso denegado</h2>
+                <p class="hero-subtitle">No tenés permisos para ingresar al panel de administración.</p>
+                <a class="btn-primary" href="{% url 'home' %}">Volver al inicio</a>
+            </div>
+       </section>
+{% endblock %}

@@ -1,0 +1,44 @@
+<!--  App Topstrip -->
+    <div class="app-topstrip bg-dark py-3 px-4 w-100 d-lg-flex align-items-center justify-content-between">
+      <div class="d-none d-sm-flex align-items-center justify-content-center gap-9 mb-3 mb-lg-0">
+        <a class="d-flex justify-content-center" href="https://adminmart.com/" target="_blank">
+          <span class="admin-text" style="color: red;">DEVS</span>
+         
+        </a>
+
+        <div class="d-none d-xl-flex align-items-center gap-3 border-start border-white border-opacity-25 ps-9">
+          <a target="_blank" href="https://adminmart.com/templates/bootstrap/"
+            class="link-hover d-flex align-items-center gap-2 border-0 text-white lh-sm fs-4">
+            <iconify-icon class="fs-6" icon="solar:window-frame-linear"></iconify-icon>
+            ADM
+          </a>
+          <a target="_blank" href="https://adminmart.com/support/"
+            class="link-hover d-flex align-items-center gap-2 border-0 text-white lh-sm fs-4">
+            <iconify-icon class="fs-6" icon="solar:question-circle-linear"></iconify-icon>
+            Help
+          </a>
+          <a target="_blank" href="https://adminmart.com/hire-us/"
+            class="link-hover d-flex align-items-center gap-2 border-0 text-white lh-sm fs-4">
+            <iconify-icon class="fs-6" icon="solar:case-round-linear"></iconify-icon>
+            Herramientas
+          </a>
+        </div>
+      </div>
+
+      <div class="d-lg-flex align-items-center gap-3">
+        <h3 class="text-linear-gradient mb-3 mb-lg-0 fs-3 text-uppercase text-center fw-semibold">Bienvenido a su panel, {{ admin_profile.user }}
+        </h3>
+        <div class="d-sm-flex align-items-center justify-content-center gap-8">
+          <div class="d-flex align-items-center justify-content-center gap-8">
+            
+            <a
+              class="get-pro-btn rounded btn btn-primary d-flex align-items-center gap-2 fs-4 border-0 px-3 py-2"
+              href="{% url 'home' %}">
+              <iconify-icon icon="solar:login-3-line-duotone"></iconify-icon>
+              Volver al Sitio
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>

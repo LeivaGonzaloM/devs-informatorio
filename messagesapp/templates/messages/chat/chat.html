@@ -1,0 +1,142 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<br><br><br>
+<section class="chat-section">
+    <h2 class="neon-title" style="text-align: center;">Chat con {{ other.username }}</h2>
+
+    <div id="messagesBox" class="messages-box">
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="msg {% if msg.sender == request.user %}sent{% else %}received{% endif %}">
+                    <p>{{ msg.content }}</p>
+                    <small>{{ msg.timestamp|date:"d/m H:i" }}</small>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No tenés conversaciones todavía.</p>
+        {% endif %}
+    </div>
+
+    <form id="chatForm" class="chat-form">
+        {% csrf_token %}
+        <input type="text" id="msgInput" placeholder="Escribí un mensaje..." autocomplete="off" />
+        <button type="submit">Enviar</button>
+    </form>
+</section>
+
+<style>
+.chat-section { padding: 20px; }
+
+.neon-title {
+    color: #f5d742;
+    text-shadow: 0 0 10px #f5d742;
+    margin-bottom: 15px;
+}
+
+.messages-box {
+    background: rgba(15,15,30,0.9);
+    border: 1px solid #333;
+    padding: 15px;
+    height: 60vh;
+    overflow-y: auto;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.msg {
+    max-width: 70%;
+    padding: 8px;
+    border-radius: 10px;
+    color: white;
+    word-wrap: break-word;
+}
+
+.msg.sent {
+    align-self: flex-end;
+    background: #4b0082;
+}
+
+.msg.received {
+    align-self: flex-start;
+    background: #222;
+}
+
+.chat-form {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.chat-form input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    background: #111;
+    color: white;
+    border: 1px solid #333;
+}
+
+.chat-form button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    background: #f5d742;
+    color: black;
+    font-weight: bold;
+}
+</style>
+
+<script>
+const username = "{{ request.user.username }}";
+const other = "{{ other.username }}";
+
+// Abrir WebSocket
+const chatSocket = new WebSocket(
+    "ws://" + window.location.host + "/ws/chat/" + other + "/"
+);
+
+const messagesBox = document.getElementById("messagesBox");
+
+// Función para agregar mensaje al chat
+function addMessage(sender, message, time) {
+    const div = document.createElement("div");
+    div.classList.add("msg");
+    div.classList.add(sender === username ? "sent" : "received");
+    div.innerHTML = `<p>${message}</p><small>${time}</small>`;
+    messagesBox.appendChild(div);
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+}
+
+// Escuchar mensajes entrantes
+chatSocket.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    addMessage(data.sender, data.message, data.time);
+};
+
+// Enviar mensaje
+document.getElementById("chatForm").onsubmit = function(e) {
+    e.preventDefault();
+    const input = document.getElementById("msgInput");
+    const message = input.value.trim();
+    if (!message) return;
+
+    chatSocket.send(JSON.stringify({
+        "message": message
+    }));
+
+    input.value = "";
+};
+
+// Scroll automático al cargar la página
+window.onload = function() {
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+};
+</script>
+
+{% endblock %}
+
+

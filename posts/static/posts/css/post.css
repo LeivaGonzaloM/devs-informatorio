@@ -1,0 +1,28 @@
+:root {
+            --primary-grey: #e5e7eb;
+            --primary-orange: #f97316;
+            --primary-purple: #7c3aed;
+            --secondary-amber: #fbbf24;
+            --dark-bg: #1a0b2e;
+            --darker-bg: #0f051a;
+            --card-bg: rgba(229, 231, 235, 0.03);
+            --border-color: rgba(229, 231, 235, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --primary-cyan: #00ffff;
+            --primary-pink: #ff00ff;
+        }
+.mainFormCreate{
+    background-color: gray;
+    border: 5px solid black;
+    width: 50vw;
+    margin: 0 auto;
+}
+
+input{
+    margin: 5px;
+}
+
+#fechaPost{
+    color: white;
+}

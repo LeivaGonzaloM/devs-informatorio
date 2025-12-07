@@ -1,0 +1,72 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Editar Fact{% endblock %}
+
+{% block content %}
+<div class="container">
+  <section class="contact fade-up" id="contact">
+    <div class="contact-container">
+
+      <div class="section-header">
+        <h2 class="section-title">Editar FACT</h2>
+        {% if error %}
+          <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        <p class="section-subtitle">Devs</p>
+      </div>
+
+      <div class="contact-form-wrapper">
+        <div class="contact-form">
+          <form id="editForm" action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Título -->
+            <div class="form-group">
+              <label for="id_title">Titulo</label>
+              <input type="text" name="title" id="id_title" value="{{ formulario.title.value }}" 
+                     class="input-field" placeholder="Ingrese título" required>
+              {% if formulario.title.errors %}
+                <p style="color:red;">{{ formulario.title.errors }}</p>
+              {% endif %}
+            </div>
+
+            <!-- Imagen -->
+            <div class="form-group">
+              <label for="id_image">Imagen</label>
+              <input type="file" name="image" id="id_image" class="input-field">
+              {% if formulario.instance.image %}
+                <img src="{{ formulario.instance.image.url }}" alt="Imagen actual" 
+                     style="max-width:100%; margin-top:0.5rem; border-radius:8px;">
+              {% endif %}
+              {% if formulario.image.errors %}
+                <p style="color:red;">{{ formulario.image.errors }}</p>
+              {% endif %}
+            </div>
+
+            <!-- Descripción -->
+            <div class="form-group">
+              <label for="id_description">Escribe tu fact</label>
+              <textarea name="description" id="id_description" rows="5" 
+                        class="textarea-field" placeholder="Ingresa tu fact" required>{{ formulario.description.value }}</textarea>
+              {% if formulario.description.errors %}
+                <p style="color:red;">{{ formulario.description.errors }}</p>
+              {% endif %}
+            </div>
+            <div class="update-buttons">
+              <button type="submit" id="editPostBtn" class="btn-edit-post">Actualizar</button>
+            </div>
+            
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<script src="{% static 'posts/js/editPost.js' %}"></script>
+
+{% endblock %}
+
+

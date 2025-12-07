@@ -1,0 +1,56 @@
+.chat-box {
+    background: rgba(15, 15, 35, 0.7);
+    border: 1px solid #7c3aed;
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.messages-container {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 10px;
+    margin-bottom: 20px;
+}
+
+.message {
+    margin: 10px 0;
+    padding: 12px 15px;
+    border-radius: 10px;
+    width: fit-content;
+    max-width: 70%;
+    color: #fff;
+    animation: fadeIn 0.2s ease;
+}
+
+/* Mensaje enviado por el usuario */
+.message.sent {
+    background: #7c3aed; /* violeta neon */
+    margin-left: auto;
+    border: 1px solid #a78bfa;
+}
+
+/* Mensaje recibido */
+.message.received {
+    background: #1f1b2e;
+    border: 1px solid #4c1d95;
+}
+
+.message small {
+    display: block;
+    opacity: 0.7;
+    font-size: 0.75rem;
+    margin-top: 5px;
+}
+
+.message-input {
+    resize: none;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* Animación */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
