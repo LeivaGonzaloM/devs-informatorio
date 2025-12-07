@@ -26,7 +26,11 @@ SECRET_KEY = 'django-insecure-z&b4=83a$ps*wgx_$!ds4-e990y-6o9nxe29fhp_6$f#k#l3ri
 DEBUG = True
 
 # Hosts permitidos
-ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]', '[::8000]', '[:8000]']
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+]
+
 
 
 # Application definition
@@ -42,16 +46,10 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'dashboard',
     'channels',
-    'messagesapp',
 ]
 
 ASGI_APPLICATION = "core.asgi.application"
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

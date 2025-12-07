@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('registro', views.signup, name='register'),
-    path('logout', views.signout, name='logout'),
+    path('logout/', views.signout, name='logout'),
     path('login', views.signin , name='login'),
     path('perfil/', profileView, name='profile'),  # Perfil propio
     path('perfil/<str:username>/', profileView, name='profile-username'),  # Perfil de otro usuario

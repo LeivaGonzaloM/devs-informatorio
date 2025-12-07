@@ -26,34 +26,14 @@
     <div class="mobile-menu-cta">
         {% if user.is_authenticated %}
             
-            <!-- BOTÓN MENSAJES CON NUMERITO -->
-             <!-- EN DESARROLLO, todavía no funciona -->
-            <!-- <a href="{% url 'inbox' %}" class="btn-primary avatar-btn-mobile" style="position: relative;">
-                Mensajes
-                {% if unread > 0 %}
-                    <span style="
-                        position: absolute;
-                        top: -5px;
-                        right: -5px;
-                        background-color: #ff0040;
-                        color: white;
-                        font-size: 12px;
-                        font-weight: bold;
-                        border-radius: 50%;
-                        padding: 2px 6px;
-                        box-shadow: 0 0 6px #ff0040;
-                    ">{{ unread }}</span>
-                {% endif %}
-            </a> -->
-            <!-- <br><br><br> -->
-
             <!-- PERFIL -->
             <a href="{% url 'profile' %}" class="btn-primary avatar-btn-mobile">
                 Mi Perfil
             </a>
-            <br><br><br>
+            
             <!-- PANEL ADMIN -->
             {% if user.is_superuser %}
+            <br><br><br>
                 <a href="{% url 'dashboard' %}" class="btn-primary avatar-btn-mobile" style="color:red;">
                     AdminPanel
                 </a>
@@ -87,25 +67,6 @@
         <div id="navActions" class="nav-actions">
             {% if user.is_authenticated %}
                 
-                <!-- BOTÓN MENSAJES CON NUMERITO -->
-                <!-- <a href="{% url 'inbox' %}" id="btn-header" class="btn-header" style="position: relative;">
-                    Mensajes
-                    {% if unread > 0 %}
-                        <span style="
-                            position: absolute;
-                            top: -5px;
-                            right: -10px;
-                            background-color: #ff0040;
-                            color: white;
-                            font-size: 12px;
-                            font-weight: bold;
-                            border-radius: 50%;
-                            padding: 2px 6px;
-                            box-shadow: 0 0 6px #ff0040;
-                        ">{{ unread }}</span>
-                    {% endif %}
-                </a> -->
-
                 <!-- PERFIL -->
                 <a href="{% url 'profile' %}" id="btn-header" class="btn-header avatar-btn">
                     Mi Perfil

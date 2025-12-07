@@ -31,7 +31,6 @@ urlpatterns = [
     path('nosotros', views.nosotros, name='nosotros'),
     path('contacto', views.contacto, name='contacto'),
     path('', include('dashboard.urls')),
-    path('', include('messagesapp.urls')),
 ]
 
 if settings.DEBUG:

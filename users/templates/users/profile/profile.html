@@ -66,15 +66,7 @@
                     Usuario
                 {% endif %}
             </p>
-            <!-- Mensajes aun en DESARROLLO, no funciona! -->
-            <!-- {% if user.is_authenticated and user != user_profile and user_profile.username %}
-                <a href="{% url 'chat' user_profile.username %}"
-                   class="btn-primary"
-                   style="margin-top: 15px; display: inline-block;">
-                   Enviar mensaje
-                </a>
-            {% endif %}
-            <br> -->
+           
 
             {% if is_own_profile %}
             <a href="{% url 'editProfile' %}" class="btn-primary">Editar perfil</a>
