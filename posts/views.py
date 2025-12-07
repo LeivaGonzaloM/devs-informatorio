@@ -2,18 +2,38 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm, CommentForm
 from .models import Post, Comment
 from django.contrib.auth.decorators import login_required
-
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
 # Create your views here.
 
-def posts(request):
-    posts = Post.objects.all()
-    return render(request, 'posts.html', {
-        'posts': posts
-    })
+# def posts(request):
+#     posts = Post.objects.all()
+#     return render(request, 'posts.html', {
+#         'posts': posts
+#     })
 
+def posts(request):
+    # 1. Obtener todos los posts, ordenados por fecha de creación (los más nuevos primero)
+    post_list = Post.objects.all().order_by('-id') # Ordeno por ID descendente
+
+    # 2. Configurar el Paginator: 8 posts por página (4 columnas x 2 filas)
+    PAGINATION_LIMIT = 8 # Define cuántos posts quieres por página
+    paginator = Paginator(post_list, PAGINATION_LIMIT) 
+
+    # 3. Obtener el número de página de la URL (ej: /articulos/?page=2)
+    # Por defecto, si no hay 'page' en la URL, es la página 1.
+    page_number = request.GET.get('page')
+    
+    # 4. Obtener el objeto de página
+    page_obj = paginator.get_page(page_number)
+    
+    # 5. Pasar el objeto de página al contexto
+    return render(request, 'posts.html', {
+        # ¡IMPORTANTE! Ahora pasas page_obj, NO 'posts'
+        'page_obj': page_obj 
+    })
 
 def postDetail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
