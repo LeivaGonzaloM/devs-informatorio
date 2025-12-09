@@ -111,9 +111,9 @@ def blockUser(request, user_id):
     profile = user_to_block.profile
 
     if request.method == "POST":
-        minutes = int(request.POST.get("minutes", 0))
-        hours   = int(request.POST.get("hours", 0))
-        days    = int(request.POST.get("days", 0))
+        minutes = int(request.POST.get("minutes") or 0)
+        hours   = int(request.POST.get("hours") or 0)
+        days    = int(request.POST.get("days") or 0)
 
         profile.block(minutes=minutes, hours=hours, days=days)
         return redirect("dashboard")

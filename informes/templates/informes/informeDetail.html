@@ -1,0 +1,342 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Informe | {{ informe.title }}{% endblock %}
+
+{% block content %}
+
+<section class="features fade-up" id="features">
+  <div class="features-container">
+
+    <!-- =========================
+         ENCABEZADO DEL INFORME
+    ========================== -->
+    <div class="section-header">
+      <h2 class="section-title">{{ informe.title }}</h2>
+      <p class="section-subtitle">Detalle del informe</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+
+        <!-- Usuario autor -->
+        <div class="informe-user">
+          <a href="{% url 'profile-username' informe.user.username %}">
+            {% if informe.user.profile.is_currently_blocked %}
+                <span style="text-decoration: line-through; color: red;">{{ informe.user.username }}</span>
+                <span style="color: red;">(Bloqueado hasta: {{ informe.user.profile.blocked_until|date:"d/m/Y H:i" }})</span>
+            {% else %}
+                <span class="{% if informe.user.is_superuser %}admin-text{% else %}user-text{% endif %}">
+                    {{ informe.user.username }}
+                </span>
+            {% endif %}
+          </a>
+        </div>
+
+        <!-- Fecha de edición -->
+        {% if informe.last_edited %}
+        <p class="text-secondary" style="font-size: 0.9rem;">
+          Editado el {{ informe.last_edited|date:"d/m/Y H:i" }} por
+          {% if informe.edited_by == informe.user %}
+              el autor
+          {% else %}
+              <span class="admin-text">{{ informe.edited_by.username }}</span> (admin)
+          {% endif %}
+        </p>
+        {% endif %}
+
+        <h3>{{ informe.title }}</h3>
+
+        <p class="card-text">{{ informe.description|safe }}</p>
+
+        {% if informe.image %}
+        <div class="post-image-wrapper">
+          <a class="lightbox-trigger" data-img-url="{{ informe.image.url }}">
+            <img src="{{ informe.image.url }}" style="width: 100%; margin-top: 10px; cursor: pointer;" />
+          </a>
+        </div>
+        {% endif %}
+
+        {% if user.is_superuser or user == informe.user %}
+        <div class="crud-buttons" style="margin-top: 15px;">
+          <a href="{% url 'editarInforme' informe.pk %}" class="btn-editar">Editar</a>
+          <a href="{% url 'eliminarInforme' informe.pk %}" class="btn-eliminar">Eliminar</a>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <!-- ===============================
+         FORMULARIO PARA COMENTAR
+    ================================ -->
+    <div class="contact-container">
+
+      {% if user.is_authenticated %}
+      <div class="contact-form-wrapper">
+        <div class="contact-form">
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="gif_url" id="gifUrlInput">
+
+            <div class="form-group">
+              <label>Escribe tu comentario</label>
+              <textarea name="content" rows="4" placeholder="Ingresar comentario..." required></textarea>
+            </div>
+
+            <!-- GIPHY -->
+            <div class="form-group gif-search-container">
+              <label>Añadir GIF (Giphy)</label>
+
+              <div class="gif-search-bar">
+                <input type="text" id="gifSearchInput" placeholder="Buscar GIF (ej: 'coding fail')">
+                <button type="button" id="searchGifBtn" class="btn-secondary">Buscar</button>
+              </div>
+
+              <div id="gifResults" class="gif-results"></div>
+
+              <div id="selectedGifIndicator" class="gif-selected" style="display:none;">
+                GIF seleccionado:
+                <img id="selectedGifPreview" style="max-height:50px;">
+              </div>
+            </div>
+
+            <button type="submit" class="btn-send-comment">Comentar</button>
+          </form>
+        </div>
+      </div>
+
+      {% else %}
+      <div class="feature-card">
+        <p style="text-align:center;">
+          Debes <a href="{% url 'login' %}">Iniciar Sesión</a> para comentar.
+        </p>
+      </div>
+      {% endif %}
+
+      <div class="section-header">
+        <h2 class="section-title">Comentarios</h2>
+      </div>
+    </div>
+
+    <!-- ===============================
+         LISTA DE COMENTARIOS
+    ================================ -->
+    <div class="features-grid" style="grid-template-columns: 1fr !important">
+
+      {% for comment in comments %}
+      <div class="feature-card comment-card" id="comment-{{ comment.id }}">
+
+        <div class="comment-header">
+          <span class="comment-date">{{ comment.dateCreated|date:"d/m/Y H:i" }}</span><br>
+
+          <a href="{% url 'profile-username' comment.user.username %}">
+            <span class="{% if comment.user.is_superuser %}admin-text{% else %}user-text{% endif %}">
+              {{ comment.user.username }}
+            </span>
+          </a>
+        </div>
+
+        <p class="comment-content">{{ comment.content }}</p>
+
+        {% if comment.gif_url %}
+        <img src="{{ comment.gif_url }}" class="comment-gif">
+        {% endif %}
+
+        {% if user.is_superuser or user == comment.user %}
+        <div class="crud-buttons">
+          <button class="btn-edit-comment" data-id="{{ comment.id }}">Editar</button>
+          <button class="btn-eliminar-comment" data-id="{{ comment.id }}">Eliminar</button>
+        </div>
+        {% endif %}
+
+      </div>
+      {% empty %}
+      <p style="text-align:center;">No hay comentarios aún.</p>
+      {% endfor %}
+
+      <!-- Modal eliminar -->
+      <div id="deleteModal" class="modal" style="display:none;">
+        <div class="modal-content">
+          <p>¿Seguro quieres eliminar este comentario?</p>
+          <div class="modal-buttons">
+            <button id="confirmDeleteBtn" class="confirmDeleteBtn">Eliminar</button>
+            <button id="cancelDelete" class="btn-editar">Cancelar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal imagen -->
+      <div id="imageModal" class="modal modal-image" style="display:none;">
+        <span class="modal-close-btn">×</span>
+        <img id="modalImage">
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===============================
+     SCRIPTS (GIPHY + CRUD + MODAL)
+================================ -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* CSRF */
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let cookie of cookies) {
+              cookie = cookie.trim();
+              if (cookie.startsWith(name + "=")) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  const csrftoken = getCookie("csrftoken");
+
+  /* =============================
+       GIPHY
+  ============================= */
+  const GIPHY_API_KEY = "b0Fcc4YkI53LHIDdarqgbFxCGUEo1zfF";
+  const gifSearchInput = document.getElementById("gifSearchInput");
+  const searchGifBtn = document.getElementById("searchGifBtn");
+  const gifResults = document.getElementById("gifResults");
+  const gifUrlInput = document.getElementById("gifUrlInput");
+  const selectedGifIndicator = document.getElementById("selectedGifIndicator");
+  const selectedGifPreview = document.getElementById("selectedGifPreview");
+
+  const searchGifs = async () => {
+      const query = gifSearchInput.value.trim();
+      if (!query) return;
+      gifResults.innerHTML = "Cargando GIFs...";
+      
+      try {
+          const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${query}&limit=12&lang=es`);
+          const data = await res.json();
+          gifResults.innerHTML = "";
+
+          data.data.forEach(gif => {
+              const img = document.createElement("img");
+              img.src = gif.images.fixed_height_small.url;
+              img.dataset.fullUrl = gif.images.original.url;
+              img.classList.add("gif-thumb");
+
+              img.addEventListener("click", () => {
+                  gifUrlInput.value = img.dataset.fullUrl;
+                  selectedGifPreview.src = img.src;
+                  selectedGifIndicator.style.display = "block";
+              });
+
+              gifResults.appendChild(img);
+          });
+      } catch (e) {
+          gifResults.innerHTML = "Error cargando GIFs.";
+      }
+  };
+
+  searchGifBtn.addEventListener("click", searchGifs);
+
+  /* =============================
+       Lightbox Imagen
+  ============================= */
+  const imageModal = document.getElementById("imageModal");
+  const modalImage = document.getElementById("modalImage");
+
+  document.querySelectorAll(".lightbox-trigger").forEach(trigger => {
+      trigger.addEventListener("click", () => {
+          modalImage.src = trigger.dataset.imgUrl;
+          imageModal.style.display = "flex";
+      });
+  });
+
+  document.querySelector(".modal-close-btn").addEventListener("click", () => {
+      imageModal.style.display = "none";
+  });
+
+  /* =============================
+       Editar Comentario
+  ============================= */
+  document.querySelectorAll(".btn-edit-comment").forEach(btn => {
+      btn.addEventListener("click", () => {
+          const id = btn.dataset.id;
+          const card = document.getElementById(`comment-${id}`);
+          const contentP = card.querySelector(".comment-content");
+
+          const textarea = document.createElement("textarea");
+          textarea.value = contentP.textContent;
+
+          const saveBtn = document.createElement("button");
+          saveBtn.textContent = "Guardar";
+          saveBtn.classList.add("btn-editar");
+
+          card.replaceChild(textarea, contentP);
+          btn.style.display = "none";
+          card.querySelector(".btn-eliminar-comment").style.display = "none";
+          card.appendChild(saveBtn);
+
+          saveBtn.addEventListener("click", () => {
+              const fd = new FormData();
+              fd.append("content", textarea.value);
+
+              fetch(`/informes/comentario/editar/${id}/`, {
+                  method: "POST",
+                  headers: { "X-CSRFToken": csrftoken },
+                  body: fd
+              })
+              .then(res => res.json())
+              .then(data => {
+                  if (data.success) {
+                      contentP.textContent = data.content;
+                      card.replaceChild(contentP, textarea);
+                      saveBtn.remove();
+                      btn.style.display = "inline-block";
+                      card.querySelector(".btn-eliminar-comment").style.display = "inline-block";
+                  } else {
+                      alert(data.error);
+                  }
+              });
+          });
+      });
+  });
+
+  /* =============================
+       Eliminar Comentario
+  ============================= */
+  let commentToDelete = null;
+  const deleteModal = document.getElementById("deleteModal");
+
+  document.querySelectorAll(".btn-eliminar-comment").forEach(btn => {
+      btn.addEventListener("click", () => {
+          commentToDelete = btn.dataset.id;
+          deleteModal.style.display = "flex";
+      });
+  });
+
+  document.getElementById("cancelDelete").addEventListener("click", () => {
+      commentToDelete = null;
+      deleteModal.style.display = "none";
+  });
+
+  document.getElementById("confirmDeleteBtn").addEventListener("click", () => {
+      fetch(`/informes/comentario/eliminar/${commentToDelete}/`, {
+          method: "POST",
+          headers: { "X-CSRFToken": csrftoken }
+      })
+      .then(res => res.json())
+      .then(data => {
+          if (data.success) {
+              document.getElementById(`comment-${commentToDelete}`).remove();
+          }
+          deleteModal.style.display = "none";
+      });
+  });
+
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block titulo %}Editar Informe{% endblock %}
+
+{% block content %}
+<div class="container">
+  <section class="contact fade-up" id="contact">
+    <div class="contact-container">
+
+      <div class="section-header">
+        <h2 class="section-title">Editar Informe</h2>
+        {% if error %}
+          <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        <p class="section-subtitle">Panel de informes</p>
+      </div>
+
+      <div class="contact-form-wrapper">
+        <div class="contact-form">
+          <form id="editInformeForm" action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Título -->
+            <div class="form-group">
+              <label for="id_title">Título</label>
+              <input type="text" name="title" id="id_title"
+                     value="{{ informe.title }}"
+                     class="input-field" placeholder="Ingrese título del informe" required>
+            </div>
+
+            <!-- Descripción enriquecida (CKEditor) -->
+            <div class="form-group">
+              <label for="id_description">Descripción</label>
+              <textarea name="description" id="editorDescripcion"
+                        rows="10" class="textarea-field"
+                        required>{{ informe.description|safe }}</textarea>
+            </div>
+
+            <div class="update-buttons">
+              <button type="submit" id="editInformeBtn" class="btn-edit-post">
+                Actualizar informe
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- CKEditor -->
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
+<script>
+    CKEDITOR.replace("editorDescripcion", {
+        height: 300,
+        extraPlugins: 'uploadimage,image2',
+    });
+</script>
+
+<script src="{% static 'informes/js/editInforme.js' %}"></script>
+{% endblock %}
+

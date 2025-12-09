@@ -1,0 +1,109 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block titulo %}Informes{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="headerFact mb-5">
+        <section class="features fade-up visible" id="features">
+            <div class="features-container">
+                <div class="section-header">
+                    <h2 class="section-title">Informes</h2>
+                    <p class="section-subtitle">Devs</p>
+                    <br>
+                    {% if user.is_authenticated %}
+                    <div class="hero-buttons">
+                        <a href="{% url 'crearInforme' %}" role="button" class="btn-secondary">Crear Informe</a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="features-grid">
+                    {% for informe in informes %}
+                    <div class="feature-card cardPost" data-href="{% url 'detalleInforme' informe.id %}">
+
+                        {% if informe.user.profile.is_currently_blocked %}
+                        <span class="blocked-text" style="text-decoration: line-through; color: red;">
+                            {{ informe.user.username }}</span>
+                        <span class="blocked-text" style="color: red;">
+                            (Bloqueado hasta: {{ informe.user.profile.blocked_until|date:"d/m/Y H:i" }})
+                        </span>
+                        {% else %}
+                        {% if informe.user.is_superuser %}
+                        <a href="{% url 'profile-username' informe.user.username %}" class="usernameFact admin-text">{{ informe.user.username }}</a>
+                        {% else %}
+                        <a href="{% url 'profile-username' informe.user.username %}" class="usernameFact user-text">{{ informe.user.username }}</a>
+                        {% endif %}
+                        {% endif %}
+                        <small id="fechaPost" class="text-body-secondary">{{informe.created}}</small>
+                        <h3>{{ informe.title }}</h3>
+                        <p>{{ informe.description|safe|truncatechars_html:100 }}</p>
+
+
+
+
+                        {% if informe.image %}
+                        <img src="{{ informe.image.url }}" alt="imagen" style="width: 100%;">
+                        {% endif %}
+                    </div>
+                    {% endfor%}
+                </div>
+
+                <!-- {% if page_obj.paginator.num_pages > 1 %}
+                <div class="pagination-container" style="text-align: center; margin-top: 4rem;">
+                    <ul class="pagination-list" style="list-style: none; display: inline-flex; gap: 20px;">
+
+                        {% if page_obj.has_previous %}
+                        <li>
+                            <a href="?page={{ page_obj.previous_page_number }}" class="btn-secondary">
+                                &laquo; Anterior
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        <li class="current-page"
+                            style="padding: 1rem; color: var(--primary-cyan); border: 1px solid var(--border-color);">
+                            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                        </li>
+
+                        {% if page_obj.has_next %}
+                        <li>
+                            <a href="?page={{ page_obj.next_page_number }}" class="btn-secondary">
+                                Siguiente &raquo;
+                            </a>
+                        </li>
+                        {% endif %}
+
+                    </ul>
+                </div>
+                {% endif %} -->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Seleccionamos todas las tarjetas con la clase específica
+            const cards = document.querySelectorAll('.cardPost');
+
+            cards.forEach(card => {
+                // Obtenemos la URL desde un atributo data
+                const url = card.dataset.href;
+                if (url) {
+                    card.style.cursor = 'pointer';
+                    card.addEventListener('click', () => {
+                        window.location.href = url;
+                    });
+                }
+            });
+        });
+
+    </script>
+
+</div>
+
+
+{% endblock %}

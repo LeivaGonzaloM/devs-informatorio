@@ -19,10 +19,10 @@ def home(request):
 def nosotros(request):
       return render(request, 'nosotros/nosotros.html')
 
-def postDetail(request, post_id):
-        post = get_object_or_404(Post, pk=post_id)
-        form = PostForm(instance=post)
-        return render(request, 'index.html', {'post': post, 'form': form})
+# def postDetail(request, post_id):
+#         post = get_object_or_404(Post, pk=post_id)
+#         form = PostForm(instance=post)
+#         return render(request, 'index.html', {'post': post, 'form': form})
 
 def contacto(request):
       return render(request, 'contacto/contacto.html')

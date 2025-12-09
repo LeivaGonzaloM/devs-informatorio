@@ -31,6 +31,8 @@ urlpatterns = [
     path('nosotros', views.nosotros, name='nosotros'),
     path('contacto', views.contacto, name='contacto'),
     path('', include('dashboard.urls')),
+    path('', include('informes.urls')),
+    path("ckeditor/", include("ckeditor_uploader.urls")),
 ]
 
 if settings.DEBUG:

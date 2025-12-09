@@ -13,7 +13,7 @@
     <!-- NAV LINKS -->
     <nav class="mobile-menu-nav">
         <ul>
-            <li><a href="#">informes</a></li>
+            <li><a href="{% url 'informes' %}">informes</a></li>
             <li><a href="{% url 'posts' %}">Articulos</a></li>
             <li><a href="#contact">Contacto</a></li>
             <li><a href="{% url 'nosotros' %}">Nosotros</a></li>
@@ -57,7 +57,7 @@
 
         <!-- LINKS DESKTOP -->
         <ul class="nav-links">
-            <li><a href="{% url 'posts' %}">informes</a></li>
+            <li><a href="{% url 'informes' %}">informes</a></li>
             <li><a href="{% url 'posts' %}">Articulos</a></li>
             <li><a href="{% url 'contacto' %}">Contacto</a></li>
             <li><a href="{% url 'nosotros' %}">Nosotros</a></li>
