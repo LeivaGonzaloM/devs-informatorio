@@ -1,3 +1,4 @@
+#posts/models.py
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -30,5 +31,8 @@ class Comment(models.Model):
     content = models.TextField(max_length=1500)
     dateCreated = models.DateTimeField(auto_now_add=True)
 
+    gif_url = models.URLField(max_length=500, null=True, blank=True)
+
     def __str__(self):
         return f"Comentario de {self.user} en -> {self.post}"
+    
