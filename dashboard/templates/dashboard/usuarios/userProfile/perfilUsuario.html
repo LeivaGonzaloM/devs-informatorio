@@ -1,0 +1,109 @@
+{% extends 'dashboard/baseAdmin.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+    <br><br><br><br><br><br><br>
+    <div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <!-- Profile Card -->
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+
+                <!-- Header -->
+                <div class="bg-dark text-white p-4 d-flex align-items-center gap-3">
+                    <img src="{{ profile.avatar_url }}"
+                         class="rounded-circle border border-3"
+                         width="110" height="110">
+
+                    <div>
+                        <h2 class="mb-0 fw-bold">{{ u.username }}</h2>
+                        <p class="mb-0 text-light opacity-75">{{ u.email }}</p>
+                        <small class="opacity-75">
+                            {{ u.first_name }} {{ u.last_name }}
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div class="p-4">
+
+                    <!-- Bio -->
+                    <h5 class="fw-bold mb-2">Biografía</h5>
+                    <p class="text-muted">{{ profile.bio|default:"Sin biografía" }}</p>
+
+                    <hr>
+
+                    <!-- Opcional: Stats del usuario -->
+                    <div class="row text-center mb-4">
+                        <div class="col-4">
+                            <h5 class="fw-bold">{{ profile.reports_count|default:"0" }}</h5>
+                            <p class="text-muted small mb-0">Reportes</p>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="fw-bold">{{ profile.messages_count|default:"0" }}</h5>
+                            <p class="text-muted small mb-0">Mensajes</p>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="fw-bold">
+                                {% if profile.is_currently_blocked %}
+                                    🔒
+                                {% else %}
+                                    ✔️
+                                {% endif %}
+                            </h5>
+                            <p class="text-muted small mb-0">Estado</p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Acciones -->
+                    <h5 class="fw-bold mb-3">Acciones administrativas</h5>
+
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <a href="{% url 'editarUsuario' u.id %}" class="btn btn-primary w-100">
+                                ✏️ Editar usuario
+                            </a>
+                        </div>
+                    
+                        <div class="col-md-6">
+                            <a href="{% url 'eliminarUsuario' u.id %}" class="btn btn-danger w-100">
+                                🗑️ Eliminar usuario
+                            </a>
+                        </div>
+                    
+                        <div class="col-md-6">
+                            <a href="{% url 'advertirUsuario' u.id %}" class="btn btn-outline-danger w-100">
+                                ⚠️ Advertir usuario
+                            </a>
+                        </div>
+                    
+                        <div class="col-md-6">
+                            {% if profile.is_currently_blocked %}
+                                <a href="{% url 'desbloquearUsuario' u.id %}" class="btn btn-secondary w-100">
+                                    ✔ Desbloquear
+                                </a>
+                            {% else %}
+                                <a href="{% url 'bloquearUsuario' u.id %}" class="btn btn-danger w-100">
+                                    ⛔ Bloquear
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+
+                </div> <!-- body -->
+
+            </div> <!-- card -->
+
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}
+

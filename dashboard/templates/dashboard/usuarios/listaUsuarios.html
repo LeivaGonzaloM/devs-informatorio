@@ -1,16 +1,137 @@
-{% extends 'dashboard/baseAdmin.html' %}
-{% load static %}
+{% extends 'dashboard/baseAdmin.html' %} {% load static %} {% block content %}
+<div class="container">
+    <br><br><br><br>
+    <br><br><br><br>
+  <div class="container-fluid py-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="fw-semibold">Usuarios Registrados</h4>
+
+          <form method="GET" class="d-flex">
+            <input
+              type="text"
+              name="q"
+              class="form-control"
+              placeholder="Buscar usuario…"
+              value="{{ request.GET.q }}"
+            />
+            <button class="btn btn-primary ms-2">Buscar</button>
+          </form>
+        </div>
+
+        <div class="table-responsive" data-simplebar>
+          <table class="table align-middle table-custom mb-0">
+            <thead>
+              <tr>
+                <th class="ps-0">Usuario</th>
+                <th>Estado</th>
+                <th>Advertencias</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for u in profiles %}
+              <tr>
+                <td class="ps-0">
+                  <div class="d-flex align-items-center gap-3">
+                    <img
+                      src="{{ u.avatar.url }}"
+                      class="rounded"
+                      width="50"
+                      height="50"
+                    />
+
+                    <div>
+                      {% if u.is_currently_blocked %}
+                      <h6
+                        class="mb-0 text-danger"
+                        style="text-decoration: line-through"
+                      >
+                        {{ u.user.username }} (Bloqueado)
+                      </h6>
+                      {% else %}
+                      <h6 class="mb-0">{{ u.user.username }}</h6>
+                      {% endif %}
+
+                      <small class="text-muted">{{ u.user.email }}</small>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  {% if u.is_currently_blocked %}
+                  <span class="badge bg-danger">Bloqueado</span>
+                  {% else %}
+                  <span class="badge bg-success">Activo</span>
+                  {% endif %}
+                </td>
+
+                <td>
+                  <span class="badge bg-warning text-dark">
+                    {{ u.user.warnings.count }} advertencias
+                  </span>
+                </td>
+
+                <td>
+                  <div class="d-flex gap-2">
+                    <a href="{% url 'advertirUsuario' u.user.id %}" class="btn btn-warning btn-sm">Advertir</a>
+                
+                    {% if u.is_currently_blocked %}
+                    <a href="{% url 'desbloquearUsuario' u.user.id %}" class="btn btn-secondary btn-sm">Desbloquear</a>
+                    {% else %}
+                    <a href="{% url 'bloquearUsuario' u.user.id %}" class="btn btn-danger btn-sm">Bloquear</a>
+                    {% endif %}
+                
+                    <a href="{% url 'perfilUsuario' u.user.id %}" class="btn btn-info btn-sm">Ver</a>
+                
+                    <!-- Botón eliminar con modal -->
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#eliminarModal{{ u.user.id }}">
+                      Eliminar
+                    </button>
+                
+                    <!-- Modal de confirmación -->
+                    <div class="modal fade" id="eliminarModal{{ u.user.id }}" tabindex="-1" aria-labelledby="eliminarModalLabel{{ u.user.id }}" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title" id="eliminarModalLabel{{ u.user.id }}">Confirmar eliminación</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                          </div>
+                          <div class="modal-body">
+                            ¿Estás seguro que deseas eliminar al usuario <strong>{{ u.user.username }}</strong>?
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <form method="POST" action="{% url 'eliminarUsuario' u.user.id %}" class="d-inline">
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                
+                  </div>
+                </td>
 
 
-{% block content %}
-{% for user in users %}
-    {% if user.profile.is_currently_blocked %}
-        <p style="text-decoration: line-through; color:red;">
-            {{ user.username }}
-            (Bloqueado hasta {{ user.profile.blocked_until|date:"d/m H:i" }})
-        </p>
-    {% else %}
-        <p>{{ user.username }}</p>
-    {% endif %}
-{% endfor %}
+              </tr>
+
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center py-4">
+                  No hay usuarios registrados.
+                </td>
+              </tr>
+
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -40,12 +40,12 @@
             </li>
             <li class="sidebar-item">
               <a class="sidebar-link justify-content-between"
-                href="#" aria-expanded="false">
+                href="" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
                     <iconify-icon icon="solar:atom-line-duotone"></iconify-icon>
                   </span>
-                  <span class="hide-menu">Eliminar Informes</span>
+                  <span class="hide-menu">Advertir Usuario</span>
                 </div>
                 
               </a>
@@ -224,6 +224,17 @@
                         <span class="icon-small"></span>
                       </span>
                       <span class="hide-menu">Usuarios reportados</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link justify-content-between" 
+                    href="{% url 'listaAdvertencias' %}">
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="d-flex">
+                        <span class="icon-small"></span>
+                      </span>
+                      <span class="hide-menu">Usuarios advertidos</span>
                     </div>
                   </a>
                 </li>

@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from .models import Profile
 from .models import UserReport
+from .models import Warning
 
 
 class UserUpdateForm(forms.ModelForm):
@@ -36,4 +37,20 @@ class UserReportForm(forms.ModelForm):
         fields = ['reason']
         widgets = {
             'reason': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Describe el motivo del reporte...'})
+        }
+
+
+class WarningForm(forms.ModelForm):
+    class Meta:
+        model = Warning
+        fields = ["mensaje", "nivel"]
+        widgets = {
+            "mensaje": forms.Textarea(attrs={
+                "class": "form-control",
+                "placeholder": "Escribe la advertencia…",
+                "rows": 3
+            }),
+            "nivel": forms.Select(attrs={
+                "class": "form-select"
+            })
         }

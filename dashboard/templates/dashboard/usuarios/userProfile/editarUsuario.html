@@ -1,0 +1,78 @@
+{% extends 'dashboard/baseAdmin.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br><br><br>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <div class="bg-primary text-white p-4 rounded-top text-center">
+                    <h3 class="mb-0 fw-bold">Editar usuario</h3>
+                    <p class="mb-0 opacity-75">Modificando: <strong>{{ u.username }}</strong></p>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" class="p-4">
+                    {% csrf_token %}
+
+                    <!-- Avatar actual -->
+                    <div class="text-center mb-4">
+                        <img src="{{ u.profile.avatar.url }}" alt="Avatar de {{ u.username }}" class="rounded-circle shadow" width="120" height="120">
+                    </div>
+
+                    <h5 class="fw-bold">Datos del usuario</h5>
+                    {{ u_form.non_field_errors }}
+                    <div class="mb-3">
+                        {{ u_form.username.label_tag }}
+                        {{ u_form.username }}
+                        {{ u_form.username.errors }}
+                    </div>
+                    <div class="mb-3">
+                        {{ u_form.email.label_tag }}
+                        {{ u_form.email }}
+                        {{ u_form.email.errors }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nombre completo</label>
+                        <input type="text" name="full_name" value="{{ u.profile.full_name }}" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Teléfono</label>
+                        <input type="text" name="phone" value="{{ u.profile.phone }}" class="form-control" placeholder="Opcional">
+                    </div>
+
+                    <hr>
+
+                    <h5 class="fw-bold">Perfil</h5>
+                    {{ p_form.non_field_errors }}
+                    <div class="mb-3">
+                        {{ p_form.bio.label_tag }}
+                        {{ p_form.bio }}
+                        {{ p_form.bio.errors }}
+                    </div>
+                    <div class="mb-3">
+                        {{ p_form.avatar.label_tag }}
+                        {{ p_form.avatar }}
+                        {{ p_form.avatar.errors }}
+                    </div>
+
+                    <hr>
+
+                    <h5 class="fw-bold">Contraseña</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Nueva contraseña</label>
+                        <input type="text" name="password" class="form-control" placeholder="Dejar vacío para no cambiar">
+                    </div>
+
+                    <button class="btn btn-primary w-100 py-2 fw-bold mt-3">💾 Guardar cambios</button>
+                    <a href="{% url 'perfilUsuario' u.id %}" class="btn btn-outline-secondary w-100 mt-2">Cancelar</a>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

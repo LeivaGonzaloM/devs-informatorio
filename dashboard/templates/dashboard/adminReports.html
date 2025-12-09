@@ -1,34 +1,104 @@
 {% extends 'dashboard/baseAdmin.html' %}
 {% load static %}
 
-
 {% block content %}
-<h2>Reportes de Usuarios</h2>
+<div class="container-fluid">
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-lg-8 d-flex align-items-stretch">
+            <div class="card w-100">
+                <div class="card-body">
 
-<table class="table">
-   
-    <br><br><br><br>
-    <br><br><br><br>
-    <thead>
-        <tr>
-            <th>Reportado</th>
-            <th>Reportante</th>
-            <th>Motivo</th>
-            <th>Fecha</th>
-        </tr>
-    </thead>
+                    <h5 class="card-title fw-semibold mb-4">
+                        Reportes de Usuarios
+                        <span class="badge bg-danger-subtle text-danger ms-2">
+                            {{ reports|length }} reportes
+                        </span>
+                    </h5>
 
-    <tbody>
-        {% for rep in reports %}
-        <tr>
-            <td>{{ rep.reported_user.username }}</td>
-            <td>{{ rep.reporter.username }}</td>
-            <td>{{ rep.reason }}</td>
-            <td>{{ rep.created }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="4">No hay reportes</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+                    <div class="table-responsive" data-simplebar>
+                        <table class="table text-nowrap align-middle table-custom mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-dark fw-normal ps-0">Reportado</th>
+                                    <th class="text-dark fw-normal">Reportante</th>
+                                    <th class="text-dark fw-normal">Motivo</th>
+                                    <th class="text-dark fw-normal">Fecha</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for rep in reports %}
+                                <tr>
+                                    <td class="ps-0">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div>
+                                                <h6 class="mb-0">{{ rep.reported_user.username }}</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <span class="badge bg-primary-subtle text-primary">
+                                            {{ rep.reporter.username }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="badge bg-warning-subtle text-warning">
+                                            {{ rep.reason }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="text-muted">
+                                            {{ rep.created|date:"d/m/Y H:i" }}
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4">
+                                        <span class="text-muted">No hay reportes registrados</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel lateral opcional -->
+        <div class="col-lg-4 d-flex align-items-stretch">
+            <div class="card w-100">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-3">Resumen</h5>
+
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <span class="fw-medium text-dark">Reportes totales:</span>
+                        <span class="badge bg-danger-subtle text-danger">
+                            {{ reports|length }}
+                        </span>
+                    </div>
+
+                    <p class="text-muted fs-3 mb-0">
+                        Esta sección muestra los reportes generados por usuarios y permite gestionarlos desde el Panel de Administración.
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
 {% endblock %}

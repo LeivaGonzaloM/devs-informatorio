@@ -1,5 +1,201 @@
-{% extends "adminDashboard/baseAdmin.html" %}
+{% extends 'dashboard/baseAdmin.html' %}
 {% load static %}
+
 {% block content %}
-  <h1>Bienvenido al panel</h1>
+<div class="body-wrapper-inner">
+  <div class="container-fluid">
+
+    <!-- Row 1: Usuarios -->
+    <div class="row">
+      <div class="col-lg-8 d-flex align-items-stretch">
+        <div class="card w-100">
+          <div class="card-body">
+            <h5 class="card-title fw-semibold mb-4">
+              Usuarios
+              <a href="{% url 'crearUsuario' %}" class="btn btn-primary btn-sm">Crear Usuario</a>
+            </h5>
+
+            <div class="table-responsive" data-simplebar>
+              <table class="table text-nowrap align-middle table-custom mb-0">
+                <thead>
+                  <tr>
+                    <th scope="col" class="text-dark fw-normal ps-0">Usuario</th>
+                    <th scope="col" class="text-dark fw-normal">Bloquear</th>
+                    <th scope="col" class="text-dark fw-normal">Editar</th>
+                    <th scope="col" class="text-dark fw-normal">Eliminar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for usuario in profiles %}
+                  <tr>
+                    <td class="ps-0">
+                      <div class="d-flex align-items-center gap-6">
+                        <img src="{{ usuario.avatar.url }}" alt="avatar" width="50" class="rounded" />
+                        <div>
+                          {% if usuario.is_currently_blocked %}
+                          <h6 class="mb-0 text-danger text-decoration-line-through">
+                            {{ usuario.user.username }} (Bloqueado hasta: {{ usuario.blocked_until|date:"d/m/y H:i" }})
+                          </h6>
+                          {% else %}
+                          <h6 class="mb-0">{{ usuario.user.username }}</h6>
+                          {% endif %}
+                          <span>{{ usuario.user.email }}</span>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td>
+                      {% if usuario.is_currently_blocked %}
+                      <form action="{% url 'desbloquearUsuario' usuario.user.id %}" method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-warning btn-sm">Desbloquear</button>
+                      </form>
+                      {% else %}
+                      <a href="{% url 'bloquearUsuario' usuario.user.id %}" class="btn btn-danger btn-sm">Bloquear</a>
+                      {% endif %}
+                    </td>
+
+                    <td>
+                      <a href="{% url 'editarUsuario' usuario.user.id %}" class="badge bg-success-subtle text-success">Editar</a>
+                    </td>
+
+                    <td>
+                      <form action="{% url 'deleteUser' usuario.user.id %}" method="POST" onsubmit="return confirm('¿Eliminar este usuario?');">
+                        {% csrf_token %}
+                        <button class="btn btn-danger btn-sm">Eliminar</button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="4" class="text-center py-3">No hay usuarios registrados.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Estadísticas -->
+      <div class="col-lg-4 d-flex flex-column gap-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex align-items-center gap-6 mb-4 pb-3">
+              <span class="round-48 d-flex align-items-center justify-content-center rounded bg-secondary-subtle">
+                <iconify-icon icon="solar:football-outline" class="fs-6 text-secondary"></iconify-icon>
+              </span>
+              <h6 class="mb-0 fs-4">Usuarios</h6>
+            </div>
+            <div class="d-flex align-items-center justify-content-between mb-6">
+              <h6 class="mb-0 fw-medium">Usuarios registrados: {{ profiles|length }}</h6>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex align-items-center gap-6 mb-4">
+              <span class="round-48 d-flex align-items-center justify-content-center rounded bg-danger-subtle">
+                <iconify-icon icon="solar:box-linear" class="fs-6 text-danger"></iconify-icon>
+              </span>
+              <h6 class="mb-0 fs-4">Informes</h6>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <h4>Cantidad de informes: {{ reports|length }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Facts -->
+    <div class="row">
+      <div class="col-lg-8 d-flex align-items-stretch">
+        <div class="card w-100">
+          <div class="card-body">
+            <h5 class="card-title fw-semibold mb-4">
+              Facts
+              <a href="{% url 'crearArticulo' %}" class="btn btn-primary btn-sm">Crear Fact</a>
+            </h5>
+
+            <div class="table-responsive" data-simplebar>
+              <table class="table text-nowrap align-middle table-custom mb-0">
+                <thead>
+                  <tr>
+                    <th scope="col" class="text-dark fw-normal ps-0">Título / Usuario</th>
+                    <th scope="col" class="text-dark fw-normal">Ocultar</th>
+                    <th scope="col" class="text-dark fw-normal">Editar</th>
+                    <th scope="col" class="text-dark fw-normal">Eliminar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for post in posts %}
+                  <tr>
+                    <td class="ps-0">
+                      <div class="d-flex align-items-center gap-6">
+                        <img src="{{ post.image.url }}" alt="prd1" width="50" class="rounded" />
+                        <div>
+                          <h6 class="mb-0">{{ post.title }}</h6>
+                          <span>{{ post.user.username }}</span>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td>
+                      <a href="#" class="btn btn-warning btn-sm">
+                        {% if post.oculto %}Mostrar{% else %}Ocultar{% endif %}
+                      </a>
+                    </td>
+
+                    <td>
+                      <a href="{% url 'editarPost' post.id %}" class="badge bg-success-subtle text-success">Editar</a>
+                    </td>
+
+                    <td>
+                      <form action="{% url 'deletePost' post.id %}" method="POST" onsubmit="return confirm('¿Eliminar este post?');">
+                        {% csrf_token %}
+                        <button class="btn btn-danger btn-sm">Eliminar</button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="4" class="text-center py-3">No hay Facts disponibles.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Publicaciones -->
+      <div class="col-lg-4 d-flex align-items-stretch">
+        <div class="card w-100">
+          <div class="card-body p-4">
+            <h5 class="card-title fw-semibold">Reportes</h5>
+            <!-- Aquí podés poner la lista de reportes si la querés mostrar -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="py-6 px-6 text-center">
+      <p class="mb-0 fs-4">
+        Design and Developed by
+        <a href="https://www.instagram.com/gonzaa.leivaa/" target="_blank" class="pe-1 text-primary text-decoration-underline">
+          Leiva Gonzalo
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>
 {% endblock %}
+

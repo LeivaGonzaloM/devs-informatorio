@@ -1,0 +1,18 @@
+{% extends 'dashboard/baseAdmin.html' %}
+
+{% block content %}
+<div class="card shadow p-4">
+
+    <h3>Cambiar contraseña a {{ u.username }}</h3>
+    <hr>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button class="btn btn-warning mt-3">Actualizar contraseña</button>
+        <a href="{% url 'perfilUsuario' u.id %}" class="btn btn-secondary mt-3">Cancelar</a>
+    </form>
+
+</div>
+{% endblock %}

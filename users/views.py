@@ -5,11 +5,11 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 
 from .forms import UserUpdateForm, ProfileUpdateForm
-from .models import Profile
+from .models import Profile, Warning
 from posts.models import Post
-
 from .forms import UserReportForm
 from django.utils import timezone
+
 
 
 
@@ -127,12 +127,15 @@ def profileView(request, username=None):
     posts = Post.objects.filter(user=user_profile)
     profile, created = Profile.objects.get_or_create(user=user_profile)
 
+    # Ahora sí podemos cargar advertencias
+    warnings = Warning.objects.filter(user=user_profile).order_by('-created_at')
 
     return render(request, 'users/profile/profile.html', {
         'user_profile': user_profile,
         'profile': profile,
         'posts': posts,
         'is_own_profile': is_own_profile,
+        "warnings": warnings,
     })
 
 

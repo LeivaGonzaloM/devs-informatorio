@@ -40,7 +40,10 @@
         {% if post.edited_by == post.user %}
             el autor
         {% else %}
-            {{ post.edited_by.username }} (admin)
+            <span href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">
+            {{ post.edited_by.username }}
+            </span>
+             (admin)
         {% endif %}
         </p>
         {% endif %}

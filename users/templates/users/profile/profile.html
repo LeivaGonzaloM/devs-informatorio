@@ -68,6 +68,13 @@
             </p>
            
 
+            {% if request.user.is_superuser %}
+            <a href="{% url 'advertirUsuario' user_profile.id %}" class="btn-primary">
+            Advertir usuario
+            </a>
+            <br>
+            {% endif %}
+
             {% if is_own_profile %}
             <a href="{% url 'editProfile' %}" class="btn-primary">Editar perfil</a>
             {% else %}
@@ -75,7 +82,49 @@
             {% endif %}
             <br>
             
+
+            
         </div>
+
+        {% if warnings %}
+            <div class="feature-card glass-card" style="padding: 1.5rem; border-left: 4px solid orange;">
+                <h3 style="color: orange; text-align:center; margin-bottom: 1rem;">
+                    Advertencias del administrador
+                </h3>
+            
+                {% for w in warnings %}
+
+                    {% if w.nivel == "grave" %}
+                        <div style="margin-bottom: 1rem; padding: 1rem;
+                                    background: rgba(255, 0, 0, 0.1); border-radius: 8px;">
+                            <p style="color: #ee1d1d; margin: 0;">
+                                ⚠ {{ w.mensaje }}
+                            </p>
+                        
+                    {% elif w.nivel == "media" %}
+                        <div style="margin-bottom: 1rem; padding: 1rem;
+                                    background: rgba(255, 165, 0, 0.1); border-radius: 8px;">
+                            <p style="color: #ffb84d; margin: 0;">
+                                ⚠ {{ w.mensaje }}
+                            </p>
+                        
+                    {% else %}
+                        <div style="margin-bottom: 1rem; padding: 1rem;
+                                    background: rgba(100, 100, 100, 0.1); border-radius: 8px;">
+                            <p style="color: #ffffff; margin: 0;">
+                                ⚠ {{ w.mensaje }}
+                            </p>
+                    {% endif %}
+                        
+                    <small style="opacity: .6;">
+                        Enviada el {{ w.created_at|date:"d/m/Y H:i" }}
+                    </small>
+                </div>
+                
+                {% endfor %}
+
+            </div>
+        {% endif %}
 
         <!-- 🟡 CARD DE INFORMACIÓN PERSONAL -->
         <div class="feature-card glass-card" style="padding: 2rem;">

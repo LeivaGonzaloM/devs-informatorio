@@ -1,23 +1,61 @@
 {% extends 'dashboard/baseAdmin.html' %}
 {% load static %}
 
-
 {% block content %}
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<h2>Bloquear a {{ user.username }}</h2>
+<div class="container py-5">
+    <br><br><br><br><br><br>
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
 
-<form method="POST">
-    {% csrf_token %}
+            <div class="card shadow-lg border-0 rounded-4">
 
-    <label>Minutos</label>
-    <input type="number" name="minutes" min="0" value="0" class="form-control" />
+                <!-- Header -->
+                <div class="bg-danger text-white p-4 rounded-top">
+                    <h3 class="mb-0 fw-bold">Bloquear usuario</h3>
+                    <p class="mb-0 opacity-75">Usuario: <strong>{{ user.username }}</strong></p>
+                </div>
 
-    <label>Horas</label>
-    <input type="number" name="hours" min="0" value="0" class="form-control" />
+                <!-- Formulario -->
+                <form method="POST" class="p-4">
+                    {% csrf_token %}
 
-    <label>Días</label>
-    <input type="number" name="days" min="0" value="0" class="form-control" />
+                    <p class="text-muted mb-4">
+                        Establece la duración del bloqueo.  
+                        Puedes dejar todos los valores en <strong>0</strong> para un bloqueo permanente.
+                    </p>
 
-    <button class="btn btn-danger mt-3">Confirmar bloqueo</button>
-</form>
+                    <!-- Grid de inputs -->
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Minutos</label>
+                            <input type="number" name="minutes" min="0" value="0" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Horas</label>
+                            <input type="number" name="hours" min="0" value="0" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Días</label>
+                            <input type="number" name="days" min="0" value="0" class="form-control">
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <button class="btn btn-danger w-100 py-2 rounded-3 fw-bold">
+                        ⛔ Confirmar bloqueo
+                    </button>
+
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary w-100 mt-3">
+                        Cancelar
+                    </a>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

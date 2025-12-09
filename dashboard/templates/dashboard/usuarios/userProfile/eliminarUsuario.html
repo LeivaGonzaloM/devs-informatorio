@@ -1,0 +1,21 @@
+{% extends 'dashboard/baseAdmin.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br><br><br>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg rounded-4 border-0 p-4 text-center">
+                <h3 class="mb-3 text-danger">Eliminar Usuario</h3>
+                <p>¿Estás seguro que deseas eliminar al usuario <strong>{{ u.username }}</strong>?</p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger w-100 py-2 fw-bold">🗑️ Confirmar eliminación</button>
+                </form>
+                <a href="{% url 'perfilUsuario' u.id %}" class="btn btn-outline-secondary w-100 mt-3">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

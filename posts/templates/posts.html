@@ -40,7 +40,7 @@
                         {% endif %}
                         <small id="fechaPost" class="text-body-secondary">{{post.created}}</small>
                         <h3>{{post.title}}</h3>
-                        <p>{{post.description}}</p>
+                        <p>{{ post.description|slice:":100" }}{% if post.description|length > 100 %}...{% endif %}</p>
 
                         {% if post.image %}
                         <img src="{{ post.image.url }}" alt="imagen" style="width: 100%;">
