@@ -89,8 +89,13 @@
               <h6 class="mb-0 fs-4">Usuarios</h6>
             </div>
             <div class="d-flex align-items-center justify-content-between mb-6">
-              <h6 class="mb-0 fw-medium">Usuarios registrados: {{ profiles|length }}</h6>
+              
             </div>
+              <h6>Usuarios Registrados: {{ profiles|length }}</h6>
+              <h6 >Usuarios reportados: {{ reports|length }}</h6>
+              <h6 >Usuarios advertidos: {{ warnings|length }}</h6>
+              <h6>Usuarios bloqueados: {{ blocked_count }}</h6>
+
           </div>
         </div>
 
@@ -100,11 +105,11 @@
               <span class="round-48 d-flex align-items-center justify-content-center rounded bg-danger-subtle">
                 <iconify-icon icon="solar:box-linear" class="fs-6 text-danger"></iconify-icon>
               </span>
-              <h6 class="mb-0 fs-4">Informes</h6>
+              <h6 class="mb-0 fs-4">Artículos</h6>
             </div>
             <div class="row">
               <div class="col-6">
-                <h4>Cantidad de informes: {{ reports|length }}</h4>
+                <h6>Cantidad de Articulos: {{ posts|length }}</h6>
               </div>
             </div>
           </div>
@@ -152,7 +157,7 @@
                     </td>
 
                     <td>
-                      <a href="{% url 'editarPost' post.id %}" class="badge bg-success-subtle text-success">Editar</a>
+                      <a href="{% url 'editarArticulo' post.id %}" class="badge bg-success-subtle text-success">Editar</a>
                     </td>
 
                     <td>
@@ -178,12 +183,30 @@
       <div class="col-lg-4 d-flex align-items-stretch">
         <div class="card w-100">
           <div class="card-body p-4">
-            <h5 class="card-title fw-semibold">Reportes</h5>
-            <!-- Aquí podés poner la lista de reportes si la querés mostrar -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="card-title fw-semibold mb-0">Reportes</h5>
+              <span class="badge bg-primary">{{ total_reports }}</span>
+            </div>
+          
+            <ul class="list-group list-group-flush">
+              {% if recent_reports %}
+                {% for report in recent_reports %}
+                  <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <div>
+                      <strong>{{ report.user.username }}</strong> 
+                      {% if report.reason %} - {{ report.reason }}{% endif %}
+                    </div>
+                    <small class="text-muted">{{ report.created|date:"d M H:i" }}</small>
+                  </li>
+                {% endfor %}
+              {% else %}
+                <li class="list-group-item text-muted px-0">No hay reportes recientes</li>
+              {% endif %}
+            </ul>
           </div>
         </div>
       </div>
-    </div>
+
 
     <!-- Footer -->
     <div class="py-6 px-6 text-center">

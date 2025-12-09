@@ -17,7 +17,9 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.forms import UserCreationForm
 from posts.models import Post
-from posts.forms import PostForm 
+from posts.forms import PostForm
+from users.forms import ProfileUpdateForm
+from .forms import CustomUserCreationForm
 
 
 # Create your views here.
@@ -32,12 +34,22 @@ def dashboard(request):
         users = User.objects.all()
         profiles = Profile.objects.all()
         posts = Post.objects.all()
+        reports = UserReport.objects.all().order_by('-created')  # últimos primero
+        warnings = Warning.objects.all()
+        # Contar usuarios actualmente bloqueados
+        blocked_count = sum(1 for p in profiles if p.is_currently_blocked)
+        # Limitar los reportes que se muestran (ej: 5 más recientes)
+        recent_reports = reports[:5]
 
         return render(request, 'dashboard/dashboardIndex.html', {
             'admin_profile': profile,
             'current_admin': current_admin,
             'users': users,
             'profiles': profiles,
+            'reports':reports,
+            'warnings':warnings,
+            "blocked_count": blocked_count,
+            "recent_reports": recent_reports,
             'posts': posts,
         })
 
@@ -270,6 +282,8 @@ def perfilUsuario(request, user_id):
 # EDITAR USUARIO + PROFILE
 # --------------------------------------------------------------
 def editarUsuario(request, user_id):
+    current_admin = request.user
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
     u = get_object_or_404(User, id=user_id)
     profile = u.profile
 
@@ -299,6 +313,7 @@ def editarUsuario(request, user_id):
     return render(request, "dashboard/usuarios/userProfile/editarUsuario.html", {
         "u_form": u_form,
         "p_form": p_form,
+        "admin_profile": profileAdmin,
         "u": u
     })
 
@@ -322,30 +337,115 @@ def eliminarUsuario(request, user_id):
 # --------------------------------------------------------------
 # CREAR USER + PROFILE
 # --------------------------------------------------------------
+# Solo administradores
+@user_passes_test(lambda u: u.is_staff)
 def crearUsuario(request):
+    current_admin = request.user
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
+        # Campos manuales del formulario
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        password2 = request.POST.get('password2')
+
+        # Formulario del profile
+        p_form = ProfileUpdateForm(request.POST, request.FILES)
+
+        # Validaciones
+        if not username or not email or not password or not password2:
+            messages.error(request, "Completá todos los campos obligatorios.")
+        elif password != password2:
+            messages.error(request, "Las contraseñas no coinciden.")
+        elif User.objects.filter(username=username).exists():
+            messages.error(request, "El nombre de usuario ya existe.")
+        else:
+            # Crear usuario
+            user = User.objects.create_user(username=username, email=email, password=password)
+            
+            # Guardar profile
+            if p_form.is_valid():
+                profile, created = Profile.objects.get_or_create(user=user)
+                profile.full_name = p_form.cleaned_data['full_name']
+                profile.phone = p_form.cleaned_data['phone']
+                profile.bio = p_form.cleaned_data['bio']
+                if request.FILES.get('avatar'):
+                    profile.avatar = request.FILES['avatar']
+                profile.save()
+
+            else:
+                # Si hay error en profile, borramos el user creado
+                user.delete()
+                messages.error(request, "Error en los datos del perfil.")
+                return redirect('crearUsuario')
+
             messages.success(request, f'Usuario {user.username} creado con éxito.')
             return redirect('dashboard')
     else:
-        form = UserCreationForm()
-    
-    context = {'form': form}
+        p_form = ProfileUpdateForm()
+
+    context = {
+        "admin_profile": profileAdmin,
+        "p_form": p_form
+    }
     return render(request, 'dashboard/usuarios/crearUsuario.html', context)
+
 
 # --------------------------------------------------------------
 # CREAR POST 
 # --------------------------------------------------------------
 def crearArticulo(request):
+    current_admin = request.user
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('dashboard')  # vuelve al inicio del dashboard
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
+            messages.success(request, f'Artículo "{post.title}" creado con éxito.')
+            return redirect('dashboard')
     else:
         form = PostForm()
-    
-    context = {'form': form}
-    return render(request, 'dashboard/crearArticulo.html', context)
+
+    context = {
+        "admin_profile": profileAdmin,
+        'form': form
+    }
+    return render(request, 'dashboard/articulos/crearArticulo.html', context)
+
+# --------------------------------------------------------------
+# EDITAR POST 
+# --------------------------------------------------------------
+@login_required
+def editarArticulo(request, post_id):
+    current_admin = request.user
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+
+    post = get_object_or_404(Post, id=post_id)
+
+    # Solo el dueño o staff puede editar
+    if not request.user.is_staff and post.user != request.user:
+        messages.error(request, "No tenés permiso para editar este artículo.")
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            edited_post = form.save(commit=False)
+            edited_post.edited_by = request.user
+            edited_post.last_edited = now()
+            edited_post.save()
+            messages.success(request, f'Artículo "{edited_post.title}" actualizado con éxito.')
+            return redirect('dashboard')
+    else:
+        form = PostForm(instance=post)
+
+    context = {
+        "admin_profile": profileAdmin,
+        "form": form,
+        "post": post,
+    }
+    return render(request, 'dashboard/articulos/editarArticulo.html', context)

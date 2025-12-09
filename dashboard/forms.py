@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
 from users.models import Profile
-
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 # Create your models here.
 
 class EditUserForm(forms.ModelForm):
@@ -41,3 +43,13 @@ class AdminPasswordChangeForm(forms.Form):
         if cleaned.get("new_password1") != cleaned.get("new_password2"):
             raise forms.ValidationError("Las contraseñas no coinciden.")
         return cleaned
+    
+class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+        }

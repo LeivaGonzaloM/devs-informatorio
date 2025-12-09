@@ -1,16 +1,69 @@
 {% extends 'dashboard/baseAdmin.html' %}
+{% load static %}
+
 {% block content %}
 <div class="container py-5">
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <h5 class="card-title mb-4">Crear Nuevo Usuario</h5>
-            <form method="POST">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Crear Usuario</button>
-                <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancelar</a>
-            </form>
+    <br><br><br><br><br>
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="bg-primary text-white p-4 rounded-top text-center">
+                    <h3 class="mb-0 fw-bold">Crear Usuario</h3>
+                    <p class="mb-0 opacity-75">Completa los datos para registrar un nuevo usuario</p>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" class="p-4">
+                    {% csrf_token %}
+
+                    <h5 class="fw-bold">Datos del usuario</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Usuario</label>
+                        <input type="text" name="username" class="form-control" placeholder="Nombre de usuario">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" placeholder="Email">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" name="password" class="form-control" placeholder="Contraseña">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Repetir contraseña</label>
+                        <input type="password" name="password2" class="form-control" placeholder="Repetir contraseña">
+                    </div>
+
+                    <hr>
+
+                    <h5 class="fw-bold">Perfil</h5>
+                    <div class="mb-3">
+                        {{ p_form.full_name.label_tag }}
+                        {{ p_form.full_name }}
+                        {{ p_form.full_name.errors }}
+                    </div>
+                    <div class="mb-3">
+                        {{ p_form.phone.label_tag }}
+                        {{ p_form.phone }}
+                        {{ p_form.phone.errors }}
+                    </div>
+                    <div class="mb-3">
+                        {{ p_form.bio.label_tag }}
+                        {{ p_form.bio }}
+                        {{ p_form.bio.errors }}
+                    </div>
+                    <div class="mb-3">
+                        {{ p_form.avatar.label_tag }}
+                        {{ p_form.avatar }}
+                        {{ p_form.avatar.errors }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold mt-3">💾 Crear Usuario</button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary w-100 mt-2">Cancelar</a>
+                </form>
+
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
+

@@ -21,4 +21,5 @@ urlpatterns = [
     path("warn/<int:user_id>/", views.warn_user, name="advertirUsuario"),
     path("dashboard/advertencias/eliminar/<int:adv_id>/", views.eliminar_advertencia, name="eliminarAdvertencia"),
     path('crearArticulo/', views.crearArticulo, name='crearArticulo'), 
+    path('editarArticulo/<int:post_id>/', views.editarArticulo, name='editarArticulo'),
 ]

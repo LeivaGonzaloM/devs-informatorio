@@ -10,9 +10,9 @@
             <div class="card shadow-lg border-0 rounded-4">
 
                 <!-- Header -->
-                <div class="bg-primary text-white p-4 rounded-top text-center">
-                    <h3 class="mb-0 fw-bold">Crear Artículo</h3>
-                    <p class="mb-0 opacity-75">Completa los datos para registrar un nuevo artículo</p>
+                <div class="bg-warning text-white p-4 rounded-top text-center">
+                    <h3 class="mb-0 fw-bold">Editar Artículo</h3>
+                    <p class="mb-0 opacity-75">Modifica los datos del artículo</p>
                 </div>
 
                 <!-- Formulario -->
@@ -22,7 +22,7 @@
                     <!-- Título -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Título</label>
-                        <input type="text" name="title" class="form-control" placeholder="Título del artículo" required>
+                        <input type="text" name="title" value="{{ post.title }}" class="form-control" placeholder="Título del artículo" required>
                         {% if form.title.errors %}
                             <div class="text-danger mt-1">{{ form.title.errors }}</div>
                         {% endif %}
@@ -31,7 +31,7 @@
                     <!-- Descripción -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Contenido</label>
-                        <textarea name="description" class="form-control" rows="6" placeholder="Escribe el contenido del artículo" required></textarea>
+                        <textarea name="description" class="form-control" rows="6" placeholder="Escribe el contenido del artículo" required>{{ post.description }}</textarea>
                         {% if form.description.errors %}
                             <div class="text-danger mt-1">{{ form.description.errors }}</div>
                         {% endif %}
@@ -41,12 +41,15 @@
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Imagen (opcional)</label>
                         <input type="file" name="image" class="form-control">
+                        {% if post.image %}
+                            <small class="text-muted">Imagen actual: <a href="{{ post.image.url }}" target="_blank">Ver</a></small>
+                        {% endif %}
                         {% if form.image.errors %}
                             <div class="text-danger mt-1">{{ form.image.errors }}</div>
                         {% endif %}
                     </div>
 
-                    <button class="btn btn-primary w-100 py-2 fw-bold mt-3">💾 Crear Artículo</button>
+                    <button class="btn btn-warning w-100 py-2 fw-bold mt-3">💾 Guardar Cambios</button>
                     <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary w-100 mt-2">Cancelar</a>
                 </form>
 
@@ -55,4 +58,3 @@
     </div>
 </div>
 {% endblock %}
-

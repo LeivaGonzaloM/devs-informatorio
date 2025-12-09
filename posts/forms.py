@@ -10,17 +10,6 @@ class PostForm(ModelForm):
         model = Post
         fields = ['title', 'description', 'image']
 
-# class CommentForm(forms.ModelForm):
-#     class Meta:
-#         model = Comment
-#         fields = ['content']
-#         widgets = {
-#             'content': forms.Textarea(attrs={
-#                 'class': 'input-field',
-#                 'rows': 3,
-#                 'placeholder': 'Deja tu comentario...'
-#             })
-#         }
 
 class CommentForm(forms.ModelForm):
     gif_url = forms.URLField(max_length=500, required=False)
