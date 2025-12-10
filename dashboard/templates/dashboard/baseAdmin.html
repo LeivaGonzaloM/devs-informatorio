@@ -22,8 +22,11 @@
     />
     <link
       rel="stylesheet"
-      href="{% static 'users/dashboard/assets/libs/tabler-icons/tabler-icons.css' %}"
+      href="{% static 'users/dashboard/assets/css/icons/tabler-icons/tabler-icons.css' %}"
     />
+    <link rel="stylesheet" href="{% static 'dashboard/css/darkmode.css' %}">
+    
+    
   </head>
 
   <body>
@@ -62,14 +65,19 @@
     <script src="{% static 'users/dashboard/assets/libs/jquery/dist/jquery.min.js' %}"></script>
     <script src="{% static 'users/dashboard/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'users/dashboard/assets/libs/simplebar/dist/simplebar.min.js' %}"></script>
+    <script src="{% static 'users/dashboard/assets/libs/apexcharts/dist/apexcharts.min.js' %}"></script>
 
     <script src="{% static 'users/dashboard/assets/js/sidebarmenu.js' %}"></script>
     <script src="{% static 'users/dashboard/assets/js/app.min.js' %}"></script>
-    <script src="{% static 'users/dashboard/assets/js/dashboard.js' %}"></script>
+    
 
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 
     <!-- solar icons -->
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+    <!-- DarkMode para Dashboard -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="{% static 'users/dashboard/assets/js/dashboard.js' %}"></script>
   </body>
 </html>
