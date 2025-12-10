@@ -1,0 +1,32 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block titulo %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+<div class="container" style="min-height: 80vh; display: flex; align-items: center; justify-content: center;">
+  <section class="contact fade-up w-100">
+    <div class="contact-container d-flex justify-content-center">
+
+      <div class="contact-form" style="max-width: 500px; width: 100%; padding: 2rem; background: var(--dark-bg); border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.3);">
+
+        <div class="section-header text-center mb-4">
+          <h2 class="section-title">Eliminar Informe</h2>
+          <p class="section-subtitle">Estás a punto de eliminar el informe: <strong>{{ informe.title }}</strong></p>
+        </div>
+
+        <form action="" method="POST" style="display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
+            {% csrf_token %}
+            <p class="mb-2" style="font-size: 1.1rem; text-align: center;">¿Estás seguro de que deseas eliminar este informe?</p>
+
+            <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                <button type="submit" class="btn-confDelInform">Sí, eliminar</button>
+                <a href="{% url 'informes' %}" class="btn-cancelDelInform">Cancelar</a>
+            </div>
+        </form>
+
+      </div>
+
+    </div>
+  </section>
+</div>
+{% endblock %}

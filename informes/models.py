@@ -1,11 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
-from ckeditor_uploader.fields import RichTextUploadingField
+
 
 # Create your models here.
 class Informe(models.Model):
     title = models.CharField(max_length=100)
-    description = RichTextUploadingField()   # <--- CKEDITOR!
+    description = models.TextField()   # <--- CKEDITOR (Remplazado el 4 por ultima versión)!
     created = models.DateTimeField(auto_now_add=True)
     # image = models.ImageField(upload_to='posts/', null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -28,7 +28,7 @@ class CommentInforme(models.Model):
     post = models.ForeignKey(Informe, on_delete=models.CASCADE, related_name='comments')
     
     # Comentario con CKEditor también
-    content = RichTextUploadingField()
+    content = models.TextField()
 
     dateCreated = models.DateTimeField(auto_now_add=True)
     gif_url = models.URLField(max_length=500, null=True, blank=True)

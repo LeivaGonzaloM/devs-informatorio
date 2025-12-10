@@ -11,38 +11,53 @@
       <div class="section-header">
         <h2 class="section-title">Editar Informe</h2>
         {% if error %}
-          <p style="color: red;">{{ error }}</p>
+          <p style="color: red">{{ error }}</p>
         {% endif %}
         <p class="section-subtitle">Panel de informes</p>
       </div>
 
       <div class="contact-form-wrapper">
         <div class="contact-form">
-          <form id="editInformeForm" action="" method="POST" enctype="multipart/form-data">
+          <form
+            id="editForm"
+            action=""
+            method="POST"
+            enctype="multipart/form-data"
+          >
             {% csrf_token %}
 
-            <!-- Título -->
+            <!-- Título del informe -->
             <div class="form-group">
-              <label for="id_title">Título</label>
-              <input type="text" name="title" id="id_title"
-                     value="{{ informe.title }}"
-                     class="input-field" placeholder="Ingrese título del informe" required>
+              <label for="title">Título</label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                placeholder="Título del informe"
+                value="{{ informe.title }}"
+                required
+                class="form-control"
+              />
             </div>
 
-            <!-- Descripción enriquecida (CKEditor) -->
+            <!-- Contenido con CKEditor 5 -->
             <div class="form-group">
-              <label for="id_description">Descripción</label>
-              <textarea name="description" id="editorDescripcion"
-                        rows="10" class="textarea-field"
-                        required>{{ informe.description|safe }}</textarea>
+              <label for="editor">Contenido del Informe</label>
+              <div id="toolbar-container"></div>
+              <div
+                id="editor"
+                contenteditable="true"
+                style="border: 1px solid #ccc; min-height: 300px; padding: 10px;"
+              >{{ informe.description|safe }}</div>
+              <!-- textarea oculto que enviará el contenido al servidor -->
+              <textarea
+                id="description"
+                name="description"
+                style="display: none;"
+              ></textarea>
             </div>
 
-            <div class="update-buttons">
-              <button type="submit" id="editInformeBtn" class="btn-edit-post">
-                Actualizar informe
-              </button>
-            </div>
-
+            <button type="submit" class="btn-primary btn-submit">Actualizar</button>
           </form>
         </div>
       </div>
@@ -51,16 +66,43 @@
   </section>
 </div>
 
-<!-- CKEditor -->
-<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
-
+<!-- CKEditor 5 DecoupledEditor avanzado sin marca de agua -->
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/decoupled-document/ckeditor.js"></script>
 <script>
-    CKEDITOR.replace("editorDescripcion", {
-        height: 300,
-        extraPlugins: 'uploadimage,image2',
-    });
+DecoupledEditor
+    .create(document.querySelector("#editor"), {
+        ckfinder: {
+            uploadUrl: "{% url 'ckeditor5_upload' %}", // Endpoint Django para subir archivos
+        },
+        toolbar: [
+            "heading", "|",
+            "bold", "italic", "underline", "strikethrough", "highlight",
+            "fontColor", "fontBackgroundColor", "link", "|",
+            "alignment", "|",
+            "bulletedList", "numberedList", "outdent", "indent", "blockQuote", "|",
+            "insertTable", "uploadImage", "mediaEmbed", "codeBlock", "|",
+            "undo", "redo"
+        ],
+        image: {
+            toolbar: ["imageTextAlternative", "imageStyle:full", "imageStyle:side"]
+        },
+        table: {
+            contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"]
+        }
+    })
+    .then(editor => {
+        // Mueve la toolbar al contenedor
+        const toolbarContainer = document.querySelector("#toolbar-container");
+        toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+        window.editor = editor;
+
+        // Copiar contenido al textarea antes de enviar el formulario
+        const form = document.querySelector("#editForm");
+        form.addEventListener("submit", () => {
+            document.querySelector("#description").value = editor.getData();
+        });
+    })
+    .catch(error => console.error(error));
 </script>
 
-<script src="{% static 'informes/js/editInforme.js' %}"></script>
 {% endblock %}
-

@@ -15,6 +15,7 @@ def informes(request):
                   )
 
 
+@login_required
 def crear_informe(request):
     if request.method == "POST":
         form = InformeForm(request.POST, request.FILES)
@@ -22,7 +23,7 @@ def crear_informe(request):
             informe = form.save(commit=False)
             informe.user = request.user
             informe.save()
-            return redirect('informes')
+            return redirect('informes')  # Ajusta según tu URL
         else:
             return render(request, "informes/crud/crearInforme.html", {
                 "form": form,

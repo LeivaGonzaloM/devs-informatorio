@@ -46,8 +46,6 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'dashboard',
     'informes',
-    'ckeditor',
-    'ckeditor_uploader',
 ]
 
 ASGI_APPLICATION = "core.asgi.application"
@@ -136,23 +134,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
-
-LOGIN_URL = 'login'
-
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-CKEDITOR_UPLOAD_PATH = "uploads/"
-CKEDITOR_CONFIGS = {
-    "default": {
-        "toolbar": "full",
-        "height": 300,
-        "width": "100%",
-        "extraPlugins": ",".join(["uploadimage", "autogrow"]),
-    }
-}
-
+LOGIN_URL = 'login'
 
 
 # Default primary key field type

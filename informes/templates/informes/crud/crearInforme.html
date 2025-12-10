@@ -7,41 +7,102 @@
 <div class="container">
   <section class="contact fade-up" id="contact">
     <div class="contact-container">
-        
+
       <div class="section-header">
         <h2 class="section-title">Crear Informe</h2>
         {% if error %}
-            <p style="color: red;">{{ error }}</p>
+        <p style="color: red">{{ error }}</p>
         {% endif %}
-        <p id="registerError" style="color:red;"></p>
         <p class="section-subtitle">Devs</p>
       </div>
 
       <div class="contact-form-wrapper">
         <div class="contact-form">
-
-          <form id="createForm" action="{% url 'crearInforme' %}" method="POST" enctype="multipart/form-data">
+          <form
+            id="createForm"
+            action="{% url 'crearInforme' %}"
+            method="POST"
+            enctype="multipart/form-data"
+          >
             {% csrf_token %}
 
+            <!-- Título del informe -->
             <div class="form-group">
               <label for="title">Título</label>
-              <input type="text" id="title" name="title" placeholder="Título del informe" required>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                placeholder="Título del informe"
+                required
+                class="form-control"
+              />
             </div>
 
+            <!-- Contenido con CKEditor 5 -->
             <div class="form-group">
-              <label for="description">Contenido del Informe</label>
-              {{ form.media }}  
-              {{ form.description }}
+              <label for="editor">Contenido del Informe</label>
+              <div id="toolbar-container"></div>
+              <div
+                id="editor"
+                name="description"
+                contenteditable="true"
+                style="border: 1px solid #ccc; min-height: 300px; padding: 10px;"
+              ></div>
+              <!-- textarea oculto que enviará el contenido al servidor -->
+              <textarea
+                id="description"
+                name="description"
+                style="display: none;"
+              ></textarea>
             </div>
 
             <button type="submit" class="btn-primary btn-submit">Crear</button>
           </form>
-
         </div>
       </div>
 
     </div>
   </section>
 </div>
+
+<!-- CKEditor 5 DecoupledEditor avanzado sin marca de agua -->
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/decoupled-document/ckeditor.js"></script>
+<script>
+DecoupledEditor
+    .create(document.querySelector("#editor"), {
+        ckfinder: {
+            uploadUrl: "{% url 'ckeditor5_upload' %}", // Endpoint Django para subir archivos
+        },
+        toolbar: [
+            "heading", "|",
+            "bold", "italic", "underline", "strikethrough", "highlight", "fontColor", "fontBackgroundColor", "link", "|",
+            "alignment", "|",
+            "bulletedList", "numberedList", "outdent", "indent", "blockQuote", "|",
+            "insertTable", "uploadImage", "mediaEmbed", "codeBlock", "|",
+            "undo", "redo"
+        ],
+        image: {
+            toolbar: ["imageTextAlternative", "imageStyle:full", "imageStyle:side"]
+        },
+        table: {
+            contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"]
+        }
+    })
+    .then(editor => {
+        // Mueve la toolbar al contenedor
+        const toolbarContainer = document.querySelector("#toolbar-container");
+        toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+        window.editor = editor;
+
+        // Copiar contenido al textarea antes de enviar el formulario
+        const form = document.querySelector("#createForm");
+        form.addEventListener("submit", () => {
+            document.querySelector("#description").value = editor.getData();
+        });
+    })
+    .catch(error => console.error(error));
+</script>
+
 {% endblock %}
 
