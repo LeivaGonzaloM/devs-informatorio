@@ -68,12 +68,13 @@
             </p>
            
 
-            {% if request.user.is_superuser %}
-            <a href="{% url 'advertirUsuario' user_profile.id %}" class="btn-primary">
-            Advertir usuario
-            </a>
-            <br>
+            {% if request.user.is_superuser and request.user.id != user_profile.id %}
+                <a href="{% url 'advertirUsuario' user_profile.id %}" class="btn-primary">
+                    Advertir usuario
+                </a>
+                <br>
             {% endif %}
+
 
             {% if is_own_profile %}
             <a href="{% url 'editProfile' %}" class="btn-primary">Editar perfil</a>

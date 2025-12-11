@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from posts.models import Post
 from django.contrib.auth.models import User
 from users.models import Profile
-from django.http import HttpResponseForbidden, HttpResponse
+from django.http import HttpResponseForbidden, HttpResponse, HttpResponseRedirect
 from users.models import UserReport
 from django.contrib.auth.decorators import user_passes_test
 from users.forms import WarningForm
@@ -12,46 +12,103 @@ from datetime import timedelta
 from django.utils.timezone import now
 from django.db.models import Q
 from django import forms
-from .forms import EditUserForm, EditProfileForm, AdminPasswordChangeForm
+from .forms import EditUserForm, EditProfileForm
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.forms import UserCreationForm
 from posts.models import Post
 from posts.forms import PostForm
 from users.forms import ProfileUpdateForm
-from .forms import CustomUserCreationForm
+from informes.models import Informe
+from informes.forms import InformeForm
+from django.db.models import Count
+from django.utils import timezone
 
 
 # Create your views here.
 @login_required
 def dashboard(request):
-
     if request.user.is_staff or request.user.is_superuser:
-
         current_admin = request.user
         profile, created = Profile.objects.get_or_create(user=current_admin)
 
+        # Datos principales
         users = User.objects.all()
-        profiles = Profile.objects.all()
+        profiles = Profile.objects.select_related('user').all()
         posts = Post.objects.all()
-        reports = UserReport.objects.all().order_by('-created')  # últimos primero
+        informes = Informe.objects.all().order_by("-created")
+        reports = UserReport.objects.all().order_by('-created')
         warnings = Warning.objects.all()
-        # Contar usuarios actualmente bloqueados
-        blocked_count = sum(1 for p in profiles if p.is_currently_blocked)
-        # Limitar los reportes que se muestran (ej: 5 más recientes)
+
+        # Contadores y métricas
+        blocked_count = sum(1 for p in profiles if getattr(p, 'is_currently_blocked', False))
+        active_users = sum(1 for p in profiles if getattr(p, 'is_currently_blocked', False) is False)
+        warned_users = warnings.count()
+        reported_users = reports.values('reported_user').distinct().count()
+        total_posts = posts.count()
+        visible_posts = posts.filter(oculto=False).count()
+        hidden_posts = posts.filter(oculto=True).count()
+        total_informes = informes.count()
+        visible_informes = informes.filter(oculto=False).count()
+        hidden_informes = informes.filter(oculto=True).count()
+        total_reports = reports.count()
+
+        # Listas recientes
+        recent_signups = users.order_by('-date_joined')[:5]
+        recent_posts = posts.order_by('-created')[:5]
         recent_reports = reports[:5]
 
-        return render(request, 'dashboard/dashboardIndex.html', {
-            'admin_profile': profile,
+        # Últimos usuarios reportados
+        latest_reported_users = User.objects.filter(
+            id__in=reports.values_list('reported_user', flat=True)
+        ).order_by('-date_joined')[:5]  # Limitamos a 5 recientes
+
+        # Últimos usuarios bloqueados
+        latest_blocked_users = profiles.filter(
+            is_blocked=True
+        ).order_by('-blocked_until')[:5]
+
+        # Más comentados
+        most_commented_posts = posts.annotate(comment_count=Count('comments')).order_by('-comment_count')[:5]
+
+        # Autores más activos
+        top_authors = posts.values('user__username').annotate(total_posts=Count('user')).order_by('-total_posts')[:5]
+
+        # Usuarios advertidos (se reemplaza la sección de "Reportes por tipo")
+        warned_users_list = User.objects.filter(
+            id__in=warnings.values_list('user', flat=True)
+        ).order_by('-date_joined')[:5]
+
+        context = {
             'current_admin': current_admin,
+            'admin_profile': profile,
             'users': users,
             'profiles': profiles,
-            'reports':reports,
-            'warnings':warnings,
-            "blocked_count": blocked_count,
-            "recent_reports": recent_reports,
             'posts': posts,
-        })
+            'informes': informes,
+            'reports': reports,
+            'warnings': warnings,
+            'blocked_count': blocked_count,
+            'active_users': active_users,
+            'warned_users': warned_users,
+            'reported_users': reported_users,
+            'total_posts': total_posts,
+            'visible_posts': visible_posts,
+            'hidden_posts': hidden_posts,
+            'total_informes': total_informes,
+            'visible_informes': visible_informes,
+            'hidden_informes': hidden_informes,
+            'total_reports': total_reports,
+            'recent_signups': recent_signups,
+            'recent_posts': recent_posts,
+            'recent_reports': recent_reports,
+            'latest_reported_users': latest_reported_users,
+            'latest_blocked_users': latest_blocked_users,
+            'most_commented_posts': most_commented_posts,
+            'top_authors': top_authors,
+            'warned_users_list': warned_users_list,
+        }
+
+        return render(request, 'dashboard/dashboardIndex.html', context)
 
     else:
         return render(request, 'dashboard/acceso_denegado.html')
@@ -270,12 +327,16 @@ def listUsuarios(request):
 def perfilUsuario(request, user_id):
     current_admin = request.user
     profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+    warnings = Warning.objects.all()
     user = get_object_or_404(User, id=user_id)
+    reports = UserReport.objects.filter(reported_user=user)
     profile = user.profile
     return render(request, "dashboard/usuarios/userProfile/perfilUsuario.html", {
+        "warnings" : warnings,
         "admin_profile": profileAdmin,
         "u": user,
-        "profile": profile
+        "profile": profile,
+        "reports" : reports,
     })
 
 # --------------------------------------------------------------
@@ -449,3 +510,258 @@ def editarArticulo(request, post_id):
         "post": post,
     }
     return render(request, 'dashboard/articulos/editarArticulo.html', context)
+
+def listaArticulos(request):
+    query = request.GET.get("q", "").strip()
+    current_admin = request.user
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+    posts = Post.objects.all().order_by("-id")
+
+    if query:
+        posts = posts.filter(
+            Q(title__icontains=query) |
+            Q(user__username__icontains=query)
+        )
+
+    context = {
+        "admin_profile": profileAdmin,
+        "posts": posts,
+        "query": query,
+    }
+    return render(request, "dashboard/articulos/listaArticulos.html", context)
+
+@user_passes_test(lambda u: u.is_superuser)
+def toggleOculto(request, post_id):
+    if request.method != "POST":
+        # opcional: devolver 405 o redirigir
+        return redirect("dashboard")
+
+    post = get_object_or_404(Post, id=post_id)
+    post.oculto = not post.oculto
+    post.save()
+
+    if post.oculto:
+        messages.success(request, f'El artículo "{post.title}" quedó oculto.')
+    else:
+        messages.success(request, f'El artículo "{post.title}" se publicó (visible).')
+
+    return redirect("dashboard")
+
+# --------------------------------------------------------------
+# Lista de informes 
+# --------------------------------------------------------------
+@user_passes_test(lambda u: u.is_superuser)
+def listaInformes(request):
+    query = request.GET.get("q", "")
+    current_admin = request.user
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+    informes = Informe.objects.all().order_by("-created")
+
+    if query:
+        informes = informes.filter(
+            Q(title__icontains=query) |
+            Q(user__username__icontains=query) |
+            Q(description__icontains=query)
+        )
+
+    return render(request, "dashboard/informes/listaInformes.html", {
+        "admin_profile" : profileAdmin,
+        "informes": informes,
+        "query": query,
+    })
+
+# --------------------------------------------------------------
+# Crear  informes 
+# --------------------------------------------------------------
+@login_required
+def crearInforme(request):
+    current_admin = request.user
+    profileAdmin, _ = Profile.objects.get_or_create(user=current_admin)
+
+    if request.method == "POST":
+        form = InformeForm(request.POST)
+        if form.is_valid():
+            informe = form.save(commit=False)
+            informe.user = request.user
+            informe.save()
+            messages.success(request, "Informe creado correctamente.")
+            return redirect("listaInformes")
+
+    form = InformeForm()
+    return render(request, "dashboard/informes/crearInforme.html", {
+        "form": form,
+        "admin_profile": profileAdmin
+    })
+
+# --------------------------------------------------------------
+# Editar  informes 
+# --------------------------------------------------------------
+@login_required
+def editarInforme(request, inf_id):
+    informe = get_object_or_404(Informe, id=inf_id)
+    current_admin = request.user
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+
+    if not request.user.is_staff and informe.user != request.user:
+        messages.error(request, "No tenés permiso.")
+        return redirect("listaInformes")
+
+    if request.method == "POST":
+        form = InformeForm(request.POST, instance=informe)
+        if form.is_valid():
+            edit = form.save(commit=False)
+            edit.edited_by = request.user
+            edit.save()
+            messages.success(request, "Informe actualizado.")
+            return redirect("listaInformes")
+
+    else:
+        form = InformeForm(instance=informe)
+
+    return render(request, "dashboard/informes/editarInforme.html", {
+        "admin_profile": profileAdmin,
+        "form": form,
+        "informe": informe
+    })
+# --------------------------------------------------------------
+# Eliminar  informes 
+# --------------------------------------------------------------
+@login_required
+def eliminarInforme(request, inf_id):
+    informe = get_object_or_404(Informe, id=inf_id)
+
+    if request.method == "POST":
+        informe.delete()
+        messages.success(request, "Informe eliminado.")
+        return redirect("listaInformes")
+
+    return redirect("listaInformes")
+
+# --------------------------------------------------------------
+# ocultar  informes 
+# --------------------------------------------------------------
+@login_required
+def toggleOcultoInforme(request, inf_id):
+    informe = get_object_or_404(Informe, id=inf_id)
+
+    if request.method != "POST":
+        return redirect("listaInformes")
+
+    informe.oculto = not informe.oculto
+    informe.save()
+
+    if informe.oculto:
+        messages.warning(request, f'Informe "{informe.title}" ocultado.')
+    else:
+        messages.success(request, f'Informe "{informe.title}" ahora es visible.')
+
+    return redirect("listaInformes")
+
+# --------------------------------------------------------------
+# Ver  informe Detalle
+# --------------------------------------------------------------
+def verInforme(request, pk):
+    current_admin = request.user
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+    """
+    Vista para mostrar un informe completo desde el dashboard.
+    """
+    informe = get_object_or_404(Informe, pk=pk)
+    
+    return render(request, 'dashboard/informes/detalleInforme.html', {
+        'admin_profile': profileAdmin,
+        'informe': informe,
+    })
+
+# --------------------------------------------------------------
+# ATAJOS  ASIDE 
+# --------------------------------------------------------------
+def block_Usuario(request):
+    users = User.objects.all()  # Obtener todos los usuarios
+    current_admin = request.user
+    profileAdmin, _ = Profile.objects.get_or_create(user=current_admin)
+    if request.method == "POST":
+        user_id = request.POST.get("user")
+        time_unit = request.POST.get("time_unit")
+        time_value = int(request.POST.get("time_value"))
+
+        if user_id:
+            user = get_object_or_404(User, id=user_id)
+            profile = user.profile
+
+            # Calcular la duración del bloqueo según la unidad seleccionada
+            if time_unit == "minutes":
+                # Usar el valor directamente como argumento de timedelta
+                profile.block(minutes=time_value)
+            elif time_unit == "hours":
+                profile.block(hours=time_value)
+            elif time_unit == "days":
+                profile.block(days=time_value)
+
+            # Redirigir al dashboard o mostrar un mensaje de éxito
+            return redirect('dashboard')  # O la vista que desees
+
+    return render(request, 'dashboard/atajos/blockUserNow.html', {
+        "admin_profile": profileAdmin,
+        'users': users})
+def advertir_usuario(request):
+    usuarios = User.objects.all()  # Obtener todos los usuarios
+    current_admin = request.user
+    profileAdmin, _ = Profile.objects.get_or_create(user=current_admin)
+    if request.method == 'POST':
+        usuario_id = request.POST['usuario']
+        mensaje = request.POST['mensaje']
+        nivel = request.POST['nivel']
+        duracion = request.POST['duracion']
+
+        usuario = User.objects.get(id=usuario_id)
+
+        # Lógica para crear la advertencia
+        warning = Warning(
+            user=usuario,
+            admin=request.user,
+            mensaje=mensaje,
+            nivel=nivel,
+        )
+
+        # Determina la duración de la advertencia
+        if duracion == "24h":
+            warning.expires_at = timezone.now() + timedelta(hours=24)
+        elif duracion == "3d":
+            warning.expires_at = timezone.now() + timedelta(days=3)
+        elif duracion == "1w":
+            warning.expires_at = timezone.now() + timedelta(weeks=1)
+        elif duracion == "1m":
+            warning.expires_at = timezone.now() + timedelta(weeks=4)
+        elif duracion == "perm":
+            warning.expires_at = None  # Permanente
+
+        warning.save()
+
+        return HttpResponseRedirect('/dashboard/')
+    
+    return render(request, 'dashboard/atajos/advertirUsuarioNow.html', {
+        "admin_profile": profileAdmin,
+        'usuarios': usuarios})
+# Vista para eliminar un usuario
+def eliminar_usuario(request):
+    usuarios = User.objects.all()  # Obtener todos los usuarios disponibles
+    current_admin = request.user
+    profileAdmin, _ = Profile.objects.get_or_create(user=current_admin)
+
+    if request.method == 'POST':
+        usuario_id = request.POST.get('usuario')  # Obtener el usuario seleccionado
+
+        if usuario_id:
+            usuario = get_object_or_404(User, id=usuario_id)  # Obtener el usuario por ID
+            try:
+                # Eliminar el usuario seleccionado
+                usuario.delete()
+                messages.success(request, f"El usuario {usuario.username} ha sido eliminado correctamente.")
+            except Exception as e:
+                messages.error(request, f"Error al eliminar el usuario: {str(e)}")
+            return redirect('dashboard')  # Redirigir al dashboard después de eliminar
+
+    return render(request, 'dashboard/atajos/eliminarUsuarioNow.html', {
+        "admin_profile": profileAdmin,
+        'usuarios': usuarios})

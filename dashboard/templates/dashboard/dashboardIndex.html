@@ -5,181 +5,170 @@
 <div class="body-wrapper-inner">
   <div class="container-fluid">
 
-    <!-- Row 1: Usuarios -->
+    <!-- ===================== Row 1: Usuarios ===================== -->
     <div class="row">
+      <!-- Tabla Usuarios -->
       <div class="col-lg-8 d-flex align-items-stretch">
         <div class="card w-100">
           <div class="card-body">
-            <h5 class="card-title fw-semibold mb-4">
-              Usuarios
-              <a href="{% url 'crearUsuario' %}" class="btn btn-primary btn-sm">Crear Usuario</a>
-            </h5>
-
-            <div class="table-responsive" data-simplebar>
-              <table class="table text-nowrap align-middle table-custom mb-0">
-                <thead>
-                  <tr>
-                    <th scope="col" class="text-dark fw-normal ps-0">Usuario</th>
-                    <th scope="col" class="text-dark fw-normal">Bloquear</th>
-                    <th scope="col" class="text-dark fw-normal">Editar</th>
-                    <th scope="col" class="text-dark fw-normal">Eliminar</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for usuario in profiles %}
-                  <tr>
-                    <td class="ps-0">
-                      <div class="d-flex align-items-center gap-6">
-                        <img src="{{ usuario.avatar.url }}" alt="avatar" width="50" class="rounded" />
-                        <div>
-                          {% if usuario.is_currently_blocked %}
-                          <h6 class="mb-0 text-danger text-decoration-line-through">
-                            {{ usuario.user.username }} (Bloqueado hasta: {{ usuario.blocked_until|date:"d/m/y H:i" }})
-                          </h6>
-                          {% else %}
-                          <h6 class="mb-0">{{ usuario.user.username }}</h6>
-                          {% endif %}
-                          <span>{{ usuario.user.email }}</span>
-                        </div>
-                      </div>
-                    </td>
-
-                    <td>
-                      {% if usuario.is_currently_blocked %}
-                      <form action="{% url 'desbloquearUsuario' usuario.user.id %}" method="POST">
-                        {% csrf_token %}
-                        <button class="btn btn-warning btn-sm">Desbloquear</button>
-                      </form>
-                      {% else %}
-                      <a href="{% url 'bloquearUsuario' usuario.user.id %}" class="btn btn-danger btn-sm">Bloquear</a>
-                      {% endif %}
-                    </td>
-
-                    <td>
-                      <a href="{% url 'editarUsuario' usuario.user.id %}" class="badge bg-success-subtle text-success">Editar</a>
-                    </td>
-
-                    <td>
-                      <form action="{% url 'deleteUser' usuario.user.id %}" method="POST" onsubmit="return confirm('¿Eliminar este usuario?');">
-                        {% csrf_token %}
-                        <button class="btn btn-danger btn-sm">Eliminar</button>
-                      </form>
-                    </td>
-                  </tr>
-                  {% empty %}
-                  <tr>
-                    <td colspan="4" class="text-center py-3">No hay usuarios registrados.</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+            <div class="headerCard d-flex justify-content-between align-items-center">
+              <h5 class="card-title fw-semibold mb-4">Usuarios</h5>
+              <a href="{% url 'crearUsuario' %}" class="btn btn-primary btn-sm">
+                <img src="{% static 'dashboard/images/icons/AddUser.png' %}" width="18">
+              </a>
             </div>
+
+            {% include "dashboard/componentes/tablaUsuarios.html" %}
           </div>
         </div>
       </div>
 
-      <!-- Sidebar Estadísticas -->
+      <!-- Sidebar Usuarios -->
       <div class="col-lg-4 d-flex flex-column gap-3">
         <div class="card">
           <div class="card-body">
             <div class="d-flex align-items-center gap-6 mb-4 pb-3">
               <span class="round-48 d-flex align-items-center justify-content-center rounded bg-secondary-subtle">
-                <iconify-icon icon="solar:football-outline" class="fs-6 text-secondary"></iconify-icon>
+                <iconify-icon icon="gis:globe-users" class="fs-6 text-secondary"></iconify-icon>
               </span>
-              <h6 class="mb-0 fs-4">Usuarios</h6>
+              <h6 class="mb-0 fs-4">Resumen Usuarios</h6>
             </div>
-            <div class="d-flex align-items-center justify-content-between mb-6">
-              
-            </div>
-              <h6>Usuarios Registrados: {{ profiles|length }}</h6>
-              <h6 >Usuarios reportados: {{ reports|length }}</h6>
-              <h6 >Usuarios advertidos: {{ warnings|length }}</h6>
-              <h6>Usuarios bloqueados: {{ blocked_count }}</h6>
 
-          </div>
-        </div>
+            <div class="mb-3">
+              <span class="badge bg-primary">Registrados: {{ users.count }}</span><br>
+              <span class="badge bg-success">Activos: {{ active_users }}</span><br>
+              <span class="badge bg-info text-dark">Reportados: {{ reported_users }}</span><br>
+              <span class="badge bg-warning text-dark">Advertidos: {{ warned_users }}</span><br>
+              <span class="badge bg-danger">Bloqueados: {{ blocked_count }}</span>
+            </div>
 
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex align-items-center gap-6 mb-4">
-              <span class="round-48 d-flex align-items-center justify-content-center rounded bg-danger-subtle">
-                <iconify-icon icon="solar:box-linear" class="fs-6 text-danger"></iconify-icon>
-              </span>
-              <h6 class="mb-0 fs-4">Artículos</h6>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <h6>Cantidad de Articulos: {{ posts|length }}</h6>
-              </div>
-            </div>
+            <h6>Últimos registrados</h6>
+            <ul class="list-group list-group-flush mb-3">
+              {% for user in recent_signups %}
+              <li class="list-group-item">{{ user.username }} - {{ user.date_joined|date:"d/m/Y" }}</li>
+              {% endfor %}
+            </ul>
+
+            <h6>Últimos usuarios reportados</h6>
+            <ul class="list-group list-group-flush mb-3">
+              {% for user in latest_reported_users %}
+                <li class="list-group-item">{{ user.username }} - {{ user.date_joined|date:"d/m/Y H:i" }}</li>
+              {% empty %}
+                <li class="list-group-item text-muted">No hay usuarios reportados recientes</li>
+              {% endfor %}
+            </ul>
+
+            <h6>Últimos usuarios bloqueados</h6>
+            <ul class="list-group list-group-flush">
+              {% for profile in latest_blocked_users %}
+                <li class="list-group-item">{{ profile.user.username }} - Bloqueado hasta: {{ profile.blocked_until|date:"d/m/Y H:i" }}</li>
+              {% empty %}
+                <li class="list-group-item text-muted">No hay usuarios bloqueados recientes</li>
+              {% endfor %}
+            </ul>
+
+            <h6>Últimos usuarios advertidos</h6>
+            <ul class="list-group list-group-flush">
+              {% for user in warned_users_list %}
+                <li class="list-group-item">{{ user.username }} - Advertido el: {{ user.date_joined|date:"d/m/Y" }}</li>
+              {% empty %}
+                <li class="list-group-item text-muted">No hay usuarios advertidos recientes</li>
+              {% endfor %}
+            </ul>
+
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Row 2: Facts -->
-    <div class="row">
+    <!-- ===================== Row 2: Artículos ===================== -->
+    <div class="row mt-4">
+      <!-- Tabla Artículos -->
       <div class="col-lg-8 d-flex align-items-stretch">
         <div class="card w-100">
           <div class="card-body">
-            <h5 class="card-title fw-semibold mb-4">
-              Artículos
-              <a href="{% url 'crearArticulo' %}" class="btn btn-primary btn-sm">Crear Artículo</a>
-            </h5>
+            <div class="headerArticulos d-flex justify-content-between align-items-center">
+                <h5 class="card-title fw-semibold mb-4">Artículos</h5>
+                <a href="{% url 'crearArticulo' %}" class="btn btn-success">
+                  <img src="{% static 'dashboard/images/icons/articuloIcon.png' %}" width="18">
+                </a>
+            </div>
 
-            <div class="table-responsive" data-simplebar>
-              <table class="table text-nowrap align-middle table-custom mb-0">
-                <thead>
-                  <tr>
-                    <th scope="col" class="text-dark fw-normal ps-0">Título / Usuario</th>
-                    <th scope="col" class="text-dark fw-normal">Ocultar</th>
-                    <th scope="col" class="text-dark fw-normal">Editar</th>
-                    <th scope="col" class="text-dark fw-normal">Eliminar</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for post in posts %}
-                  <tr>
-                    <td class="ps-0">
-                      <div class="d-flex align-items-center gap-6">
-                        <img src="{{ post.image.url }}" alt="prd1" width="50" class="rounded" />
-                        <div>
-                          <h6 class="mb-0">{{ post.title }}</h6>
-                          <span>{{ post.user.username }}</span>
-                        </div>
-                      </div>
-                    </td>
+            {% include "dashboard/componentes/tablaArticulos.html" %}
 
-                    <td>
-                      <a href="#" class="btn btn-warning btn-sm">
-                        {% if post.oculto %}Mostrar{% else %}Ocultar{% endif %}
-                      </a>
-                    </td>
-
-                    <td>
-                      <a href="{% url 'editarArticulo' post.id %}" class="badge bg-success-subtle text-success">Editar</a>
-                    </td>
-
-                    <td>
-                      <form action="{% url 'deletePost' post.id %}" method="POST" onsubmit="return confirm('¿Eliminar este post?');">
-                        {% csrf_token %}
-                        <button class="btn btn-danger btn-sm">Eliminar</button>
-                      </form>
-                    </td>
-                  </tr>
-                  {% empty %}
-                  <tr>
-                    <td colspan="4" class="text-center py-3">No hay Facts disponibles.</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+            <!-- Resumen rápido de artículos -->
+            <div class="d-flex gap-3 mt-3">
+                <span class="badge bg-primary">Total: {{ total_posts }}</span>
+                <span class="badge bg-success">Visibles: {{ visible_posts }}</span>
+                <span class="badge bg-warning text-dark">Ocultos: {{ hidden_posts }}</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Sidebar Publicaciones -->
+      <!-- Sidebar Artículos -->
+      <div class="col-lg-4 d-flex align-items-stretch">
+        <div class="card w-100">
+          <div class="card-body p-4">
+            <h6 class="card-title fw-semibold mb-3">Artículos recientes</h6>
+            <ul class="list-group list-group-flush mb-3">
+              {% for post in recent_posts %}
+              <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                {{ post.title }}
+                <small class="text-muted">{{ post.created|date:"d/m/Y" }}</small>
+              </li>
+              {% endfor %}
+            </ul>
+
+            <h6 class="card-title fw-semibold mb-3">Más comentados</h6>
+            <ul class="list-group list-group-flush mb-3">
+              {% for post in most_commented_posts %}
+              <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                {{ post.title }} <span class="badge bg-secondary">{{ post.comment_count }}</span>
+              </li>
+              {% endfor %}
+            </ul>
+
+            <h6 class="card-title fw-semibold mb-3">Autores más activos</h6>
+            <ul class="list-group list-group-flush mb-3">
+              {% for author in top_authors %}
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                  {{ author.user__username }} <span class="badge bg-secondary">{{ author.total_posts }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== Row 3: Informes ===================== -->
+    <div class="row mt-4">
+      <!-- Tabla Informes -->
+      <div class="col-lg-8 d-flex align-items-stretch">
+        <div class="card w-100">
+          <div class="card-body">
+            <div class="headerArticulos d-flex justify-content-between align-items-center">
+                <h5 class="card-title fw-semibold mb-4">Informes</h5>
+                <a href="{% url 'crearInforme' %}" class="btn btn-success">
+                  <img src="{% static 'dashboard/images/icons/InformeIcon.png' %}" width="18">
+                </a>
+            </div>
+
+            {% include "dashboard/componentes/tablaInformes.html" %}
+
+            <div class="d-flex gap-3 mt-3">
+                <span class="badge bg-primary">Total: {{ total_informes }}</span>
+                <span class="badge bg-success">Visibles: {{ visible_informes }}</span>
+                <span class="badge bg-warning text-dark">Ocultos: {{ hidden_informes }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Reportes -->
       <div class="col-lg-4 d-flex align-items-stretch">
         <div class="card w-100">
           <div class="card-body p-4">
@@ -187,14 +176,13 @@
               <h5 class="card-title fw-semibold mb-0">Reportes</h5>
               <span class="badge bg-primary">{{ total_reports }}</span>
             </div>
-          
-            <ul class="list-group list-group-flush">
+
+            <ul class="list-group list-group-flush mb-3">
               {% if recent_reports %}
                 {% for report in recent_reports %}
                   <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                     <div>
-                      <strong>{{ report.user.username }}</strong> 
-                      {% if report.reason %} - {{ report.reason }}{% endif %}
+                      <strong>{{ report.user.username }}</strong> - {{ report.reason }}
                     </div>
                     <small class="text-muted">{{ report.created|date:"d M H:i" }}</small>
                   </li>
@@ -206,9 +194,9 @@
           </div>
         </div>
       </div>
+    </div>
 
-
-    <!-- Footer -->
+    <!-- ===================== Footer ===================== -->
     <div class="py-6 px-6 text-center">
       <p class="mb-0 fs-4">
         Design and Developed by
@@ -221,4 +209,3 @@
   </div>
 </div>
 {% endblock %}
-

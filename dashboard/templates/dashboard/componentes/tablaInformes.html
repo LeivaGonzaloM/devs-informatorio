@@ -1,0 +1,74 @@
+<div class="table-responsive">
+  <table class="table align-middle table-custom mb-0">
+    <thead>
+      <tr>
+        <th class="ps-0">Título</th>
+        <th>Autor</th>
+        <th>Comentarios</th>
+        <th>Fecha</th>
+        <th>Ocultar</th>
+        <th>Editar</th>
+        <th>Eliminar</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for informe in informes %}
+      <tr>
+        <!-- TÍTULO CON LINK PARA VER EL INFORME -->
+        <td class="ps-0 fw-semibold">
+          <a href="{% url 'verInforme' informe.id %}" class="text-decoration-none">
+            {{ informe.title }}
+          </a>
+        </td>
+
+        <!-- AUTOR -->
+        <td>{{ informe.user.username }}</td>
+
+        <!-- CANTIDAD DE COMENTARIOS -->
+        <td>
+          <span class="badge bg-primary">
+            {{ informe.comments.count }}
+          </span>
+        </td>
+
+        <!-- FECHA -->
+        <td>{{ informe.created|date:"d/m/Y H:i" }}</td>
+
+        <!-- OCULTAR / MOSTRAR -->
+        <td>
+          <form method="POST" action="{% url 'toggleOcultoInforme' informe.id %}">
+            {% csrf_token %}
+            {% if informe.oculto %}
+              <button class="btn btn-warning btn-sm">Mostrar</button>
+            {% else %}
+              <button class="btn btn-secondary btn-sm">Ocultar</button>
+            {% endif %}
+          </form>
+        </td>
+
+        <!-- EDITAR -->
+        <td>
+          <a href="{% url 'editInforme' informe.id %}" class="btn btn-info btn-sm">
+            Editar
+          </a>
+        </td>
+
+        <!-- ELIMINAR -->
+        <td>
+          <form method="POST" action="{% url 'eliminarInforme' informe.id %}"
+                onsubmit="return confirm('¿Eliminar este informe?');">
+            {% csrf_token %}
+            <button class="btn btn-danger btn-sm">Eliminar</button>
+          </form>
+        </td>
+      </tr>
+
+      {% empty %}
+      <tr>
+        <td colspan="7" class="text-center py-4">No hay informes disponibles.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

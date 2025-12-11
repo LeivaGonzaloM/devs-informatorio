@@ -10,6 +10,7 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='posts/' , verbose_name="Imagen: " ,null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    oculto = models.BooleanField(default=False)
 
     # Campos para el Update de los posts:
     last_edited = models.DateTimeField(null=True, blank=True)

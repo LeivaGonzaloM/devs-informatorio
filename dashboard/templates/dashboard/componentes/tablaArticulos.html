@@ -1,0 +1,79 @@
+<div class="table-responsive">
+  <table class="table text-nowrap align-middle table-custom mb-0">
+    <thead>
+      <tr>
+        <th scope="col" class="text-dark fw-normal ps-0">Título / Usuario</th>
+        <th scope="col" class="text-dark fw-normal">Comentarios</th>
+        <th scope="col" class="text-dark fw-normal">Fecha</th>
+        <th scope="col" class="text-dark fw-normal">Ocultar</th>
+        <th scope="col" class="text-dark fw-normal">Editar</th>
+        <th scope="col" class="text-dark fw-normal">Eliminar</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for post in posts %}
+      <tr>
+        <!-- Título + Usuario + Imagen -->
+        <td class="ps-0">
+          <div class="d-flex align-items-center gap-3">
+            {% if post.image %}
+              <img src="{{ post.image.url }}" alt="imagen" width="60" class="rounded">
+            {% else %}
+              <span class="text-muted">Sin imagen</span>
+            {% endif %}
+
+            <div>
+              <h6 class="mb-0">
+                <a href="{% url 'detallePost' post.id %}" class="text-decoration-none">
+                  {{ post.title }}
+                </a>
+              </h6>
+              <small class="text-muted">por {{ post.user.username }}</small>
+            </div>
+          </div>
+        </td>
+
+        <!-- CANTIDAD DE COMENTARIOS -->
+        <td>
+          <span class="badge bg-primary">{{ post.comments.count }}</span>
+        </td>
+
+        <!-- FECHA -->
+        <td>{{ post.created|date:"d/m/Y H:i" }}</td>
+
+        <!-- BOTÓN OCULTAR/MOSTRAR -->
+        <td>
+          <form method="POST" action="{% url 'toggleOculto' post.id %}" style="display:inline;">
+            {% csrf_token %}
+            {% if post.oculto %}
+              <button class="btn btn-warning btn-sm" type="submit">Mostrar</button>
+            {% else %}
+              <button class="btn btn-secondary btn-sm" type="submit">Ocultar</button>
+            {% endif %}
+          </form>
+        </td>
+
+        <!-- EDITAR -->
+        <td>
+          <a href="{% url 'editarArticulo' post.id %}" class="btn btn-info btn-sm">Editar</a>
+        </td>
+
+        <!-- ELIMINAR -->
+        <td>
+          <form method="POST" action="{% url 'deletePost' post.id %}" onsubmit="return confirm('¿Eliminar este artículo?');">
+            {% csrf_token %}
+            <button class="btn btn-danger btn-sm">Eliminar</button>
+          </form>
+        </td>
+      </tr>
+
+      {% empty %}
+      <tr>
+        <td colspan="6" class="text-center py-3">No hay artículos disponibles.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+

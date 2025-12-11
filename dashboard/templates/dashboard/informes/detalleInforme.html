@@ -1,0 +1,98 @@
+{% extends 'dashboard/baseAdmin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+    <br><br><br><br><br>
+
+    <div class="container-fluid py-4">
+        <div class="card shadow-sm">
+
+            <!-- Header del informe -->
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center flex-wrap">
+                <div>
+                    <h4 class="mb-0">{{ informe.title }}</h4>
+                    <small class="text-light">
+                        Creado por {{ informe.user.username }} el {{ informe.created|date:"d/m/Y H:i" }}
+                        {% if informe.last_edited %}
+                            | Editado por {{ informe.edited_by.username }} el {{ informe.last_edited|date:"d/m/Y H:i" }}
+                        {% endif %}
+                    </small>
+                </div>
+                <div class="mt-2 mt-md-0">
+                    <a href="{% url 'editInforme' informe.id %}" class="btn btn-sm btn-info me-2">Editar</a>
+
+                    <form method="POST" action="{% url 'eliminarInforme' informe.id %}" style="display:inline;" onsubmit="return confirm('¿Eliminar este informe?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                    </form>
+
+                    <a href="{% url 'listaInformes' %}" class="btn btn-sm btn-secondary ms-2">Volver</a>
+                </div>
+            </div>
+
+            <div class="card-body">
+
+                <!-- Imagen destacada del informe -->
+                {% if informe.image %}
+                <div class="mb-4 text-center">
+                    <img src="{{ informe.image.url }}" 
+                         class="img-fluid rounded" 
+                         alt="Imagen del informe">
+                </div>
+                {% endif %}
+
+                <!-- Contenido del informe -->
+                <div class="mb-4 informe-contenido">
+                    {{ informe.description|safe }}
+                </div>
+
+                <hr>
+
+                <!-- Comentarios -->
+                <h5>Comentarios ({{ informe.comments.count }})</h5>
+                {% if informe.comments.all %}
+                    <ul class="list-group">
+                        {% for comment in informe.comments.all %}
+                            <li class="list-group-item">
+                                <strong>{{ comment.user.username }}</strong> 
+                                <small class="text-muted">{{ comment.dateCreated|date:"d/m/Y H:i" }}</small>
+                                <p>{{ comment.content }}</p>
+                                {% if comment.gif_url %}
+                                    <img src="{{ comment.gif_url }}" class="img-fluid rounded" style="max-width:200px;" alt="GIF">
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">No hay comentarios para este informe.</p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS para ajustar imágenes y tablas dentro del contenido -->
+<style>
+.informe-contenido img {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block;
+    margin: 10px auto;
+}
+
+.informe-contenido table {
+    width: 100% !important;
+    table-layout: auto;
+    overflow-x: auto;
+    display: block;
+}
+
+.informe-contenido p {
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}
+
+

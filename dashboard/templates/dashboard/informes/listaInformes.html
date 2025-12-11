@@ -1,0 +1,43 @@
+{% extends 'dashboard/baseAdmin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+  <br><br><br><br><br><br>
+
+  <div class="container-fluid py-4">
+    <div class="card">
+      <div class="card-body">
+
+        <h4 class="fw-semibold text-center">Informes</h4>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+          <!-- BUSCADOR -->
+          <form method="GET" class="d-flex">
+            <input
+              type="text"
+              name="q"
+              class="form-control"
+              placeholder="Buscar informe o usuario…"
+              value="{{ query }}"
+            />
+            <button class="btn btn-primary ms-2">
+              <img src="{% static 'dashboard/images/icons/buscar.png' %}" width="18">
+            </button>
+          </form>
+
+          <!-- BOTÓN CREAR INFORME -->
+          <a href="{% url 'createInforme' %}" class="btn btn-success">
+            <img src="{% static 'dashboard/images/icons/informeIcon.png' %}" width="18">
+          </a>
+
+        </div>
+
+        {% include "dashboard/componentes/tablaInformes.html" %}
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

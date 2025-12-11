@@ -18,7 +18,7 @@
               <span class="hide-menu">Atajos</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="#" aria-expanded="false">
+              <a class="sidebar-link" href="{% url 'blockUsuario' %}" aria-expanded="false">
                 <iconify-icon icon="solar:atom-line-duotone"></iconify-icon>
                 <span class="hide-menu">Bloquear Usuario</span>
               </a>
@@ -28,7 +28,7 @@
             <!-- ---------------------------------- -->
             <li class="sidebar-item">
               <a class="sidebar-link justify-content-between disabled" 
-                href="#" aria-expanded="false">
+                href="{% url 'eliminar_usuario' %}" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
                     <iconify-icon icon="solar:atom-line-duotone"></iconify-icon>
@@ -40,7 +40,7 @@
             </li>
             <li class="sidebar-item">
               <a class="sidebar-link justify-content-between"
-                href="" aria-expanded="false">
+                href="{% url 'advertirUser' %}" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
                     <iconify-icon icon="solar:atom-line-duotone"></iconify-icon>
@@ -73,33 +73,27 @@
               <span class="hide-menu">Usuarios</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="#" aria-expanded="false">
+              <a class="sidebar-link" href="{% url 'listaUsuarios' %}" aria-expanded="false">
                 <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
-                <span class="hide-menu">Crear usuario</span>
+                <span class="hide-menu">Administración Usuarios</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{% url 'adminReports' %}" aria-expanded="false">
+                <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
+                <span class="hide-menu">Reportados</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{% url 'listaAdvertencias' %}" aria-expanded="false">
+                <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
+                <span class="hide-menu">Advertidos</span>
               </a>
             </li>
             <li class="sidebar-item">
               <a class="sidebar-link" href="#" aria-expanded="false">
                 <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
-                <span class="hide-menu">Editar usuario</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="#" aria-expanded="false">
-                <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
-                <span class="hide-menu">Eliminar usuario</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="#" aria-expanded="false">
-                <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
-                <span class="hide-menu">Bloquear usuario</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="#" aria-expanded="false">
-                <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
-                <span class="hide-menu">Reportar usuario</span>
+                <span class="hide-menu">Bloqueados</span>
               </a>
             </li>
             <li class="sidebar-item">
@@ -108,18 +102,18 @@
                   <span class="d-flex">
                     <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
                   </span>
-                  <span class="hide-menu">Tablas de Usuarios</span>
+                  <span class="hide-menu">Usuarios</span>
                 </div>
               </a>
               <ul aria-expanded="false" class="collapse first-level">
                 <li class="sidebar-item">
                   <a class="sidebar-link justify-content-between" 
-                    href="{% url 'listaUsuarios' %}">
+                    href="{% url 'crearUsuario' %}">
                     <div class="d-flex align-items-center gap-3">
                       <span class="d-flex">
                         <span class="icon-small"></span>
                       </span>
-                      <span class="hide-menu">Usuarios registrados</span>
+                      <span class="hide-menu">Crear</span>
                     </div>
                   </a>
                 </li>
@@ -130,18 +124,7 @@
                       <span class="d-flex">
                         <span class="icon-small"></span>
                       </span>
-                      <span class="hide-menu">Usuarios reportados</span>
-                    </div>
-                  </a>
-                </li>
-                <li class="sidebar-item">
-                  <a class="sidebar-link justify-content-between" 
-                    href="{% url 'listaAdvertencias' %}">
-                    <div class="d-flex align-items-center gap-3">
-                      <span class="d-flex">
-                        <span class="icon-small"></span>
-                      </span>
-                      <span class="hide-menu">Usuarios advertidos</span>
+                      <span class="hide-menu">Eliminar</span>
                     </div>
                   </a>
                 </li>
@@ -152,35 +135,21 @@
                       <span class="d-flex">
                         <span class="icon-small"></span>
                       </span>
-                      <span class="hide-menu">Usuarios bloqueados</span>
+                      <span class="hide-menu">Advertir</span>
                     </div>
                   </a>
                 </li>
                 <li class="sidebar-item">
-                  <a class="sidebar-link justify-content-between"
+                  <a class="sidebar-link justify-content-between" 
                     href="#">
                     <div class="d-flex align-items-center gap-3">
                       <span class="d-flex">
                         <span class="icon-small"></span>
                       </span>
-                      <span class="hide-menu">Usuarios eliminados</span>
+                      <span class="hide-menu">Bloquear</span>
                     </div>
                   </a>
                 </li>
-                <li class="sidebar-item">
-                  <a class="sidebar-link justify-content-between"
-                    href="#">
-                    <div class="d-flex align-items-center gap-3">
-                      <span class="d-flex">
-                        <span class="icon-small"></span>
-                      </span>
-                      <span class="hide-menu">Usuarios STAFF</span>
-                    </div>
-                  </a>
-                </li>
-                
-                
-
               </ul>
             </li>
 
@@ -193,124 +162,28 @@
               <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-4"></iconify-icon>
               <span class="hide-menu">Públicaciones</span>
             </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link justify-content-between has-arrow" href="javascript:void(0)" aria-expanded="false">
-                <div class="d-flex align-items-center gap-3">
-                  <span class="d-flex">
-                    <iconify-icon icon="solar:document-text-line-duotone" class=""></iconify-icon>
-                  </span>
-                  <span class="hide-menu">Informes</span>
-                </div>
-              </a>
-              <ul aria-expanded="false" class="collapse first-level">
-                <li class="sidebar-item">
-                  <a class="sidebar-link justify-content-between"
-                    href="#">
-                    <div class="d-flex align-items-center gap-3">
-                      <span class="d-flex">
-                        <span class="icon-small"></span>
-                      </span>
-                      <span class="hide-menu">Crear informe</span>
-                    </div>
- 
-                  </a>
-                </li>
-                <li class="sidebar-item">
-                  <a class="sidebar-link justify-content-between" target="_blank"
-                    href="#">
-                    <div class="d-flex align-items-center gap-3">
-                      <span class="d-flex">
-                        <span class="icon-small"></span>
-                      </span>
-                      <span class="hide-menu">Editar informe</span>
-                    </div>
- 
-                  </a>
-                </li>
-                <li class="sidebar-item">
-                  <a class="sidebar-link justify-content-between" target="_blank"
-                    href="#">
-                    <div class="d-flex align-items-center gap-3">
-                      <span class="d-flex">
-                        <span class="icon-small"></span>
-                      </span>
-                      <span class="hide-menu">Eliminar informe</span>
-                    </div>
- 
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link justify-content-between has-arrow" href="javascript:void(0)" aria-expanded="false">
-                <div class="d-flex align-items-center gap-3">
-                  <span class="d-flex">
-                    <iconify-icon icon="solar:document-text-line-duotone" class=""></iconify-icon>
-                  </span>
-                  <span class="hide-menu">Artículos</span>
-                </div>
-              </a>
-              <ul aria-expanded="false" class="collapse first-level">
-                <li class="sidebar-item">
-                  <a class="sidebar-link justify-content-between" target="_blank"
-                    href="#">
-                    <div class="d-flex align-items-center gap-3">
-                      <span class="d-flex">
-                        <span class="icon-small"></span>
-                      </span>
-                      <span class="hide-menu">Crear artículo</span>
-                    </div>
- 
-                  </a>
-                </li>
-                <li class="sidebar-item">
-                  <a class="sidebar-link justify-content-between"
-                    href="#">
-                    <div class="d-flex align-items-center gap-3">
-                      <span class="d-flex">
-                        <span class="icon-small"></span>
-                      </span>
-                      <span class="hide-menu">Editar artículo</span>
-                    </div>
- 
-                  </a>
-                </li>
-                <li class="sidebar-item">
-                  <a class="sidebar-link justify-content-between"
-                    href="#">
-                    <div class="d-flex align-items-center gap-3">
-                      <span class="d-flex">
-                        <span class="icon-small"></span>
-                      </span>
-                      <span class="hide-menu">Eliminar artículo</span>
-                    </div>
- 
-                  </a>
-                </li>
-
-              </ul>
-            </li>
+            
             <li class="sidebar-item">
               <a class="sidebar-link justify-content-between"
-                href="#"
+                href="{% url 'listaInformes' %}"
                 aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
                     <iconify-icon icon="solar:document-text-line-duotone" class=""></iconify-icon>
                   </span>
-                  <span class="hide-menu">Lista de Informes</span>
+                  <span class="hide-menu">Administrar Informes</span>
                 </div>
                  
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link justify-content-between" target="_blank"
-                href="#" aria-expanded="false">
+              <a class="sidebar-link justify-content-between"
+                href="{% url 'listaArticulos' %}" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
                     <iconify-icon icon="solar:document-text-line-duotone" class=""></iconify-icon>
                   </span>
-                  <span class="hide-menu">Lista de Artículos</span>
+                  <span class="hide-menu">Administrar Artículos</span>
                 </div>
                  
               </a>

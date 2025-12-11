@@ -17,30 +17,33 @@ from django.views.decorators.http import require_POST
 #     })
 
 def posts(request):
-    # 1. Obtener todos los posts, ordenados por fecha de creación (los más nuevos primero)
-    post_list = Post.objects.all().order_by('-id') # Ordeno por ID descendente
 
-    # 2. Configurar el Paginator: 8 posts por página (4 columnas x 2 filas)
-    PAGINATION_LIMIT = 8 # Define cuántos posts quieres por página
-    paginator = Paginator(post_list, PAGINATION_LIMIT) 
+    if request.user.is_authenticated and request.user.is_superuser:
+        post_list = Post.objects.all().order_by('-id')  # Admin ve todo
+    else:
+        post_list = Post.objects.filter(oculto=False).order_by('-id')  
 
-    # 3. Obtener el número de página de la URL (ej: /articulos/?page=2)
-    # Por defecto, si no hay 'page' en la URL, es la página 1.
+    PAGINATION_LIMIT = 8  
+    paginator = Paginator(post_list, PAGINATION_LIMIT)
+
     page_number = request.GET.get('page')
-    
-    # 4. Obtener el objeto de página
     page_obj = paginator.get_page(page_number)
-    
-    # 5. Pasar el objeto de página al contexto
+
     return render(request, 'posts.html', {
-        # ¡IMPORTANTE! Ahora pasas page_obj, NO 'posts'
-        'page_obj': page_obj 
+        'page_obj': page_obj
     })
+
 
 def postDetail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     comments = post.comments.all().order_by('-dateCreated')
 
+    # 🔒 1. Comprobación de visibilidad
+    # Si el post está oculto y NO es admin → bloquear acceso
+    if post.oculto and not (request.user.is_authenticated and request.user.is_superuser):
+        return render(request, "posts/post_oculto.html", {"post": post})
+
+    # 💬 2. Manejo de comentarios
     if request.method == 'POST':
         if not request.user.is_authenticated:
             return redirect('signin')
@@ -51,10 +54,11 @@ def postDetail(request, post_id):
             comment.post = post
             comment.user = request.user
             comment.save()
-            return redirect('detallePost', post_id=post.id)  # ← FIX
+            return redirect('detallePost', post_id=post.id)
     else:
         form = CommentForm()
 
+    # 📦 3. Render normal para posts visibles o admin
     context = {
         'post': post,
         'comments': comments,

@@ -1,9 +1,10 @@
 /* --------------------- Toggle --------------------- */
 .dark-mode {
+  /* margin: 0px 0px 0px 20px; */
   width: 3rem;
   height: 1.5rem;
   border-radius: 999px;
-  background-color: var(--bs-light-bg-subtle);
+  background-color: gray;
   cursor: pointer;
   position: relative;
   display: flex;
@@ -12,7 +13,7 @@
 }
 
 .dark-mode.active {
-  background-color: var(--bs-dark-bg-subtle);
+  background-color: gray;
 }
 
 .dark-mode .circle {

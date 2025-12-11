@@ -1,0 +1,96 @@
+{% extends 'dashboard/baseAdmin.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br><br><br>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <!-- Header -->
+                <div class="bg-success text-white p-4 rounded-top text-center">
+                    <h3 class="mb-0 fw-bold">Crear Informe</h3>
+                    <p class="mb-0 opacity-75">Completa la información para generar un nuevo informe</p>
+                </div>
+
+                <form id="createForm" method="POST" class="p-4">
+                    {% csrf_token %}
+
+                    <!-- Título -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Título</label>
+                        <input type="text" name="title" class="form-control" required>
+                    </div>
+
+                    <!-- CKEDITOR 5 -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Contenido del Informe</label>
+
+                        <!-- Toolbar -->
+                        <div id="toolbar-container" class="border rounded-top p-2 bg-light"></div>
+
+                        <!-- Editor -->
+                        <div id="editor"
+                             contenteditable="true"
+                             style="border: 1px solid #ccc; min-height: 300px; padding: 10px; border-top: 0;">
+                        </div>
+
+                        <!-- Hidden textarea -->
+                        <textarea id="description" name="description" style="display:none;"></textarea>
+                    </div>
+
+                    <button class="btn btn-success w-100 py-2 fw-bold mt-3">
+                        📝 Crear Informe
+                    </button>
+
+                    <a href="{% url 'listaInformes' %}" class="btn btn-outline-secondary w-100 mt-2">
+                        Cancelar
+                    </a>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CKEDITOR 5 -->
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/decoupled-document/ckeditor.js"></script>
+
+<script>
+DecoupledEditor.create(document.querySelector("#editor"), {
+    ckfinder: {
+        uploadUrl: "{% url 'ckeditor5_upload' %}"
+    },
+    toolbar: [
+        "heading", "|",
+        "bold", "italic", "underline", "strikethrough",
+        "highlight", "fontColor", "fontBackgroundColor", "link", "|",
+        "alignment", "|",
+        "bulletedList", "numberedList", "outdent", "indent", "blockQuote", "|",
+        "insertTable", "uploadImage", "mediaEmbed", "codeBlock", "|",
+        "undo", "redo"
+    ],
+    image: {
+        toolbar: ["imageTextAlternative", "imageStyle:full", "imageStyle:side"]
+    },
+    table: {
+        contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"]
+    }
+})
+.then(editor => {
+    const toolbarContainer = document.querySelector("#toolbar-container");
+    toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+    window.editor = editor;
+
+    document.querySelector("#createForm").addEventListener("submit", () => {
+        document.querySelector("#description").value = editor.getData();
+    });
+})
+.catch(error => console.error(error));
+</script>
+
+{% endblock %}
+

@@ -15,18 +15,31 @@
           </h4>
 
           <p class="text-muted mb-4">
-            Estás a punto de enviar una advertencia al usuario:
-            <strong class="text-dark">{{ usuario.username }}</strong>
+            Estás a punto de enviar una advertencia a un usuario. Por favor selecciona el usuario al que deseas advertir:
           </p>
 
-          <form action="{% url 'advertirUsuario' usuario.id %}" method="POST">
+          <!-- Formulario para enviar advertencia -->
+          <form action="{% url 'advertirUser' %}" method="POST">
             {% csrf_token %}
 
+            <!-- Selección de Usuario -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Seleccionar Usuario</label>
+              <select class="form-select" name="usuario" required>
+                <option value="" disabled selected>Seleccione un usuario</option>
+                {% for usuario in usuarios %}
+                  <option value="{{ usuario.id }}">{{ usuario.username }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Mensaje de Advertencia -->
             <div class="mb-3">
               <label class="form-label fw-semibold">Mensaje de advertencia</label>
               <textarea name="mensaje" rows="5" class="form-control" placeholder="Ingrese el motivo o advertencia para el usuario" required></textarea>
             </div>
 
+            <!-- Gravedad de la Advertencia -->
             <div class="mb-3">
               <label class="form-label fw-semibold">Gravedad</label>
               <select class="form-select" name="nivel" required>
@@ -36,7 +49,7 @@
               </select>
             </div>
 
-            <!-- NUEVO: DURACIÓN -->
+            <!-- Duración de la Advertencia -->
             <div class="mb-3">
               <label class="form-label fw-semibold">Duración</label>
               <select class="form-select" name="duracion" required>
@@ -68,4 +81,3 @@
 
 </div>
 {% endblock %}
-

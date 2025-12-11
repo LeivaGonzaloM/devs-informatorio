@@ -9,10 +9,20 @@ from django.http import JsonResponse, HttpResponseForbidden
 
 # Create your views here.
 def informes(request):
-    informes = Informe.objects.all()
-    return render(request, 'informes/informes.html',{
-        "informes" : informes,}
-                  )
+    """
+    Lista de informes:
+    - Admin (superuser) ve todos.
+    - Usuario normal solo ve los que no están ocultos.
+    """
+    if request.user.is_authenticated and request.user.is_superuser:
+        informes_list = Informe.objects.all().order_by('-created')  # Admin ve todo
+    else:
+        informes_list = Informe.objects.filter(oculto=False).order_by('-created')  # Usuarios normales solo visibles
+
+    return render(request, 'informes/informes.html', {
+        'informes': informes_list,
+        'es_admin': request.user.is_superuser,  # Para controlar botones en template
+    })
 
 
 @login_required

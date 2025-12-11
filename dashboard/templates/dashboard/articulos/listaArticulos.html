@@ -1,35 +1,39 @@
 {% extends 'dashboard/baseAdmin.html' %}
-{% load static %} 
+{% load static %}
+
 {% block content %}
-<div class="container">
-    <br><br><br><br>
-    <br><br><br><br>
-    <br><br><br><br>
+<div class="container mt-5 pt-5">
+    <br><br><br>
+    <br><br><br>
   <div class="container-fluid py-4">
     <div class="card">
-      <h4 class="fw-semibold" style="text-align: center; margin: 0;">Usuarios</h4>
       <div class="card-body">
+        <h4 class="fw-semibold" style="text-align: center;">Artículos</h4>
         <div class="d-flex justify-content-between align-items-center mb-4">
           
 
+          <!-- BUSCADOR -->
           <form method="GET" class="d-flex">
             <input
               type="text"
               name="q"
               class="form-control"
-              placeholder="Buscar…"
-              value="{{ request.GET.q }}"
+              placeholder="Buscar artículo o usuario…"
+              value="{{ query }}"
             />
             <button class="btn btn-primary ms-2"><img src="{% static 'dashboard/images/icons/buscar.png' %}" width="18"></button>
           </form>
-          <a href="{% url 'crearUsuario' %}" class="btn btn-primary btn-sm"><img src="{% static 'dashboard/images/icons/AddUser.png' %}" width="18"></a>
+          <!-- BOTÓN CREAR ARTÍCULO -->
+            <a href="{% url 'crearArticulo' %}" class="btn btn-success">
+              <img src="{% static 'dashboard/images/icons/articuloIcon.png' %}" width="18">
+            </a>
         </div>
 
-        {% include "dashboard/componentes/tablaUsuarios.html" %}
+        {% include "dashboard/componentes/tablaArticulos.html" %}
 
-        
       </div>
     </div>
   </div>
+
 </div>
 {% endblock %}

@@ -9,7 +9,7 @@ class Informe(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     # image = models.ImageField(upload_to='posts/', null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    oculto = models.BooleanField(default=False)
     last_edited = models.DateTimeField(null=True, blank=True)
     edited_by = models.ForeignKey(
         User,
