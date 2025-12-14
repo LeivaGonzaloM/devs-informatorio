@@ -88,3 +88,87 @@
 .features-grid.profile-grid {
     grid-template-columns: 1fr !important;
 }
+
+/* --------------------------------------------------------------------------------------------------------- */
+
+/* GRID responsive */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* Dos columnas: una para artículos y otra para informes */
+    gap: 2rem;
+}
+
+/* En pantallas pequeñas, mostrar en una sola columna */
+@media (max-width: 768px) {
+    .profile-grid {
+        grid-template-columns: 1fr;  /* Solo una columna en dispositivos pequeños */
+    }
+}
+
+/* Estilo para los artículos */
+.articulos {
+    padding: 1rem;
+}
+
+.articulos h3 {
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.articulos .post-card {
+    padding: 1rem;
+    background-color: #f9f9f9;
+    margin-bottom: 1rem;
+}
+
+.articulos p {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Estilo para los informes */
+.informes {
+    padding: 1rem;
+}
+
+.informes .post-card {
+    padding: 1rem;
+    background-color: #f9f9f9;
+    margin-bottom: 1rem;
+}
+
+/* Limitar el contenido de los informes */
+.informes .post-card p {
+    max-height: 50px; /* Limita la altura del contenido */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Agrega '...' al final del texto que se corta */
+    white-space: nowrap; /* Impide que el texto se divida en varias líneas */
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Ocultar imágenes dentro de los informes */
+.informes img {
+    display: none; /* Oculta las imágenes */
+}
+
+/* Títulos de los informes */
+.informes .post-card h4 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Avatar */
+.avatar-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.avatar-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+}

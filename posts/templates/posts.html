@@ -6,6 +6,8 @@
 
 {% block content %}
 
+<!-- posts/templates/posts.html -->
+
 <div class="container">
     <div class="headerFact mb-5">
         <section class="features fade-up visible" id="features">
@@ -31,30 +33,32 @@
                         <span class="blocked-text" style="color: red;">
                             (Bloqueado hasta: {{ post.user.profile.blocked_until|date:"d/m/Y H:i" }})
                         </span>
-                        {% else %}
-                        {% if post.user.is_superuser %}
-                        <a href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">{{ post.user.username }}</a>
-                        {% else %}
-                        <a href="{% url 'profile-username' post.user.username %}" class="usernameFact user-text">{{ post.user.username }}</a>
                         {% endif %}
-                        {% endif %}
-                        <small id="fechaPost" class="text-body-secondary">{{post.created}}</small>
-                        <h3>{{post.title}}</h3>
+
+                        <h3>{{ post.title }}</h3>
                         <p>{{ post.description|slice:":100" }}{% if post.description|length > 100 %}...{% endif %}</p>
 
                         {% if post.image %}
-                        <img src="{{ post.image.url }}" alt="imagen" style="width: 100%;">
+                            <img src="{{ post.image.url }}" alt="imagen" style="width: 100%;">
                         {% endif %}
 
+                        <!-- Aquí va el autor y la fecha -->
+                        {% if post.user.is_superuser %}
+                            <a href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">{{ post.user.username }}</a>
+                        {% else %}
+                            <a href="{% url 'profile-username' post.user.username %}" class="usernameFact user-text">Autor del artículo: {{ post.user.username }}</a>
+                        {% endif %}
+
+                        <small id="fechaPost" class="text-body-secondary">Publicado el: {{ post.created }}</small>
+
                         {% if es_admin %}
-                            {%if post.oculto %}
+                            {% if post.oculto %}
                                 <small class="text-muted" style="color: red; background-color: black; text-align: center; border-radius: 99px;">Este artículo esta oculto</small>
                             {% else %}  
-                            
                             {% endif %}
                         {% endif %}
                     </div>
-                    {% endfor%}
+                    {% endfor %}
                 </div>
 
                 {% if page_obj.paginator.num_pages > 1 %}
@@ -105,10 +109,8 @@
                 }
             });
         });
-
     </script>
 
 </div>
-
 
 {% endblock %}

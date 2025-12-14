@@ -175,7 +175,7 @@
                 {% for informe in informes %}
                     <div class="glass-card post-card">
                         <h4>{{ informe.title }}</h4>
-                        <p>{{ informe.description|safe|truncatechars_html:100 }}</p>
+                        <p>{{ informe.description|truncatechars_html:100|striptags }}</p>
                     </div>
                 {% empty %}
                     <p class="empty-msg" style="text-align: center;">Este usuario aún no ha publicado nada.</p>

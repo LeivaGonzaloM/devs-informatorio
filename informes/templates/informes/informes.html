@@ -34,22 +34,22 @@
                             (Bloqueado hasta: {{ informe.user.profile.blocked_until|date:"d/m/Y H:i" }})
                         </span>
                         {% else %}
-                        {% if informe.user.is_superuser %}
-                        <a href="{% url 'profile-username' informe.user.username %}" class="usernameFact admin-text">{{ informe.user.username }}</a>
-                        {% else %}
-                        <a href="{% url 'profile-username' informe.user.username %}" class="usernameFact user-text">{{ informe.user.username }}</a>
-                        {% endif %}
-                        {% endif %}
-                        <small id="fechaPost" class="text-body-secondary">{{informe.created}}</small>
+                        
                         <h3>{{ informe.title }}</h3>
                         <p>{{ informe.description|safe|truncatechars_html:100 }}</p>
-
-
-
 
                         {% if informe.image %}
                         <img src="{{ informe.image.url }}" alt="imagen" style="width: 100%;">
                         {% endif %}
+
+                        {% if informe.user.is_superuser %}
+                        <a href="{% url 'profile-username' informe.user.username %}" class="usernameFact admin-text">{{ informe.user.username }}</a>
+                        {% else %}
+                        <a href="{% url 'profile-username' informe.user.username %}" class="usernameFact user-text">Autor del informe: {{ informe.user.username }}</a>
+                        {% endif %}
+                        {% endif %}
+                        <small id="fechaPost" class="text-body-secondary">Publicado el: {{informe.created}}</small>
+
                     </div>
                     {% endfor%}
                 </div>

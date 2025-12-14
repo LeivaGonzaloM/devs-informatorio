@@ -3,6 +3,8 @@
 {% block titulo %}Fact | {{post.title }}{% endblock %} 
 {% block content %}
 
+<!-- posts/templates/posts/postDetai.html -->
+
 <section class="features fade-up" id="features">
   <div class="features-container">
     <!-- Encabezado -->
@@ -15,21 +17,7 @@
       <!-- Tarjeta del Post -->
       <div class="feature-card">
         <span class="footer-credit">
-         <a href="{% url 'profile-username' post.user.username %}">
-
-              {% if post.user.profile.is_currently_blocked %}
-                 <span class="blocked-text" style="text-decoration: line-through; color: red;">
-                 {{ post.user.username }}</span>
-                 <span class="blocked-text" style="color: red;">
-                 (Bloqueado hasta: {{ post.user.profile.blocked_until|date:"d/m/Y H:i" }})
-                 </span>
-              {% else %}
-                 {% if post.user.is_superuser %}
-                     <a href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">{{ post.user.username }}</a>
-                 {% else %}
-                     <a href="{% url 'profile-username' post.user.username %}" class="usernameFact user-text">{{ post.user.username }}</a>
-                 {% endif %}
-              {% endif %} 
+         <a href="{% url 'profile-username' post.user.username %}">            
 
             </a>
         </span>
@@ -53,10 +41,6 @@
 
         <h3>{{ post.title }}</h3>
 
-        
-
-
-
         <p class="card-text">{{ post.description }}</p>
 
         {% if post.image %}
@@ -74,6 +58,23 @@
         {% else %}
         <p class="text-center"><i>Este post no tiene imagen.</i></p>
         {% endif %}
+
+        {% if post.user.profile.is_currently_blocked %}
+                 <span class="blocked-text" style="text-decoration: line-through; color: red;">
+                 {{ post.user.username }}</span>
+                 <span class="blocked-text" style="color: red;">
+                 (Bloqueado hasta: {{ post.user.profile.blocked_until|date:"d/m/Y H:i" }})
+                 </span>
+              {% else %}
+                 {% if post.user.is_superuser %}
+                     <a href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">{{ post.user.username }}</a>
+                 {% else %}
+                     <a href="{% url 'profile-username' post.user.username %}" class="usernameFact user-text"> Autor del artículo: {{ post.user.username }}</a>
+                 {% endif %}
+              {% endif %} 
+
+        <p class="text-secondary" style="font-size: 0.9rem;">Publicado el: {{ post.created|date:"d/m/Y H:i" }}</p>
+
         {% if user.is_superuser or user == post.user %}
         <br />
         <div class="crud-buttons">
@@ -81,9 +82,7 @@
           <a href="{% url 'eliminarPost' post.id %}" class="btn-eliminar">Eliminar</a>
         </div>
         {% endif %}
-
         
-
       </div>
     </div>
 
@@ -357,8 +356,6 @@ imageModal.addEventListener("click", (e) => {
 // 1️⃣ Edición inline de comentarios (AQUÍ CONTINÚA TU CÓDIGO EXISTENTE)
 // =========================
 // ... el resto de tu JavaScript ...
-
-
 
           // =========================
           // 1️⃣ Edición inline de comentarios

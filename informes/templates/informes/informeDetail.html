@@ -19,20 +19,6 @@
     <div class="features-grid">
       <div class="feature-card">
 
-        <!-- Usuario autor -->
-        <div class="informe-user">
-          <a href="{% url 'profile-username' informe.user.username %}">
-            {% if informe.user.profile.is_currently_blocked %}
-                <span style="text-decoration: line-through; color: red;">{{ informe.user.username }}</span>
-                <span style="color: red;">(Bloqueado hasta: {{ informe.user.profile.blocked_until|date:"d/m/Y H:i" }})</span>
-            {% else %}
-                <span class="{% if informe.user.is_superuser %}admin-text{% else %}user-text{% endif %}">
-                    {{ informe.user.username }}
-                </span>
-            {% endif %}
-          </a>
-        </div>
-
         <!-- Fecha de edición -->
         {% if informe.last_edited %}
         <p class="text-secondary" style="font-size: 0.9rem;">
@@ -56,6 +42,21 @@
           </a>
         </div>
         {% endif %}
+
+        <!-- Usuario autor -->
+        <div class="informe-user">
+          <a href="{% url 'profile-username' informe.user.username %}">
+            {% if informe.user.profile.is_currently_blocked %}
+                <span style="text-decoration: line-through; color: red;">{{ informe.user.username }}</span>
+                <span style="color: red;">(Bloqueado hasta: {{ informe.user.profile.blocked_until|date:"d/m/Y H:i" }})</span>
+            {% else %}
+                <a class="{% if informe.user.is_superuser %}admin-text{% else %}user-text{% endif %}">Autor del informe: {{ informe.user.username }}
+                </a>
+            {% endif %}
+          </a>
+        </div>
+
+        <small id="fechaPost" class="text-body-secondary">Publicado el: {{informe.created}}</small>
 
         {% if user.is_superuser or user == informe.user %}
         <div class="crud-buttons" style="margin-top: 15px;">
