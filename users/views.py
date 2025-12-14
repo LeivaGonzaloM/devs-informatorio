@@ -10,6 +10,7 @@ from posts.models import Post
 from .forms import UserReportForm
 from django.utils import timezone
 
+from informes.models import Informe
 
 
 
@@ -130,12 +131,26 @@ def profileView(request, username=None):
     # Ahora sí podemos cargar advertencias
     warnings = Warning.objects.filter(user=user_profile).order_by('-created_at')
 
+    # Consulta de informes
+    if is_own_profile:
+        # El usuario está viendo SU propio perfil → ve TODOS sus informes
+        informes = Informe.objects.filter(user=user_profile).order_by('-created')
+
+    else:
+        # El usuario está viendo el perfil de OTRO usuario → solo informes NO ocultos
+        informes = Informe.objects.filter(
+            user=user_profile,
+            oculto=False
+        ).order_by('-created')
+
+
     return render(request, 'users/profile/profile.html', {
         'user_profile': user_profile,
         'profile': profile,
         'posts': posts,
         'is_own_profile': is_own_profile,
         "warnings": warnings,
+        'informes': informes,
     })
 
 

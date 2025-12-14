@@ -1,3 +1,4 @@
+# informes/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Informe, CommentInforme
 from .forms import InformeForm

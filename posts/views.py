@@ -8,14 +8,6 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
-# Create your views here.
-
-# def posts(request):
-#     posts = Post.objects.all()
-#     return render(request, 'posts.html', {
-#         'posts': posts
-#     })
-
 def posts(request):
 
     if request.user.is_authenticated and request.user.is_superuser:

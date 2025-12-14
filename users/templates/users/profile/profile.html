@@ -3,6 +3,8 @@
 
 {% block content %}
 
+<!-- profile/profile.html -->
+
 <section class="features-section" style="padding-top: 2rem;">
 
     <div class="section-title" style="text-align: center;">
@@ -154,13 +156,26 @@
 
             <hr style="border-color: var(--border-color); opacity: .4; margin: 1.5rem 0;">
 
-            <h3 class="section-title" style="text-align: center;">Facts</h3>
+            <h3 class="section-title" style="text-align: center;">Mis artículos</h3>
 
             <div class="posts-list">
                 {% for post in posts %}
                     <div class="glass-card post-card">
                         <h4>{{ post.title }}</h4>
                         <p>{{ post.description|truncatewords:20 }}</p>
+                    </div>
+                {% empty %}
+                    <p class="empty-msg" style="text-align: center;">Este usuario aún no ha publicado nada.</p>
+                {% endfor %}
+            </div>
+
+            <h3 class="section-title" style="text-align: center;">Mis informes</h3>
+
+            <div class="posts-list">
+                {% for informe in informes %}
+                    <div class="glass-card post-card">
+                        <h4>{{ informe.title }}</h4>
+                        <p>{{ informe.description|safe|truncatechars_html:100 }}</p>
                     </div>
                 {% empty %}
                     <p class="empty-msg" style="text-align: center;">Este usuario aún no ha publicado nada.</p>
