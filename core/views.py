@@ -1,9 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from posts.models import Post
 from posts.forms import PostForm
 from users.models import Profile
 from django.core.paginator import Paginator
-
+from dashboard.models import MensajeContacto
+from django.contrib import messages
 # Fatcs inicio 
 def home(request):
     # Filtrado según el usuario
@@ -32,10 +33,20 @@ def home(request):
 def nosotros(request):
       return render(request, 'nosotros/nosotros.html')
 
-# def postDetail(request, post_id):
-#         post = get_object_or_404(Post, pk=post_id)
-#         form = PostForm(instance=post)
-#         return render(request, 'index.html', {'post': post, 'form': form})
-
+# --------------------------------------------------------------
+# ADMIN MENSAJES
+# --------------------------------------------------------------
 def contacto(request):
-      return render(request, 'contacto/contacto.html')
+    if request.method == "POST":
+        MensajeContacto.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            titulo=request.POST["titulo"],
+            email=request.POST["email"],
+            mensaje=request.POST["mensaje"]
+        )
+        messages.success(request, "¡Gracias por contactarnos! 📩 Nuestro equipo te responderá a la brevedad.")
+
+        return redirect(f"{request.META.get('HTTP_REFERER', 'contacto')}#contact")
+    return render(request, "contacto/contacto.html")
+
+

@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from core.views import contacto
 
 urlpatterns = [
     # Dashboard principal
@@ -52,5 +53,11 @@ urlpatterns = [
     path('advertir-usuario/', views.advertir_usuario, name='advertirUser'),
     path("warn/<int:user_id>/", views.warn_user, name="advertirUsuario"),
     path("dashboard/advertencias/eliminar/<int:adv_id>/", views.eliminar_advertencia, name="eliminarAdvertencia"),
+
+    #mensajes contacto admin
+    path("contacto/", contacto, name="contacto"),
+    path("dashboard/mensajes/", views.mensajes_admin, name="mensajesAdmin"),
+    path("dashboard/mensajes/<int:id>/", views.ver_mensaje, name="verMensaje"),
+    path("dashboard/mensajes/<int:id>/eliminar/", views.eliminar_mensaje, name="eliminarMensaje"),
 ]
 

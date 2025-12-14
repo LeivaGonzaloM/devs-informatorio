@@ -22,7 +22,7 @@ from informes.models import Informe
 from informes.forms import InformeForm
 from django.db.models import Count
 from django.utils import timezone
-
+from dashboard.models import MensajeContacto
 
 # Create your views here.
 @login_required
@@ -864,3 +864,35 @@ def administrar_articulos(request):
 @login_required
 def administrar_informes(request):
     return redirect('listaInformes')
+
+
+
+# --------------------------------------------------------------
+# ADMIN MENSAJES
+# --------------------------------------------------------------
+
+
+@staff_member_required
+def mensajes_admin(request):
+    current_admin = request.user
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+    mensajes = MensajeContacto.objects.order_by("-creado")
+    return render(request, "dashboard/mensajes/mensajes.html", {
+        "admin_profile": profileAdmin,
+        "mensajes": mensajes
+    })
+@staff_member_required
+def ver_mensaje(request, id):
+    current_admin = request.user
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+    mensaje = MensajeContacto.objects.get(id=id)
+    mensaje.leido = True
+    mensaje.save()
+    return render(request, "dashboard/mensajes/ver_mensaje.html", {
+        "admin_profile": profileAdmin,
+        "mensaje": mensaje,
+    })
+@staff_member_required
+def eliminar_mensaje(request, id):
+    MensajeContacto.objects.filter(id=id).delete()
+    return redirect("mensajesAdmin")

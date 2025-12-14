@@ -22,6 +22,7 @@ def posts(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'posts.html', {
+        'es_admin': request.user.is_superuser,
         'page_obj': page_obj
     })
 

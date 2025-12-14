@@ -45,6 +45,14 @@
                         {% if post.image %}
                         <img src="{{ post.image.url }}" alt="imagen" style="width: 100%;">
                         {% endif %}
+
+                        {% if es_admin %}
+                            {%if post.oculto %}
+                                <small class="text-muted" style="color: red; background-color: black; text-align: center; border-radius: 99px;">Este artículo esta oculto</small>
+                            {% else %}  
+                            
+                            {% endif %}
+                        {% endif %}
                     </div>
                     {% endfor%}
                 </div>

@@ -74,7 +74,25 @@ Index Base del Template
     <!-- <script src="{% static 'js/main.js' %}"></script> -->
     <script src="{% static 'js/featherlight.min.js' %}"></script>
     <script src="{% static 'js/templatemo-nexus-scripts.js' %}"></script>
-    
+    <script>
+        // funcion para los alertas de contacto
+      document.addEventListener("DOMContentLoaded", function () {
+        const alerts = document.querySelectorAll(".devs-alert");
+
+        alerts.forEach(alert => {
+          // tiempo visible
+          setTimeout(() => {
+            alert.classList.add("hide");
+
+            // eliminar del DOM
+            setTimeout(() => {
+              alert.remove();
+            }, 400);
+          }, 4000);
+        });
+      });
+    </script>
+
     
 </body>
 </html>
