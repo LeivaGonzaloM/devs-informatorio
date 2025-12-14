@@ -35,6 +35,18 @@ urlpatterns = [
     path('bloquear-usuario/', views.block_Usuario, name='blockUsuario'),
     path('desbloquearUsuario/<int:user_id>/', views.unblockUser, name='desbloquearUsuario'),
 
+    #Perfil Admin
+    path('perfilAdmin/', views.perfil_admin, name='perfilAdmin'),
+    path('editarPerfilAdmin/<int:user_id>/', views.editar_perfil_admin, name='editarPerfilAdmin'),
+    path('administrarUsuarios/', views.administrar_usuarios, name='administrarUsuarios'),
+    path('administrarArticulos/', views.administrar_articulos, name='administrarArticulos'),
+    path('administrarInformes/', views.administrar_informes, name='administrarInformes'),
+    
+    # Ruta para ver la lista de usuarios bloqueados
+    path('bloqueados/', views.lista_bloqueados, name='lista_bloqueados'),
+    # Ruta para desbloquear un usuario
+    path('desbloquear/<int:user_id>/', views.desbloquear_usuario, name='desbloquearUsuario'),
+
     # Advertencias
     path("dashboard/advertencias/", views.lista_advertencias, name="listaAdvertencias"),
     path('advertir-usuario/', views.advertir_usuario, name='advertirUser'),

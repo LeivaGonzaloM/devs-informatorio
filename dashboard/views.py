@@ -310,23 +310,16 @@ def listUsuarios(request):
 
     return render(request, "dashboard/usuarios/listaUsuarios.html", context)
 
-# def perfilUsuario(request, user_id):
-#     current_admin = request.user
-#     profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
-#     user = get_object_or_404(User, id=user_id)
-#     profile = Profile.objects.get(user=user)
-
-#     return render(request, "dashboard/usuarios/userProfile/perfilUsuario.html", {
-#         "admin_profile": profileAdmin,
-#         "user_obj": user,
-#         "profile": profile
-#     })
 # --------------------------------------------------------------
 # PERFIL DEL USUARIO
 # --------------------------------------------------------------
 def perfilUsuario(request, user_id):
     current_admin = request.user
-    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+    profileAdmin, created = Profile.objects.get_or_create(user=request.user)
+    # Si el admin está intentando ver su propio perfil, redirigir a perfilAdmin
+    if current_admin.id == user_id:
+        return redirect('perfilAdmin')  # Redirige a la vista 'perfilAdmin'
+
     warnings = Warning.objects.all()
     user = get_object_or_404(User, id=user_id)
     reports = UserReport.objects.filter(reported_user=user)
@@ -679,7 +672,7 @@ def verInforme(request, pk):
 def block_Usuario(request):
     users = User.objects.all()  # Obtener todos los usuarios
     current_admin = request.user
-    profileAdmin, _ = Profile.objects.get_or_create(user=current_admin)
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
     if request.method == "POST":
         user_id = request.POST.get("user")
         time_unit = request.POST.get("time_unit")
@@ -707,7 +700,7 @@ def block_Usuario(request):
 def advertir_usuario(request):
     usuarios = User.objects.all()  # Obtener todos los usuarios
     current_admin = request.user
-    profileAdmin, _ = Profile.objects.get_or_create(user=current_admin)
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
     if request.method == 'POST':
         usuario_id = request.POST['usuario']
         mensaje = request.POST['mensaje']
@@ -747,7 +740,7 @@ def advertir_usuario(request):
 def eliminar_usuario(request):
     usuarios = User.objects.all()  # Obtener todos los usuarios disponibles
     current_admin = request.user
-    profileAdmin, _ = Profile.objects.get_or_create(user=current_admin)
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
 
     if request.method == 'POST':
         usuario_id = request.POST.get('usuario')  # Obtener el usuario seleccionado
@@ -765,3 +758,109 @@ def eliminar_usuario(request):
     return render(request, 'dashboard/atajos/eliminarUsuarioNow.html', {
         "admin_profile": profileAdmin,
         'usuarios': usuarios})
+
+# --------------------------------------------------------------
+# listaBloqueados
+# --------------------------------------------------------------
+
+def lista_bloqueados(request):
+    current_admin = request.user
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+    # Obtener todos los usuarios bloqueados
+    blocked_users = Profile.objects.filter(is_blocked=True)
+    return render(request, 'dashboard/usuarios/listaBloqueados.html', {
+        "admin_profile": profileAdmin,
+        'blocked_users': blocked_users,
+        })
+
+def desbloquear_usuario(request, user_id):
+    # Desbloquear al usuario
+    try:
+        profile = Profile.objects.get(user__id=user_id)
+        profile.unblock()  # Llamamos al método unblock() del modelo Profile
+    except Profile.DoesNotExist:
+        pass
+    return redirect('lista_bloqueados')  # Redirigir nuevamente a la lista de bloqueados
+
+# --------------------------------------------------------------
+# PERFIL ADMIN
+# --------------------------------------------------------------
+# Vista para el perfil del administrador
+@login_required
+def perfil_admin(request):
+    current_admin = request.user
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+    u = request.user
+    profile = u.profile  # Asumiendo que tienes una relación OneToOne con Profile
+
+    # Obtener estadísticas (Ejemplo: reportes recibidos, advertencias emitidas)
+    # user_reports = u.reports.all()  # Asumiendo que tienes una relación ManyToMany con Report
+    # user_warnings = u.warnings.all()  # Asumiendo que tienes una relación ManyToMany con Warnings
+
+    return render(request, 'dashboard/usuarios/userProfile/perfilAdmin.html', {
+        'u': u,
+        'profile': profile,
+        "admin_profile": profileAdmin,
+        # 'user_reports': user_reports,
+        # 'user_warnings': user_warnings
+    })
+
+# Vista para editar el perfil del administrador
+@login_required
+def editar_perfil_admin(request, user_id):
+    # Obtienes al administrador logueado
+    current_admin = request.user
+
+    # Asegurarte de que el perfil del administrador esté creado
+    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+
+    # Obtienes al usuario por el ID
+    u = get_object_or_404(User, id=user_id)
+    profile = u.profile  # El perfil asociado al usuario
+
+    # Si el método es POST, validamos los formularios
+    if request.method == 'POST':
+        u_form = EditUserForm(request.POST, instance=u)  # Formulario de usuario
+        p_form = EditProfileForm(request.POST, request.FILES, instance=profile)  # Formulario del perfil
+
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()  # Guardar los datos del usuario
+            p_form.save()  # Guardar los datos del perfil
+
+            # Verificamos si se ha cambiado la contraseña
+            new_password = request.POST.get('password')
+            if new_password:
+                u.set_password(new_password)
+                u.save()
+
+            messages.success(request, "Perfil actualizado correctamente.")
+            return redirect('perfilAdmin')
+        else:
+            messages.error(request, "Por favor, corrige los errores del formulario.")
+    else:
+        u_form = EditUserForm(instance=u)  # Formulario para editar los datos del usuario
+        p_form = EditProfileForm(instance=profile)  # Formulario para editar el perfil
+
+    # Pasamos el formulario y el perfil al template
+    return render(request, 'dashboard/usuarios/userProfile/editarPerfilAdmin.html', {
+        'u_form': u_form,
+        'p_form': p_form,
+        'admin_profile': profileAdmin,  # Perfil del administrador
+        'u': u,  # El usuario actual
+        'profile': profile,  # El perfil completo del usuario
+    })
+
+# Vista para administrar usuarios
+@login_required
+def administrar_usuarios(request):
+    return redirect("listaUsuarios")
+
+# Vista para administrar artículos
+@login_required
+def administrar_articulos(request):
+    return redirect('listaArticulos')
+
+# Vista para administrar informes
+@login_required
+def administrar_informes(request):
+    return redirect('listaInformes')

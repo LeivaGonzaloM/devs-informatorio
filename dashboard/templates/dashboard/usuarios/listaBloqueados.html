@@ -1,0 +1,89 @@
+{% extends 'dashboard/baseAdmin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <br>
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <br><br><br><br>
+      <div class="card">
+        <div class="card-body p-4">
+
+          <h4 class="fw-semibold mb-4">
+            <i class="ti ti-lock text-danger"></i> Usuarios Bloqueados
+          </h4>
+
+          <p class="text-muted mb-4">
+            Aquí puedes ver todos los usuarios bloqueados en el sistema.
+          </p>
+
+          {% if blocked_users %}
+              <div class="list-group">
+
+                {% for profile in blocked_users %}
+                <div class="list-group-item py-3">
+
+                  <div class="d-flex justify-content-between">
+
+                    <div>
+                      <h5 class="fw-semibold mb-1">
+                        <span class="text-danger">🔒 Bloqueado</span>
+                      </h5>
+
+                      <small class="text-muted">
+                        {{ profile.user.username }}
+                      </small>
+                    </div>
+
+                    <!-- Botón Desbloquear -->
+                    <form action="{% url 'desbloquearUsuario' profile.user.id %}" method="POST">
+                      {% csrf_token %}
+                      <button class="btn btn-sm btn-success">
+                        <i class="ti ti-unlock"></i> Desbloquear
+                      </button>
+                    </form>
+
+                  </div>
+
+                  <p class="mt-2 mb-1">
+                    Nombre completo: {{ profile.full_name|default:"No disponible" }}
+                  </p>
+
+                  <small class="text-muted d-block">
+                    Bloqueado hasta: 
+                    {% if profile.blocked_until %}
+                      <strong>{{ profile.blocked_until|date:"d/m/Y H:i" }}</strong>
+                    {% else %}
+                      <strong>Indefinido</strong>
+                    {% endif %}
+                  </small>
+
+                  <small class="text-muted d-block mt-2">
+                    Estado:
+                    {% if profile.is_currently_blocked %}
+                      <span class="text-danger fw-bold">🔴 Bloqueado</span>
+                    {% else %}
+                      <span class="text-success fw-bold">🟢 Desbloqueado</span>
+                    {% endif %}
+                  </small>
+
+                </div>
+                {% endfor %}
+
+              </div>
+
+          {% else %}
+            <div class="alert alert-info text-center">
+              <i class="ti ti-info-circle"></i> No hay usuarios bloqueados actualmente.
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

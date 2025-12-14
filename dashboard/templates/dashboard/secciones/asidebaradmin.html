@@ -91,7 +91,7 @@
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="#" aria-expanded="false">
+              <a class="sidebar-link" href="{% url 'lista_bloqueados' %}" aria-expanded="false">
                 <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
                 <span class="hide-menu">Bloqueados</span>
               </a>
@@ -119,7 +119,7 @@
                 </li>
                 <li class="sidebar-item">
                   <a class="sidebar-link justify-content-between" 
-                    href="{% url 'adminReports' %}">
+                    href="{% url 'eliminar_usuario' %}">
                     <div class="d-flex align-items-center gap-3">
                       <span class="d-flex">
                         <span class="icon-small"></span>
@@ -130,7 +130,7 @@
                 </li>
                 <li class="sidebar-item">
                   <a class="sidebar-link justify-content-between" 
-                    href="#">
+                    href="{% url 'advertirUser' %}">
                     <div class="d-flex align-items-center gap-3">
                       <span class="d-flex">
                         <span class="icon-small"></span>
@@ -141,7 +141,7 @@
                 </li>
                 <li class="sidebar-item">
                   <a class="sidebar-link justify-content-between" 
-                    href="#">
+                    href="{% url 'blockUsuario' %}">
                     <div class="d-flex align-items-center gap-3">
                       <span class="d-flex">
                         <span class="icon-small"></span>

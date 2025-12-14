@@ -1,0 +1,103 @@
+{% extends 'dashboard/baseAdmin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <br><br><br><br>
+             <br><br><br><br>
+             <br>
+            <!-- Profile Card -->
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+
+                <!-- Header -->
+                <div class="bg-dark text-white p-4 d-flex align-items-center gap-3">
+                    <img src="{{ profile.avatar_url }}" 
+                         class="rounded-circle border border-3" 
+                         width="110" height="110">
+
+                    <div>
+                        <h2 class="mb-0 fw-bold">{{ u.username }}</h2>
+                        <p class="mb-0 text-light opacity-75">{{ u.email }}</p>
+                        <small class="opacity-75">
+                            {{ u.first_name }} {{ u.last_name }}
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div class="p-4">
+
+                    <!-- Bio -->
+                    <h5 class="fw-bold mb-2">Biografía</h5>
+                    <p class="text-muted">{{ profile.bio|default:"Sin biografía" }}</p>
+
+                    <hr>
+
+                    <!-- Opcional: Stats del administrador -->
+                    <div class="row text-center mb-4">
+                        <div class="col-6">
+                            <h5 class="fw-bold">{{ user_reports|length }}</h5>
+                            <p class="text-muted small mb-0">Reportes recibidos</p>
+                        </div>
+                        <div class="col-6">
+                            <h5 class="fw-bold">{{ user_warnings|length }}</h5>
+                            <p class="text-muted small mb-0">Advertencias emitidas</p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Acciones administrativas -->
+                    <h5 class="fw-bold mb-3">Acciones administrativas</h5>
+
+                    <div class="row g-2">
+                        <!-- Editar perfil -->
+                        <div class="col-md-6">
+                            <a href="{% url 'editarPerfilAdmin' u.id %}" class="btn btn-primary w-100">
+                                ✏️ Editar perfil
+                            </a>
+                        </div>
+                    
+                        <!-- Administrar usuarios -->
+                        <div class="col-md-6">
+                            <a href="{% url 'administrarUsuarios' %}" class="btn btn-outline-primary w-100">
+                                👥 Administrar usuarios
+                            </a>
+                        </div>
+                    
+                        <!-- Administrar artículos -->
+                        <div class="col-md-6">
+                            <a href="{% url 'administrarArticulos' %}" class="btn btn-outline-success w-100">
+                                📜 Administrar artículos
+                            </a>
+                        </div>
+                    
+                        <!-- Administrar informes -->
+                        <div class="col-md-6">
+                            <a href="{% url 'administrarInformes' %}" class="btn btn-outline-warning w-100">
+                                📊 Administrar informes
+                            </a>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Cerrar sesión -->
+                    <div class="row g-2">
+                        <div class="col-12">
+                            <a href="{% url 'logout' %}" class="btn btn-danger w-100">
+                                🔓 Cerrar sesión
+                            </a>
+                        </div>
+                    </div>
+
+                </div> <!-- body -->
+
+            </div> <!-- card -->
+
+        </div>
+    </div>
+</div>
+{% endblock %}

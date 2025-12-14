@@ -1,0 +1,83 @@
+{% extends 'dashboard/baseAdmin.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br><br><br>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <br><br><br><br>
+            <!-- Edit Profile Card -->
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <!-- Header -->
+                <div class="bg-primary text-white p-4 rounded-top text-center">
+                    <h3 class="mb-0 fw-bold">Editar Perfil del Administrador</h3>
+                    <p class="mb-0 opacity-75">Modificando: <strong>{{ u.username }}</strong></p> <!-- Aquí mostramos el nombre de usuario -->
+                </div>
+
+                <!-- Formulario -->
+                <form method="POST" enctype="multipart/form-data" class="p-4">
+                    {% csrf_token %}
+
+                    <!-- Avatar actual -->
+                    <div class="text-center mb-4">
+                        <img src="{{ u.profile.avatar.url }}" alt="Avatar de {{ u.username }}" class="rounded-circle shadow" width="120" height="120">
+                    </div>
+
+                    <!-- Datos del Usuario -->
+                    <h5 class="fw-bold">Datos Básicos</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <!-- Mostrar el nombre completo -->
+                        <input type="text" name="full_name" value="{{ profile.full_name }}" class="form-control" disabled> <!-- Mostrar nombre completo -->
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nombre de Usuario</label>
+                        <input type="text" name="username" value="{{ u.username }}" class="form-control" disabled> <!-- Mostrar nombre de usuario -->
+                    </div>
+
+                    <div class="mb-3">
+                        {{ u_form.email.errors }}
+                        <label class="form-label">Correo Electrónico</label>
+                        {{ u_form.email }} <!-- Aquí renderizamos el campo de email del formulario -->
+                    </div>
+
+                    <hr>
+
+                    <!-- Datos del Perfil -->
+                    <h5 class="fw-bold">Perfil</h5>
+                    <div class="mb-3">
+                        {{ p_form.bio.errors }}
+                        <label class="form-label">Biografía</label>
+                        {{ p_form.bio }} <!-- Renderizamos el campo biografía -->
+                    </div>
+
+                    <div class="mb-3">
+                        {{ p_form.avatar.errors }}
+                        <label class="form-label">Avatar</label>
+                        {{ p_form.avatar }} <!-- Renderizamos el campo avatar -->
+                        <small class="form-text text-muted">Puedes subir una nueva imagen de perfil.</small>
+                    </div>
+
+                    <hr>
+
+                    <!-- Cambiar Contraseña -->
+                    <h5 class="fw-bold">Cambiar Contraseña (Opcional)</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Nueva Contraseña</label>
+                        <input type="password" name="password" class="form-control" placeholder="Dejar vacío si no deseas cambiarla">
+                    </div>
+
+                    <!-- Botones -->
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold mt-3">💾 Guardar Cambios</button>
+                    <a href="{% url 'perfilAdmin' %}" class="btn btn-outline-secondary w-100 mt-2">Cancelar</a>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -70,7 +70,7 @@
           >
             <div class="message-body">
               <a
-                href="javascript:void(0)"
+                href="{% url 'perfilAdmin' %}"
                 class="d-flex align-items-center gap-2 dropdown-item"
               >
                 <i class="ti ti-user fs-6"></i>
@@ -79,17 +79,24 @@
               <a
                 href="javascript:void(0)"
                 class="d-flex align-items-center gap-2 dropdown-item"
+                style="
+                pointer-events: none;
+                cursor: default;    
+                opacity: 0.6;       
+                text-decoration: line-through;
+                color: #999;         
+                "
               >
                 <i class="ti ti-mail fs-6"></i>
                 <p class="mb-0 fs-3">Mensajes</p>
               </a>
-              <a
+              <!-- <a
                 href="javascript:void(0)"
                 class="d-flex align-items-center gap-2 dropdown-item"
               >
                 <i class="ti ti-list-check fs-6"></i>
                 <p class="mb-0 fs-3">Tareas</p>
-              </a>
+              </a> -->
               <a
                 href="{% url 'logout' %}"
                 class="btn btn-outline-primary mx-3 mt-2 d-block"
