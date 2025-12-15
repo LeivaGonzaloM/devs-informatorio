@@ -56,7 +56,7 @@
 
         <!-- ELIMINAR -->
         <td>
-          <form method="POST" action="{% url 'eliminarInforme' informe.id %}"
+          <form method="POST" action="{% url 'deleteInforme' informe.id %}"
                 onsubmit="return confirm('¿Eliminar este informe?');">
             {% csrf_token %}
             <button class="btn btn-danger btn-sm">Eliminar</button>
