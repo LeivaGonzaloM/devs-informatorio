@@ -8,33 +8,35 @@
 </div> -->
 
 
-    <!-- Bienvenida Section -->
-    {% if user.is_authenticated %}
-        <section class="hero">
-            <div class="hero-container">
-                <h1 class="hero-title">
-                    <span class="hero-nexus">DEVS</span><span class="hero-flow">TEAM</span>
-                </h1>
-                <p class="hero-subtitle">El salto cualitativo en la colaboración en equipo. Conecta mentes, sincroniza realidades, logra lo imposible.</p>
-                
-            </div>
-       </section>
-    {% else %}
-        <section class="hero">
-            <div class="hero-container">
-                <h1 class="hero-title">
-                    <span class="hero-nexus">DEVS</span><span class="hero-flow">TEAM</span>
-                </h1>
-                <p class="hero-subtitle">El salto cualitativo en la colaboración en equipo. Conecta mentes, sincroniza realidades, logra lo imposible.</p>
-                <div class="hero-buttons">
-                    <a href="{% url 'login' %}" class="btn-primary">Iniciar Sesión</a>
-                    <a href="{% url 'register' %}" class="btn-secondary">Registrarme</a>
-                </div>
-            </div>
-       </section>
-    {% endif %}
+<!-- Bienvenida Section -->
+{% if user.is_authenticated %}
+<section class="hero">
+    <div class="hero-container">
+        <h1 class="hero-title">
+            <span class="hero-nexus">DEVS</span><span class="hero-flow">TEAM</span>
+        </h1>
+        <p class="hero-subtitle">El salto cualitativo en la colaboración en equipo. Conecta mentes, sincroniza
+            realidades, logra lo imposible.</p>
 
-    <!-- Stats Section
+    </div>
+</section>
+{% else %}
+<section class="hero">
+    <div class="hero-container">
+        <h1 class="hero-title">
+            <span class="hero-nexus">DEVS</span><span class="hero-flow">TEAM</span>
+        </h1>
+        <p class="hero-subtitle">El salto cualitativo en la colaboración en equipo. Conecta mentes, sincroniza
+            realidades, logra lo imposible.</p>
+        <div class="hero-buttons">
+            <a href="{% url 'login' %}" class="btn-primary">Iniciar Sesión</a>
+            <a href="{% url 'register' %}" class="btn-secondary">Registrarme</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Stats Section
     <section class="stats fade-up" id="stats">
         <div class="stats-container">
             <div class="stats-grid">
@@ -58,107 +60,61 @@
         </div>
     </section> -->
 
-    <!-- Features Section -->
-    <section class="features fade-up" id="features">
-        <div class="features-container">
-            <div class="section-header">
-                <h2 class="section-title">Articulos</h2>
-                <p class="section-subtitle">Los articulos más recientes más recientes</p>
-            </div>
-            
-            <div class="features-grid">
-                {% for post in page_obj %}
-                    <div class="feature-card cardPost" data-href="{% url 'detallePost' post.id %}">
-                        {% if post.user.profile.is_currently_blocked %}
-                            <span class="blocked-text" style="text-decoration: line-through; color: red;">
-                                {{ post.user.username }}
-                            </span>
-                            <span class="blocked-text" style="color: red;">
-                                (Bloqueado hasta: {{ post.user.profile.blocked_until|date:"d/m/Y H:i" }})
-                            </span>
-                        {% else %}
-                            {% if post.user.is_superuser %}
-                                <span class="usernameFact admin-text">{{ post.user.username }}</span>
-                            {% else %}
-                                <span class="usernameFact user-text">{{ post.user.username }}</span>
-                            {% endif %}
-                        {% endif %}
-                        
-                        <small class="text-body-secondary">{{ post.created|date:"d/m/Y H:i" }}</small>
-                        <h3>{{ post.title }}</h3>
-                        {{ post.description|slice:":100" }}{% if post.description|length > 100 %}...{% endif %}
-                        
-                        {% if post.image %}
-                            <img src="{{ post.image.url }}" alt="imagen" class="img-fluid rounded">
-                        {% endif %}
-                        
-                        {% if es_admin %}
-                            {%if post.oculto %}
-                                <small class="text-muted" style="color: red; background-color: black; text-align: center; border-radius: 99px;">Este artículo esta oculto</small>
-                            {% else %}  
-                            
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                {% empty %}
-                    <p>No hay posts disponibles.</p>
-                {% endfor %}
-            </div>
-
-            
-            <!-- Paginación -->
-            {% if page_obj.has_other_pages %}
-            <nav aria-label="Page navigation">
-              <ul class="pagination justify-content-center mt-4">
-            
-                <!-- Botón "Anterior" -->
-                {% if page_obj.has_previous %}
-                  <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Anterior">
-                      <span aria-hidden="true">&laquo;</span>
-                    </a>
-                  </li>
-                {% else %}
-                  <li class="page-item disabled">
-                    <span class="page-link">&laquo;</span>
-                  </li>
-                {% endif %}
-              
-                <!-- Números de página -->
-                {% for num in page_obj.paginator.page_range %}
-                  {% if page_obj.number == num %}
-                    <li class="page-item active" aria-current="page">
-                      <span class="page-link">{{ num }}</span>
-                    </li>
-                  {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-                  {% endif %}
-                {% endfor %}
-                
-                <!-- Botón "Siguiente" -->
-                {% if page_obj.has_next %}
-                  <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Siguiente">
-                      <span aria-hidden="true">&raquo;</span>
-                    </a>
-                  </li>
-                {% else %}
-                  <li class="page-item disabled">
-                    <span class="page-link">&raquo;</span>
-                  </li>
-                {% endif %}
-              
-              </ul>
-            </nav>
-            {% endif %}
-
-
+<!-- Features Section -->
+<section class="features fade-up" id="features">
+    <div class="features-container">
+        <div class="section-header">
+            <h2 class="section-title">Articulos</h2>
+            <p class="section-subtitle">Los articulos más recientes más recientes</p>
         </div>
-        <script>   
-        document.addEventListener("DOMContentLoaded", function() {
+
+        <div class="features-grid">
+            {% for post in page_obj %}
+            <div class="feature-card cardPost" data-href="{% url 'detallePost' post.id %}">
+                {% if post.user.profile.is_currently_blocked %}
+                <span class="blocked-text" style="text-decoration: line-through; color: red;">
+                    {{ post.user.username }}
+                </span>
+                <span class="blocked-text" style="color: red;">
+                    (Bloqueado hasta: {{ post.user.profile.blocked_until|date:"d/m/Y H:i" }})
+                </span>
+                {% else %}
+                {% if post.user.is_superuser %}
+                <span class="usernameFact admin-text">{{ post.user.username }}</span>
+                {% else %}
+                <span class="usernameFact user-text">{{ post.user.username }}</span>
+                {% endif %}
+                {% endif %}
+
+                <small class="text-body-secondary">{{ post.created|date:"d/m/Y H:i" }}</small>
+                <h3>{{ post.title }}</h3>
+                {{ post.description|slice:":100" }}{% if post.description|length > 100 %}...{% endif %}
+
+                {% if post.image %}
+                <img src="{{ post.image.url }}" alt="imagen" class="img-fluid rounded">
+                {% endif %}
+
+                {% if es_admin %}
+                {%if post.oculto %}
+                <small class="text-muted"
+                    style="color: red; background-color: black; text-align: center; border-radius: 99px;">Este artículo
+                    esta oculto</small>
+                {% else %}
+
+                {% endif %}
+                {% endif %}
+            </div>
+            {% empty %}
+            <p>No hay posts disponibles.</p>
+            {% endfor %}
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
             // Seleccionamos todas las tarjetas con la clase específica
             const cards = document.querySelectorAll('.cardPost');
-        
+
             cards.forEach(card => {
                 // Obtenemos la URL desde un atributo data
                 const url = card.dataset.href;
@@ -170,11 +126,11 @@
                 }
             });
         });
-        </script>
-    </section>
+    </script>
+</section>
 
-    <!-- Pricing Section (Futuro Market xddd)-->
-    <!-- <section class="pricing fade-up" id="pricing">
+<!-- Pricing Section (Futuro Market xddd)-->
+<!-- <section class="pricing fade-up" id="pricing">
         <div class="pricing-container">
             <div class="section-header">
                 <h2 class="section-title">Access Levels</h2>
@@ -228,49 +184,50 @@
             </div>
         </div>
     </section> -->
-   
-    <!-- Contact Section -->
-    <section class="contact fade-up" id="contact">
-        <div class="contact-container">
-            <div class="section-header">
-                <h2 class="section-title">Contactanos</h2>
-                <p class="section-subtitle">Equipo DEVS con atención 24hs</p>
-                {% if messages %}
-                <div class="messages-container">
-                  {% for message in messages %}
-                  <br><br>
-                    <div class="alert alert-{{ message.tags }} devs-alert" style="color: green; background-color: black; border-radius: 99px;">
-                      {{ message }}
-                    </div>
-                  {% endfor %}
+
+<!-- Contact Section -->
+<section class="contact fade-up" id="contact">
+    <div class="contact-container">
+        <div class="section-header">
+            <h2 class="section-title">Contactanos</h2>
+            <p class="section-subtitle">Equipo DEVS con atención 24hs</p>
+            {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                <br><br>
+                <div class="alert alert-{{ message.tags }} devs-alert"
+                    style="color: green; background-color: black; border-radius: 99px;">
+                    {{ message }}
                 </div>
-                {% endif %}
+                {% endfor %}
             </div>
-            
-            <div class="contact-form-wrapper">
-                <div class="contact-form">
-                    <form method="POST" action="{% url 'contacto' %}">
-                      {% csrf_token %}
-                    
-                      <div class="form-group">
-                          <label>Título</label>
-                          <input type="text" name="titulo" class="form-control" required>
-                      </div>
-                  
-                      <div class="form-group">
-                          <label>Email</label>
-                          <input type="email" name="email" class="form-control" required>
-                      </div>
-                  
-                      <div class="form-group">
-                          <label>Mensaje</label>
-                          <textarea name="mensaje" rows="5" class="form-control" required></textarea>
-                      </div>
-                  
-                      <button type="submit" class="btn-primary btn-submit">Enviar</button>
-                    </form>
-                </div>
+            {% endif %}
+        </div>
+
+        <div class="contact-form-wrapper">
+            <div class="contact-form">
+                <form method="POST" action="{% url 'contacto' %}">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label>Título</label>
+                        <input type="text" name="titulo" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mensaje</label>
+                        <textarea name="mensaje" rows="5" class="form-control" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-submit">Enviar</button>
+                </form>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 {% endblock %}
