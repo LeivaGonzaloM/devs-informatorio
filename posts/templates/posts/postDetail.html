@@ -21,23 +21,26 @@
 
             </a>
         </span>
-        {% if post.last_edited %}
-        <p class="text-secondary" style="font-size: 0.9rem;">
-        Editado el {{ post.last_edited|date:"d/m/Y H:i" }}
-        por 
-        {% if post.edited_by == post.user %}
-            el autor
-        {% else %}
-            <span href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">
-            {{ post.edited_by.username }}
-            </span>
-             (admin)
-        {% endif %}
-        </p>
-        {% endif %}
+        
         <!-- <small class="text-body-secondary">{{ post.created }}</small> -->
 
         <!-- <div class="feature-icon">⚡</div> -->
+
+        {% if post.user.profile.is_currently_blocked %}
+                 <span class="blocked-text" style="text-decoration: line-through; color: red;">
+                 {{ post.user.username }}</span>
+                 <span class="blocked-text" style="color: red;">
+                 (Bloqueado hasta: {{ post.user.profile.blocked_until|date:"d/m/Y H:i" }})
+                 </span>
+              {% else %}
+                 {% if post.user.is_superuser %}
+                     <a href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">{{ post.user.username }}</a>
+                 {% else %}
+                     <a href="{% url 'profile-username' post.user.username %}" class="usernameFact user-text"> {{ post.user.username }}</a>
+                 {% endif %}
+              {% endif %} 
+
+        <p class="text-secondary" style="font-size: 0.9rem;">Publicado el: {{ post.created|date:"d/m/Y H:i" }}</p>
 
         <h3>{{ post.title }}</h3>
 
@@ -59,28 +62,38 @@
         <p class="text-center"><i>Este post no tiene imagen.</i></p>
         {% endif %}
 
-        {% if post.user.profile.is_currently_blocked %}
-                 <span class="blocked-text" style="text-decoration: line-through; color: red;">
-                 {{ post.user.username }}</span>
-                 <span class="blocked-text" style="color: red;">
-                 (Bloqueado hasta: {{ post.user.profile.blocked_until|date:"d/m/Y H:i" }})
-                 </span>
-              {% else %}
-                 {% if post.user.is_superuser %}
-                     <a href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">{{ post.user.username }}</a>
-                 {% else %}
-                     <a href="{% url 'profile-username' post.user.username %}" class="usernameFact user-text"> Autor del artículo: {{ post.user.username }}</a>
-                 {% endif %}
-              {% endif %} 
-
-        <p class="text-secondary" style="font-size: 0.9rem;">Publicado el: {{ post.created|date:"d/m/Y H:i" }}</p>
-
         {% if user.is_superuser or user == post.user %}
         <br />
         <div class="crud-buttons">
           <a href="{% url 'editarPost' post.id %}" class="btn-editar">Editar</a>
           <a href="{% url 'eliminarPost' post.id %}" class="btn-eliminar">Eliminar</a>
         </div>
+        {% endif %}
+
+        <!-- Fecha de edición por admin
+        {% if post.last_edited %}
+        <p class="text-secondary" style="font-size: 0.9rem;">
+          Editado el {{ post.last_edited|date:"d/m/Y H:i" }} por 
+          {% if post.edited_by == post.user %} 
+            el autor
+          {% else %}
+            <span href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">
+              {{ post.edited_by.username }}
+            </span>(admin)
+          {% endif %}
+        </p>
+        {% endif %} -->
+
+        <!-- Fecha de edición por admin -->
+        {% if post.last_edited %}
+        <p class="text-secondary" style="font-size: 0.9rem;">
+          Editado el {{ post.last_edited|date:"d/m/Y H:i" }} por
+          {% if post.edited_by == post.user %}
+              el autor
+          {% else %}
+              <span class="admin-text">{{ post.edited_by.username }}</span> (admin)
+          {% endif %}
+        </p>
         {% endif %}
         
       </div>
