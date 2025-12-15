@@ -1,10 +1,7 @@
 from django.urls import path
-from posts import views as post_views
 from informes import views as informe_views
 from .uploads import ckeditor5_upload
 
-
-# app_name = 'posts'
 
 urlpatterns = [
     path('informes/crear', informe_views.crear_informe, name='crearInforme'),

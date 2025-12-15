@@ -17,7 +17,9 @@ urlpatterns = [
     path("dashboard/informes/", views.listaInformes, name="listaInformes"),
     path("dashboard/informes/crear/", views.crearInforme, name="createInforme"),
     path("dashboard/informes/editar/<int:inf_id>/", views.editarInforme, name="editInforme"),
-    path("dashboard/informes/eliminar/<int:inf_id>/", views.eliminarInforme, name="eliminarInforme"),
+
+    path("dashboard/informes/eliminar/<int:inf_id>/", views.eliminarInforme, name="deleteInforme"),
+
     path('informes/ver/<int:pk>/', views.verInforme, name='verInforme'),
     path("dashboard/informes/toggle/<int:inf_id>/", views.toggleOcultoInforme, name="toggleOcultoInforme"),
 
