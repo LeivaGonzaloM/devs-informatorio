@@ -477,7 +477,7 @@ def eliminarUsuario(request, user_id):
 def crearUsuario(request):
     current_admin = request.user
     profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
-
+    
     if request.method == 'POST':
         # Campos manuales del formulario
         username = request.POST.get('username')

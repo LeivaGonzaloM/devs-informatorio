@@ -16,6 +16,22 @@
                 <form method="POST" enctype="multipart/form-data" class="p-4">
                     {% csrf_token %}
 
+                    {% if messages %}
+                      {% for message in messages %}
+                        <div class="alert 
+                          {% if 'error' in message.tags %}text-bg-danger{% endif %}
+                          {% if 'success' in message.tags %}text-bg-success{% endif %}
+                          {% if 'warning' in message.tags %}text-bg-warning{% endif %}
+                          {% if 'info' in message.tags %}text-bg-info{% endif %}
+                          alert-dismissible fade show"
+                          role="alert">
+                                    
+                          {{ message }}
+                                    
+                          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+                        </div>
+                      {% endfor %}
+                    {% endif %}
                     <h5 class="fw-bold">Datos del usuario</h5>
                     <div class="mb-3">
                         <label class="form-label">Usuario</label>
