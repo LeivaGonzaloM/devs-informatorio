@@ -189,16 +189,16 @@ def unblockUser(request, user_id):
     if not request.user.is_staff:
         return HttpResponseForbidden("No tenés permisos.")
 
-    # Aceptamos solo POST por seguridad
+   
     if request.method != "POST":
-        return redirect('dashboard')  # o la vista de lista de usuarios
+        return redirect('dashboard')  
 
     user_to_unblock = get_object_or_404(User, pk=user_id)
     profile = user_to_unblock.profile
 
-    # Si tenés métodos en Profile, usalos; sino lo hacemos directamente:
+   
     profile.blocked_until = None
-    # si usás un flag booleano:
+    
     try:
         profile.is_blocked = False
     except Exception:
@@ -206,7 +206,7 @@ def unblockUser(request, user_id):
 
     profile.save()
 
-    return redirect('dashboard')  # o 'dashboardUsuarios' según tu nombre de ruta
+    return redirect('dashboard')  
 
 # Sistema de advertencia a usuarios
 @user_passes_test(lambda u: u.is_superuser)
@@ -218,7 +218,7 @@ def warn_user(request, user_id):
     if request.method == "POST":
         mensaje = request.POST.get("mensaje")
         nivel = request.POST.get("nivel")
-        duracion = request.POST.get("duracion")  # <-- NUEVO
+        duracion = request.POST.get("duracion") 
 
         if mensaje and nivel and duracion:
 
@@ -382,7 +382,7 @@ def eliminarUsuario(request, user_id):
         username = user_obj.username
         user_obj.delete()
         messages.success(request, f"Usuario '{username}' eliminado correctamente.")
-        return redirect("listUsuarios")  # Ajusta al nombre de tu lista de usuarios
+        return redirect("listaUsuarios")  
 
     return render(request, "dashboard/usuarios/userProfile/eliminarUsuario.html", {
         "u": user_obj
