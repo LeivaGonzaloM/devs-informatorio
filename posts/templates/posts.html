@@ -39,7 +39,7 @@
                         {% if post.user.is_superuser %}
                             <a href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">{{ post.user.username }}</a>
                         {% else %}
-                            <a href="{% url 'profile-username' post.user.username %}" class="usernameFact user-text">Autor del artículo: {{ post.user.username }}</a>
+                            <a href="{% url 'profile-username' post.user.username %}" class="usernameFact user-text">{{ post.user.username }}</a>
                         {% endif %}
 
                         <small id="fechaPost" class="text-body-secondary">Publicado el: {{ post.created }}</small>
