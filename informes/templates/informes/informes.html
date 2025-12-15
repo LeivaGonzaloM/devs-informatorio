@@ -35,6 +35,16 @@
                         </span>
                         {% else %}
                         
+                        {% if informe.user.is_superuser %}
+                        <a href="{% url 'profile-username' informe.user.username %}" class="usernameFact admin-text">{{ informe.user.username }}</a>
+                        {% else %}
+                        <a href="{% url 'profile-username' informe.user.username %}" class="usernameFact user-text"> {{ informe.user.username }}</a>
+                        {% endif %}
+
+                        {% endif %}
+                        
+                        <small id="fechaPost" class="text-body-secondary">Publicado el: {{informe.created}}</small>
+
                         <h3>{{ informe.title }}</h3>
                         <p>{{ informe.description|safe|truncatechars_html:100 }}</p>
 
@@ -42,46 +52,12 @@
                         <img src="{{ informe.image.url }}" alt="imagen" style="width: 100%;">
                         {% endif %}
 
-                        {% if informe.user.is_superuser %}
-                        <a href="{% url 'profile-username' informe.user.username %}" class="usernameFact admin-text">{{ informe.user.username }}</a>
-                        {% else %}
-                        <a href="{% url 'profile-username' informe.user.username %}" class="usernameFact user-text">Autor del informe: {{ informe.user.username }}</a>
-                        {% endif %}
-                        {% endif %}
-                        <small id="fechaPost" class="text-body-secondary">Publicado el: {{informe.created}}</small>
+                        
 
                     </div>
                     {% endfor%}
                 </div>
 
-                <!-- {% if page_obj.paginator.num_pages > 1 %}
-                <div class="pagination-container" style="text-align: center; margin-top: 4rem;">
-                    <ul class="pagination-list" style="list-style: none; display: inline-flex; gap: 20px;">
-
-                        {% if page_obj.has_previous %}
-                        <li>
-                            <a href="?page={{ page_obj.previous_page_number }}" class="btn-secondary">
-                                &laquo; Anterior
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        <li class="current-page"
-                            style="padding: 1rem; color: var(--primary-cyan); border: 1px solid var(--border-color);">
-                            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
-                        </li>
-
-                        {% if page_obj.has_next %}
-                        <li>
-                            <a href="?page={{ page_obj.next_page_number }}" class="btn-secondary">
-                                Siguiente &raquo;
-                            </a>
-                        </li>
-                        {% endif %}
-
-                    </ul>
-                </div>
-                {% endif %} -->
             </div>
         </section>
     </div>
