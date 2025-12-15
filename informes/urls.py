@@ -4,15 +4,17 @@ from .uploads import ckeditor5_upload
 
 
 urlpatterns = [
-    path('informes/crear', informe_views.crear_informe, name='crearInforme'),
-    path('ckeditor5/upload/', ckeditor5_upload, name='ckeditor5_upload'),
+    path('', informe_views.informes, name='informes'),
+    path('crear/', informe_views.crear_informe, name='crearInforme'),
     path('detalle/<int:pk>/', informe_views.detalleInforme, name='detalleInforme'),
     path('editar/<int:pk>/', informe_views.editarInforme, name='editarInforme'),
     path('eliminar/<int:pk>/', informe_views.eliminarInforme, name='eliminarInforme'),
 
-    # Comentarios (editar/eliminar vía fetch desde JS)
+    # Comentarios
     path('comentario/editar/<int:pk>/', informe_views.editarComentarioInforme, name='editarComentarioInforme'),
     path('comentario/eliminar/<int:pk>/', informe_views.eliminarComentarioInforme, name='eliminarComentarioInforme'),
-    path('', informe_views.informes, name='informes'),
+
+    # CKEditor Upload
+    path('ckeditor5/upload/', ckeditor5_upload, name='ckeditor5_upload'),
 ]
 

@@ -16,7 +16,7 @@
             Estás a punto de eliminar al siguiente usuario:
           </p>
 
-          <form action="{% url 'eliminar_usuario' %}" method="POST">
+          <form action="{% url 'dashEliminarUsuario' %}" method="POST">
             {% csrf_token %}
 
             <div class="mb-3">

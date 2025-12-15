@@ -12,13 +12,13 @@
           <div class="card-body">
             <h5 class="card-title fw-semibold mb-4">Bloquear Usuario</h5>
 
-            <form method="POST" action="{% url 'blockUsuario' %}">
+            <form method="POST" action="{% url 'blockUserConfirm' %}">
               {% csrf_token %}
               
               <!-- Lista de usuarios -->
               <div class="mb-3">
                 <label for="user" class="form-label">Selecciona un Usuario:</label>
-                <select name="user" id="user" class="form-select">
+                <select name="user_id" id="user" class="form-select">
                   <option value="">-- Selecciona un usuario --</option>
                   {% for user in users %}
                     <option value="{{ user.id }}">{{ user.username }}</option>

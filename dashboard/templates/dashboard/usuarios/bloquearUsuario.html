@@ -16,8 +16,10 @@
                 </div>
 
                 <!-- Formulario -->
-                <form method="POST" class="p-4">
+                <form method="POST" action="{% url 'blockUserConfirm' %}">
                     {% csrf_token %}
+                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                    <input type="hidden" name="next" value="{{ request.META.HTTP_REFERER }}">
 
                     <p class="text-muted mb-4">
                         Establece la duración del bloqueo.  

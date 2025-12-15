@@ -3,63 +3,98 @@ from . import views
 from core.views import contacto
 
 urlpatterns = [
+
+    # ======================================================
     # Dashboard principal
-    path('dashboard/', views.dashboard, name='dashboard'),
+    # ======================================================
+    path('', views.dashboard, name='dashboard'),
 
-    # Artículos
-    path('dashboard/articulos/', views.listaArticulos, name='listaArticulos'),
-    path('crearArticulo/', views.crearArticulo, name='crearArticulo'),
-    path('editarArticulo/<int:post_id>/', views.editarArticulo, name='editarArticulo'),
-    path('dashboard/<int:post_id>/eliminarPost/', views.admdelPost, name='deletePost'),
-    path('articulo/toggle/<int:post_id>/', views.toggleOculto, name='toggleOculto'),
+    # ======================================================
+    # ARTÍCULOS
+    # ======================================================
+    path('articulos/', views.listaArticulos, name='listaArticulos'),
+    path('articulos/crear/', views.crearArticulo, name='crearArticulo'),
+    path('articulos/<int:post_id>/editar/', views.editarArticulo, name='editarArticulo'),
+    path('articulos/<int:post_id>/eliminar/', views.admdelPost, name='deletePost'),
+    path('articulos/toggle/<int:post_id>/', views.toggleOculto, name='toggleOculto'),
 
+    # ======================================================
     # INFORMES
-    path("dashboard/informes/", views.listaInformes, name="listaInformes"),
-    path("dashboard/informes/crear/", views.crearInforme, name="createInforme"),
-    path("dashboard/informes/editar/<int:inf_id>/", views.editarInforme, name="editInforme"),
-
-    path("dashboard/informes/eliminar/<int:inf_id>/", views.eliminarInforme, name="deleteInforme"),
-
+    # ======================================================
+    path('informes/', views.listaInformes, name='listaInformes'),
+    path('informes/crear/', views.crearInforme, name='createInforme'),
     path('informes/ver/<int:pk>/', views.verInforme, name='verInforme'),
-    path("dashboard/informes/toggle/<int:inf_id>/", views.toggleOcultoInforme, name="toggleOcultoInforme"),
+    path('informes/editar/<int:inf_id>/', views.editarInforme, name='editInforme'),
+    path('informes/eliminar/<int:inf_id>/', views.eliminarInforme, name='deleteInforme'),
+    path('informes/toggle/<int:inf_id>/', views.toggleOcultoInforme, name='toggleOcultoInforme'),
 
-    # Reports
-    path('dashboard/reports/', views.adminReports, name='adminReports'),
-
-    # Usuarios
-    path('eliminar-usuario/', views.eliminar_usuario, name='eliminar_usuario'),
-    path("usuarios/", views.listUsuarios, name="listaUsuarios"),
-    path("usuarios/perfil/<int:user_id>/", views.perfilUsuario, name="perfilUsuario"),
+    # ======================================================
+    # USUARIOS
+    # ======================================================
+    path('usuarios/', views.listUsuarios, name='listaUsuarios'),
+    path('usuarios/crear/', views.crearUsuario, name='crearUsuario'),
     path('usuarios/<int:user_id>/', views.perfilUsuario, name='perfilUsuario'),
-    path('crear-usuario/', views.crearUsuario, name='crearUsuario'),
     path('usuarios/<int:user_id>/editar/', views.editarUsuario, name='editarUsuario'),
+    path('eliminarUsuario/', views.dashEliminarUsuario, name='dashEliminarUsuario'),
     path('usuarios/<int:user_id>/eliminar/', views.eliminarUsuario, name='eliminarUsuario'),
-    path('bloquearUsuario/<int:user_id>/', views.blockUser, name='bloquearUsuario'),
-    path('bloquear-usuario/', views.block_Usuario, name='blockUsuario'),
-    path('desbloquearUsuario/<int:user_id>/', views.unblockUser, name='desbloquearUsuario'),
 
-    #Perfil Admin
-    path('perfilAdmin/', views.perfil_admin, name='perfilAdmin'),
-    path('editarPerfilAdmin/<int:user_id>/', views.editar_perfil_admin, name='editarPerfilAdmin'),
-    path('administrarUsuarios/', views.administrar_usuarios, name='administrarUsuarios'),
-    path('administrarArticulos/', views.administrar_articulos, name='administrarArticulos'),
-    path('administrarInformes/', views.administrar_informes, name='administrarInformes'),
-    
-    # Ruta para ver la lista de usuarios bloqueados
-    path('bloqueados/', views.lista_bloqueados, name='lista_bloqueados'),
-    # Ruta para desbloquear un usuario
-    path('desbloquear/<int:user_id>/', views.desbloquear_usuario, name='desbloquearUsuario'),
+    # ======================================================
+    # BLOQUEOS (UNA SOLA LÓGICA)
+    # ======================================================
+    # Formulario con select (atajo)
+    path('usuarios/bloquear/', views.dashBlockUsuario, name='dashBlockUsuario'),
 
-    # Advertencias
-    path("dashboard/advertencias/", views.lista_advertencias, name="listaAdvertencias"),
-    path('advertir-usuario/', views.advertir_usuario, name='advertirUser'),
-    path("warn/<int:user_id>/", views.warn_user, name="advertirUsuario"),
-    path("dashboard/advertencias/eliminar/<int:adv_id>/", views.eliminar_advertencia, name="eliminarAdvertencia"),
+    # Bloqueo usuarios
+    path(
+        "usuarios/bloquear/<int:user_id>/",
+        views.blockUserForm,
+        name="blockUserForm"
+    ),
+    path(
+        "usuarios/bloquear/confirmar/",
+        views.blockUserConfirm,
+        name="blockUserConfirm"
+    ),
+    path(
+        "usuarios/desbloquear/<int:user_id>/",
+        views.unblockUser,
+        name="unblockUser"
+    ),
 
-    #mensajes contacto admin
-    path("contacto/", contacto, name="contacto"),
-    path("dashboard/mensajes/", views.mensajes_admin, name="mensajesAdmin"),
-    path("dashboard/mensajes/<int:id>/", views.ver_mensaje, name="verMensaje"),
-    path("dashboard/mensajes/<int:id>/eliminar/", views.eliminar_mensaje, name="eliminarMensaje"),
+    # Lista de bloqueados
+    path('usuarios/bloqueados/', views.listaBloqueados, name='listaBloqueados'),
+
+    # ======================================================
+    # ADVERTENCIAS
+    # ======================================================
+    path('advertencias/', views.lista_advertencias, name='listaAdvertencias'),
+    path('advertencias/crear/<int:user_id>/', views.warn_user, name='advertirUsuario'),
+    path('advertirUsuario/', views.dashAdvertirUsuario, name='dashAdvertirUsuario'),
+    path('advertencias/eliminar/<int:adv_id>/', views.eliminar_advertencia, name='eliminarAdvertencia'),
+
+    # ======================================================
+    # REPORTES
+    # ======================================================
+    path('reports/', views.dashReportsUsers, name='dashReportsUsers'),
+
+    # ======================================================
+    # PERFIL ADMIN
+    # ======================================================
+    path('perfil-admin/', views.perfil_admin, name='perfilAdmin'),
+    path('perfil-admin/editar/<int:user_id>/', views.editar_perfil_admin, name='editarPerfilAdmin'),
+
+    # ======================================================
+    # ATAJOS DE ADMINISTRACIÓN
+    # ======================================================
+    path('administrar/usuarios/', views.administrar_usuarios, name='administrarUsuarios'),
+    path('administrar/articulos/', views.administrar_articulos, name='administrarArticulos'),
+    path('administrar/informes/', views.administrar_informes, name='administrarInformes'),
+
+    # ======================================================
+    # MENSAJES DE CONTACTO
+    # ======================================================
+    path('mensajes/', views.mensajes_admin, name='mensajesAdmin'),
+    path('mensajes/<int:id>/', views.ver_mensaje, name='verMensaje'),
+    path('mensajes/<int:id>/eliminar/', views.eliminar_mensaje, name='eliminarMensaje'),
 ]
 

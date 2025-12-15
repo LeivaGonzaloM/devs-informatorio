@@ -61,17 +61,21 @@
             >
 
             {% if u.is_currently_blocked %}
-            <a
-              href="{% url 'desbloquearUsuario' u.user.id %}"
-              class="btn btn-secondary btn-sm"
-              >Desbloquear</a
-            >
+            
+            <form method="POST" action="{% url 'unblockUser' u.user.id %}">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.path }}">
+              <button class="btn btn-success btn-sm">Desbloquear</button>
+            </form>
+
+
             {% else %}
-            <a
-              href="{% url 'bloquearUsuario' u.user.id %}"
-              class="btn btn-danger btn-sm"
-              >Bloquear</a
-            >
+            
+            <a href="{% url 'blockUserForm' u.user.id %}" class="btn btn-sm btn-danger">
+              Bloquear
+            </a>
+
+
             {% endif %}
 
             <a

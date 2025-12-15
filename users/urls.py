@@ -5,14 +5,17 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('registro', views.signup, name='register'),
+    path('registro/', views.signup, name='register'),
     path('logout/', views.signout, name='logout'),
-    path('login', views.signin , name='login'),
-    path('perfil/', profileView, name='profile'),  # Perfil propio
+    path('login/', views.signin , name='login'),
+
+    # Perfil
+    path('perfil/', profileView, name='profile'),                  # Perfil propio
     path('perfil/<str:username>/', profileView, name='profile-username'),  # Perfil de otro usuario
     path('editar/', editProfile, name='editProfile'),
-    path('report/user/<int:user_id>/', views.reportUser, name='reportUser'),
 
+    # Reportes de usuario
+    path('report/user/<int:user_id>/', views.reportUser, name='reportUser'),
 ]
 
 if settings.DEBUG:

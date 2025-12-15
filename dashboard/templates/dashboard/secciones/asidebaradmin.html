@@ -18,7 +18,7 @@
               <span class="hide-menu">Atajos</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="{% url 'blockUsuario' %}" aria-expanded="false">
+              <a class="sidebar-link" href="{% url 'dashBlockUsuario' %}" aria-expanded="false">
                 <iconify-icon icon="solar:atom-line-duotone"></iconify-icon>
                 <span class="hide-menu">Bloquear Usuario</span>
               </a>
@@ -28,7 +28,7 @@
             <!-- ---------------------------------- -->
             <li class="sidebar-item">
               <a class="sidebar-link justify-content-between disabled" 
-                href="{% url 'eliminar_usuario' %}" aria-expanded="false">
+                href="{% url 'dashEliminarUsuario' %}" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
                     <iconify-icon icon="solar:atom-line-duotone"></iconify-icon>
@@ -40,7 +40,7 @@
             </li>
             <li class="sidebar-item">
               <a class="sidebar-link justify-content-between"
-                href="{% url 'advertirUser' %}" aria-expanded="false">
+                href="{% url 'dashAdvertirUsuario' %}" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
                     <iconify-icon icon="solar:atom-line-duotone"></iconify-icon>
@@ -52,7 +52,7 @@
             </li>
             <li class="sidebar-item">
               <a class="sidebar-link justify-content-between"
-                href="{% url 'adminReports' %}" aria-expanded="false">
+                href="{% url 'dashReportsUsers' %}" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
                     <iconify-icon icon="solar:atom-line-duotone"></iconify-icon>
@@ -79,7 +79,7 @@
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="{% url 'adminReports' %}" aria-expanded="false">
+              <a class="sidebar-link" href="{% url 'dashReportsUsers' %}" aria-expanded="false">
                 <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
                 <span class="hide-menu">Reportados</span>
               </a>
@@ -91,7 +91,7 @@
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="{% url 'lista_bloqueados' %}" aria-expanded="false">
+              <a class="sidebar-link" href="{% url 'listaBloqueados' %}" aria-expanded="false">
                 <iconify-icon icon="solar:shield-user-line-duotone" class=""></iconify-icon>
                 <span class="hide-menu">Bloqueados</span>
               </a>
@@ -119,7 +119,7 @@
                 </li>
                 <li class="sidebar-item">
                   <a class="sidebar-link justify-content-between" 
-                    href="{% url 'eliminar_usuario' %}">
+                    href="{% url 'dashEliminarUsuario' %}">
                     <div class="d-flex align-items-center gap-3">
                       <span class="d-flex">
                         <span class="icon-small"></span>
@@ -130,7 +130,7 @@
                 </li>
                 <li class="sidebar-item">
                   <a class="sidebar-link justify-content-between" 
-                    href="{% url 'advertirUser' %}">
+                    href="{% url 'dashAdvertirUsuario' %}">
                     <div class="d-flex align-items-center gap-3">
                       <span class="d-flex">
                         <span class="icon-small"></span>
@@ -141,7 +141,7 @@
                 </li>
                 <li class="sidebar-item">
                   <a class="sidebar-link justify-content-between" 
-                    href="{% url 'blockUsuario' %}">
+                    href="{% url 'dashBlockUsuario' %}">
                     <div class="d-flex align-items-center gap-3">
                       <span class="d-flex">
                         <span class="icon-small"></span>

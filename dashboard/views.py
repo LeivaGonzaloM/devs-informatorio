@@ -23,6 +23,8 @@ from informes.forms import InformeForm
 from django.db.models import Count
 from django.utils import timezone
 from dashboard.models import MensajeContacto
+from django.urls import reverse
+
 
 # Create your views here.
 @login_required
@@ -145,7 +147,7 @@ def admdelPost(request, post_id):
       
 
 @login_required
-def adminReports(request):
+def dashReportsUsers(request):
     current_admin = request.user
     profile, created = Profile.objects.get_or_create(user=current_admin)
     if not request.user.is_superuser:
@@ -158,55 +160,134 @@ def adminReports(request):
     })
 
 @login_required
-def blockUser(request, user_id):
-    current_admin = request.user
-    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
-    if not request.user.is_staff:
-        return HttpResponseForbidden("No tenés permisos.")
-
-    user_to_block = get_object_or_404(User, pk=user_id)
-    profile = user_to_block.profile
-
-    if request.method == "POST":
-        minutes = int(request.POST.get("minutes") or 0)
-        hours   = int(request.POST.get("hours") or 0)
-        days    = int(request.POST.get("days") or 0)
-
-        profile.block(minutes=minutes, hours=hours, days=days)
+@staff_member_required
+def blockUserConfirm(request):
+    if request.method != "POST":
         return redirect("dashboard")
 
-    return render(request, "dashboard/usuarios/bloquearUsuario.html", {
-        'admin_profile': profileAdmin,
-        "user": user_to_block
-    })
+    user_id = request.POST.get("user_id")
+    user = get_object_or_404(User, id=user_id)
+    profile = user.profile
 
-def listUser(request):
-    return render(request, 'dashboard/usuarios/listaUsuarios.html')
+    # ============================
+    # CASO 1 → blockUserNow.html
+    # ============================
+    time_unit = request.POST.get("time_unit")
+    time_value = request.POST.get("time_value")
 
-@login_required
-def unblockUser(request, user_id):
-    # Solo staff puede desbloquear
-    if not request.user.is_staff:
-        return HttpResponseForbidden("No tenés permisos.")
+    delta = None
 
-   
-    if request.method != "POST":
-        return redirect('dashboard')  
+    if time_unit and time_value:
+        time_value = int(time_value)
 
-    user_to_unblock = get_object_or_404(User, pk=user_id)
-    profile = user_to_unblock.profile
+        delta_map = {
+            "minutes": timedelta(minutes=time_value),
+            "hours": timedelta(hours=time_value),
+            "days": timedelta(days=time_value),
+        }
 
-   
-    profile.blocked_until = None
-    
-    try:
-        profile.is_blocked = False
-    except Exception:
-        pass
+        delta = delta_map.get(time_unit)
 
+    # ============================
+    # CASO 2 → bloquearUsuario.html
+    # ============================
+    else:
+        minutes = int(request.POST.get("minutes", 0))
+        hours   = int(request.POST.get("hours", 0))
+        days    = int(request.POST.get("days", 0))
+
+        delta = timedelta(
+            minutes=minutes,
+            hours=hours,
+            days=days
+        )
+
+        if delta.total_seconds() == 0:
+            delta = None  # bloqueo permanente
+
+    # ============================
+    # APLICAR BLOQUEO
+    # ============================
+    profile.is_blocked = True
+    profile.blocked_until = now() + delta if delta else None
     profile.save()
 
-    return redirect('dashboard')  
+    messages.success(
+        request,
+        f"El usuario {user.username} fue bloqueado correctamente."
+    )
+
+    return redirect(request.POST.get("next", "/dashboard/"))
+
+
+
+@login_required
+@staff_member_required
+def dashBlockUsuario(request):
+    current_admin = request.user
+    profileAdmin, _ = Profile.objects.get_or_create(user=current_admin)
+    users = User.objects.all().order_by("username")
+
+    # ==========================
+    # POST → bloquear usuario
+    # ==========================
+    if request.method == "POST":
+        user_id = request.POST.get("user")
+        time_unit = request.POST.get("time_unit")
+        time_value = request.POST.get("time_value")
+
+        if not user_id or not time_value:
+            messages.error(request, "Debes seleccionar un usuario y un tiempo.")
+            return redirect("dashBlockUsuario")
+
+        # reenviamos al confirmador central
+        return redirect(
+            reverse("blockUserConfirm") +
+            f"?user_id={user_id}&unit={time_unit}&value={time_value}"
+        )
+
+    # ==========================
+    # GET → mostrar formulario
+    # ==========================
+    return render(
+        request,
+        "dashboard/atajos/blockUserNow.html",
+        {
+            "admin_profile": profileAdmin,
+            "users": users,
+        },
+    )
+
+@login_required
+@staff_member_required
+def blockUserForm(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    current_admin = request.user
+    profileAdmin, _ = Profile.objects.get_or_create(user=current_admin)
+
+    return render(
+        request,
+        "dashboard/usuarios/bloquearUsuario.html",
+        {
+            "admin_profile": profileAdmin,
+            "user": user,
+        }
+    )
+
+@login_required
+@staff_member_required
+def unblockUser(request, user_id):
+    if request.method != "POST":
+        return redirect("dashboard")
+
+    profile = get_object_or_404(Profile, user__id=user_id)
+    profile.unblock()
+
+    messages.success(request, f"El usuario {profile.user.username} fue desbloqueado.")
+
+    return redirect(request.POST.get("next", "/dashboard/"))
+
+
 
 # Sistema de advertencia a usuarios
 @user_passes_test(lambda u: u.is_superuser)
@@ -669,35 +750,36 @@ def verInforme(request, pk):
 # --------------------------------------------------------------
 # ATAJOS  ASIDE 
 # --------------------------------------------------------------
-def block_Usuario(request):
-    users = User.objects.all()  # Obtener todos los usuarios
-    current_admin = request.user
-    profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
-    if request.method == "POST":
-        user_id = request.POST.get("user")
-        time_unit = request.POST.get("time_unit")
-        time_value = int(request.POST.get("time_value"))
+# def dashBloquearUsuario(request):
+#     users = User.objects.all()  # Obtener todos los usuarios
+#     current_admin = request.user
+#     profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
+#     if request.method == "POST":
+#         user_id = request.POST.get("user")
+#         time_unit = request.POST.get("time_unit")
+#         time_value = int(request.POST.get("time_value"))
 
-        if user_id:
-            user = get_object_or_404(User, id=user_id)
-            profile = user.profile
+#         if user_id:
+#             user = get_object_or_404(User, id=user_id)
+#             profile = user.profile
 
-            # Calcular la duración del bloqueo según la unidad seleccionada
-            if time_unit == "minutes":
-                # Usar el valor directamente como argumento de timedelta
-                profile.block(minutes=time_value)
-            elif time_unit == "hours":
-                profile.block(hours=time_value)
-            elif time_unit == "days":
-                profile.block(days=time_value)
+#             # Calcular la duración del bloqueo según la unidad seleccionada
+#             if time_unit == "minutes":
+#                 # Usar el valor directamente como argumento de timedelta
+#                 profile.block(minutes=time_value)
+#             elif time_unit == "hours":
+#                 profile.block(hours=time_value)
+#             elif time_unit == "days":
+#                 profile.block(days=time_value)
 
-            # Redirigir al dashboard o mostrar un mensaje de éxito
-            return redirect('dashboard')  # O la vista que desees
+#             # Redirigir al dashboard o mostrar un mensaje de éxito
+#             return redirect('dashboard')  # O la vista que desees
 
-    return render(request, 'dashboard/atajos/blockUserNow.html', {
-        "admin_profile": profileAdmin,
-        'users': users})
-def advertir_usuario(request):
+#     return render(request, 'dashboard/atajos/blockUserNow.html', {
+#         "admin_profile": profileAdmin,
+#         'users': users})
+
+def dashAdvertirUsuario(request):
     usuarios = User.objects.all()  # Obtener todos los usuarios
     current_admin = request.user
     profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
@@ -737,7 +819,7 @@ def advertir_usuario(request):
         "admin_profile": profileAdmin,
         'usuarios': usuarios})
 # Vista para eliminar un usuario
-def eliminar_usuario(request):
+def dashEliminarUsuario(request):
     usuarios = User.objects.all()  # Obtener todos los usuarios disponibles
     current_admin = request.user
     profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
@@ -763,7 +845,7 @@ def eliminar_usuario(request):
 # listaBloqueados
 # --------------------------------------------------------------
 
-def lista_bloqueados(request):
+def listaBloqueados(request):
     current_admin = request.user
     profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
     # Obtener todos los usuarios bloqueados
@@ -773,14 +855,7 @@ def lista_bloqueados(request):
         'blocked_users': blocked_users,
         })
 
-def desbloquear_usuario(request, user_id):
-    # Desbloquear al usuario
-    try:
-        profile = Profile.objects.get(user__id=user_id)
-        profile.unblock()  # Llamamos al método unblock() del modelo Profile
-    except Profile.DoesNotExist:
-        pass
-    return redirect('lista_bloqueados')  # Redirigir nuevamente a la lista de bloqueados
+
 
 # --------------------------------------------------------------
 # PERFIL ADMIN

@@ -37,11 +37,10 @@
                     </div>
 
                     <!-- Botón Desbloquear -->
-                    <form action="{% url 'desbloquearUsuario' profile.user.id %}" method="POST">
+                    <form method="POST" action="{% url 'unblockUser' profile.user.id %}">
                       {% csrf_token %}
-                      <button class="btn btn-sm btn-success">
-                        <i class="ti ti-unlock"></i> Desbloquear
-                      </button>
+                      <input type="hidden" name="next" value="{{ request.path }}">
+                      <button class="btn btn-success btn-sm">Desbloquear</button>
                     </form>
 
                   </div>
