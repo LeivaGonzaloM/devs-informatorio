@@ -76,6 +76,7 @@ class UserReport(models.Model):
     reporter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reporter')
     reason = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
+    visto_admin = models.BooleanField(default=False)
     reviewed = models.BooleanField(default=False)
 
     def __str__(self):

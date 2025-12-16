@@ -10,31 +10,37 @@
           <i class="ti ti-menu-2"></i>
         </a>
       </li>
-      <!-- <li class="nav-item dropdown">
-        <a
-          class="nav-link"
-          href="javascript:void(0)"
-          id="drop1"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <iconify-icon icon="solar:bell-linear" class="fs-6"></iconify-icon>
-          <div class="notification bg-primary rounded-circle"></div>
-        </a>
-        <div
-          class="dropdown-menu dropdown-menu-animate-up"
-          aria-labelledby="drop1"
-        >
-          <div class="message-body">
-            <a href="javascript:void(0)" class="dropdown-item">
-              Usuarios reportados
-            </a>
-            <a href="javascript:void(0)" class="dropdown-item">
-              Usuarios bloqueados
-            </a>
+      <!-- Sistema de notificaciones START-->
+       <li class="nav-item dropdown">
+          <a class="nav-link position-relative" href="#" data-bs-toggle="dropdown">
+            <iconify-icon icon="solar:bell-linear" class="fs-6"></iconify-icon>
+          
+            {% if has_notifications %}
+              <span style="margin: 0px; font-size: 15px; width: 20px; padding: 0px; text-align: center; color: red; font-weight: bold;">[{{ total_notifications }}]</span>      
+            {% endif %}
+          </a>
+        
+          <div class="dropdown-menu dropdown-menu-animate-up">
+            <div class="message-body">
+            
+              <a href="{% url 'mensajesAdmin' %}" class="dropdown-item d-flex justify-content-between">
+                Mensajes para administradores
+                {% if new_messages_count %}
+                  <span class="badge bg-danger">{{ new_messages_count }}</span>
+                {% endif %}
+              </a>
+            
+              <a href="{% url 'dashReportsUsers' %}" class="dropdown-item d-flex justify-content-between">
+                Usuarios reportados
+                {% if new_reports_count %}
+                  <span class="badge bg-warning text-dark">{{ new_reports_count }}</span>
+                {% endif %}
+              </a>
+            
+            </div>
           </div>
-        </div>
-      </li> -->
+        </li>
+      <!-- Sistema de notificaciones END-->
     </ul>
     <!-- Dark Mode Toggle -->
     <div class="dark-mode">

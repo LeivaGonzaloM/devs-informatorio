@@ -180,7 +180,6 @@ def editProfile(request):
 @login_required
 def reportUser(request, user_id):
     reported_user = get_object_or_404(User, pk=user_id)
-
     if request.method == 'POST':
         form = UserReportForm(request.POST)
         if form.is_valid():

@@ -154,6 +154,8 @@ def dashReportsUsers(request):
         return HttpResponse("No autorizado")
 
     reports = UserReport.objects.all().order_by('-created')
+    # 👁 marcar como vistos
+    UserReport.objects.filter(visto_admin=False).update(visto_admin=True)
     return render(request, 'dashboard/adminReports.html', {
         'admin_profile': profile,
         'reports': reports,
@@ -747,37 +749,6 @@ def verInforme(request, pk):
         'informe': informe,
     })
 
-# --------------------------------------------------------------
-# ATAJOS  ASIDE 
-# --------------------------------------------------------------
-# def dashBloquearUsuario(request):
-#     users = User.objects.all()  # Obtener todos los usuarios
-#     current_admin = request.user
-#     profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
-#     if request.method == "POST":
-#         user_id = request.POST.get("user")
-#         time_unit = request.POST.get("time_unit")
-#         time_value = int(request.POST.get("time_value"))
-
-#         if user_id:
-#             user = get_object_or_404(User, id=user_id)
-#             profile = user.profile
-
-#             # Calcular la duración del bloqueo según la unidad seleccionada
-#             if time_unit == "minutes":
-#                 # Usar el valor directamente como argumento de timedelta
-#                 profile.block(minutes=time_value)
-#             elif time_unit == "hours":
-#                 profile.block(hours=time_value)
-#             elif time_unit == "days":
-#                 profile.block(days=time_value)
-
-#             # Redirigir al dashboard o mostrar un mensaje de éxito
-#             return redirect('dashboard')  # O la vista que desees
-
-#     return render(request, 'dashboard/atajos/blockUserNow.html', {
-#         "admin_profile": profileAdmin,
-#         'users': users})
 
 def dashAdvertirUsuario(request):
     usuarios = User.objects.all()  # Obtener todos los usuarios
@@ -952,6 +923,7 @@ def mensajes_admin(request):
     current_admin = request.user
     profileAdmin, created = Profile.objects.get_or_create(user=current_admin)
     mensajes = MensajeContacto.objects.order_by("-creado")
+    MensajeContacto.objects.filter(leido=False).update(leido=True)
     return render(request, "dashboard/mensajes/mensajes.html", {
         "admin_profile": profileAdmin,
         "mensajes": mensajes
