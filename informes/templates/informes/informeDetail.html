@@ -23,7 +23,7 @@
         <div class="informe-user">
           <a href="{% url 'profile-username' informe.user.username %}">
             {% if informe.user.profile.is_currently_blocked %}
-                <span style="text-decoration: line-through; color: red;">{{ informe.user.username }}</span>
+                <span style="text-decoration: line-through; color: red;"><a href="{% url 'profile-username' informe.user.username %}" style="text-decoration: none; color: gray; text-decoration: line-through;">{{ informe.user.username }}</a></span>
                 <span style="color: red;">(Bloqueado hasta: {{ informe.user.profile.blocked_until|date:"d/m/Y H:i" }})</span>
             {% else %}
                 <a class="{% if informe.user.is_superuser %}admin-text{% else %}user-text{% endif %}"> {{ informe.user.username }}

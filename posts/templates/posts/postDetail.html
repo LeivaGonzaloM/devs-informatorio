@@ -28,7 +28,7 @@
 
         {% if post.user.profile.is_currently_blocked %}
                  <span class="blocked-text" style="text-decoration: line-through; color: red;">
-                 {{ post.user.username }}</span>
+                 <a href="{% url 'profile-username' post.user.username %}" style="text-decoration: none; color: gray;">{{ post.user.username }}</a></span>
                  <span class="blocked-text" style="color: red;">
                  (Bloqueado hasta: {{ post.user.profile.blocked_until|date:"d/m/Y H:i" }})
                  </span>

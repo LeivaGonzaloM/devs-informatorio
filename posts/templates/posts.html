@@ -33,14 +33,16 @@
                         <span class="blocked-text" style="color: red;">
                             (Bloqueado hasta: {{ post.user.profile.blocked_until|date:"d/m/Y H:i" }})
                         </span>
+                        {% else %}
+                            <!-- Aquí va el autor y la fecha -->
+                            {% if post.user.is_superuser %}
+                                <a href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">{{ post.user.username }}</a>
+                            {% else %}
+                                <a href="{% url 'profile-username' post.user.username %}" class="usernameFact user-text">{{ post.user.username }}</a>
+                            {% endif %}
                         {% endif %}
 
-                        <!-- Aquí va el autor y la fecha -->
-                        {% if post.user.is_superuser %}
-                            <a href="{% url 'profile-username' post.user.username %}" class="usernameFact admin-text">{{ post.user.username }}</a>
-                        {% else %}
-                            <a href="{% url 'profile-username' post.user.username %}" class="usernameFact user-text">{{ post.user.username }}</a>
-                        {% endif %}
+                        
 
                         <small id="fechaPost" class="text-body-secondary">Publicado el: {{ post.created }}</small>
 
